@@ -296,7 +296,7 @@ class Dispatcher {
 				}
 				break;
 				
-			// For Services access
+			// For dev kit access
 			case $q[0]==self::DEV_TOKEN:
 				if(App::getUser()->isGod() && debuggin() )
 				{

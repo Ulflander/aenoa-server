@@ -481,8 +481,6 @@ class Template extends View {
 			
 		$title = $this->title ;
 		
-		extract ( $this->vars ) ;
-		
 		$content_for_layout = '' ;
 		
 		$file = $this->getFile ( $this->file ) ;
@@ -494,13 +492,12 @@ class Template extends View {
 		
 		if ( !is_null($this->prependFile) )
 		{
-			include($this->prependFile);
+			$this->_include($this->prependFile);
 		}
-		
 		
 		if ( !is_null($file) )
 		{
-			include ( $file ) ;
+			$this->_include ( $file ) ;
 		} else if ( debuggin() )
 		{
 			pr('No template file: ' . $this->file ) ;
@@ -508,7 +505,7 @@ class Template extends View {
 		
 		if ( !is_null($this->appendFile) )
 		{
-			include($this->appendFile);
+			$this->_include($this->appendFile);
 		}
 		
 		
@@ -533,7 +530,7 @@ class Template extends View {
 				
 				if ( !is_null ( $file ) )
 				{
-					include ( $file ) ;
+					$this->_include ( $file ) ;
 				} else {
 					echo 'No layout file: ' . $this->file ;
 				}
@@ -544,6 +541,25 @@ class Template extends View {
 		
 		flush() ;
 		
+	}
+
+
+	function _include ( $file )
+	{
+		extract ( $this->vars ) ;
+		
+		if ( substr($file, strpos($file,'.') +1 ) == 'ehtml' )
+		{
+			$ehtml = new AeEHtml () ;
+
+			$ehtml->fromFileToFile($file, AE_TMP . str_replace('/', '__' , $file ) ) ;
+
+			include AE_TMP . str_replace('/', '__' , $file ) ;
+
+			return;
+		}
+		
+		include $file ;
 	}
 	
 	

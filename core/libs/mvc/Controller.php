@@ -318,7 +318,9 @@ class Controller extends AeObject {
 	{
 		if ( is_null( $viewPath ) )
 		{
-			$viewPath = $mode . DS .  uncamelize($this->name) . DS .  uncamelize($this->action) . '.thtml' ;
+			$viewPath = $mode . DS .  uncamelize($this->name)
+					. DS .  uncamelize($this->action)
+					. (strpos($this->action,'.') === false ? '.thtml' : '') ;
 		}
 		
 		$this->viewPath = $viewPath ;
@@ -333,7 +335,8 @@ class Controller extends AeObject {
 			$this->view->appendToTitle( $this->title ) ;
 			$this->view->setFile($viewPath) ;
 		}
-		
+
+		return $this->view ;
 	}
 	
 	protected function renderView ()
@@ -403,7 +406,11 @@ class Controller extends AeObject {
 			ROOT.'controllers'.DS,
 			AE_CONTROLLERS
 		) , self::$_paths ) ;
-		
+
+		if (strpos($action, '.') !== false)
+		{
+			$action = substr($action, 0, strpos($action, '.')) ;
+		}
 		
 		$modelName = camelize ( $controllerName ) . 'Model' ;
 		$controllerName = camelize ( $controllerName ) . 'Controller' ;
@@ -463,6 +470,14 @@ class Controller extends AeObject {
 		// Format names
 		$_n = camelize ( $controllerName ) . 'Controller' ;
 		$_m = camelize ( $controllerName ) . 'Model' ;
+
+		$viewAction = $action ;
+
+		if (strpos($action, '.') !== false)
+		{
+			$action = substr($action, 0, strpos($action, '.')) ;
+		}
+
 		$action = lcfirst(camelize($action)) ;
 		
 	
@@ -487,7 +502,7 @@ class Controller extends AeObject {
 		}
 		
 		// Setting controller id
-		$controller->setIDS ( $controllerName , $action , $_m ) ;
+		$controller->setIDS ( $controllerName , $viewAction , $_m ) ;
 	
 		self::$_ctrl = $controller ;
 		
@@ -496,6 +511,7 @@ class Controller extends AeObject {
 		
 		// Let's controller manager view creation
 		$controller->createView () ;
+
 		
 		
 		// Call beforeAction
