@@ -1,0 +1,8 @@
+
+
+	<hr />
+	<p style="font-size:0.75em;">
+	<?php echo sprintf(_('This email has been automatically sent from %s at %s'), Config::get(App::APP_NAME), url()) ?><br /><br />
+	<?php echo sprintf(_('Do not reply directly to this email. If you need to contact us, use %s'), Config::get(App::APP_EMAIL)) ?><br /><br />
+	</p>
+</div>

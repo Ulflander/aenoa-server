@@ -1,0 +1,16 @@
+
+
+<?php if ( !App::isAjax() ) : ?>
+<div class="user-block">
+<h2><?php echo _('Registration cancelled') ?></h2>
+<div id="usercore/register/container" class="expanded">
+<?php endif; ?>
+
+	<?php $this->renderElement('responses'); ?>
+
+	<p><strong><?php echo sprintf(_('Registration related to %s email address has been cancelled'), $email) ?></strong></p>
+
+<?php if ( !App::isAjax() ) : ?>
+</div>
+</div>
+<?php endif; ?>

@@ -1,0 +1,46 @@
+<?php
+
+/**********************************
+ * Aenoa Server Engine
+ * (c) Xavier Laumonier 2010
+ *
+ * Since : 1.0
+ * Author : Xavier Laumonier
+ *
+ **********************************/
+
+?>
+
+
+
+<?php $this->renderElement('mail-header') ?>
+
+	<h2>
+		<?php echo sprintf(_('%s registration process'), Config::get(App::APP_NAME)) ?>
+	</h2>
+	<hr />
+	<p>
+		<strong><?php echo sprintf(_('Hello %s %s,'), $firstname , $lastname ) ?></strong>
+	</p>
+	<p>
+		<?php echo sprintf(_('You are now fully registered on %s.'), Config::get(App::APP_NAME) ) ?><br />
+		
+		<?php echo _('Here are your account identifiers:') ?>
+	</p>
+	<p>
+		<?php echo sprintf(_('Login: %s'), $email ) ?><br />
+		<?php echo sprintf(_('Password: %s'), $password ) ?>
+	</p>
+	<p>
+		<?php echo sprintf(_('Connect now to %s using the link below.'), Config::get(App::APP_NAME) ) ?>
+	</p>
+	<p>
+		<a href="<?php echo $link ?>" title="<?php echo sprintf(_('Connect now to %s'), Config::get(App::APP_NAME) ) ?>"><?php echo $link ?> </a>
+	</p>
+
+	<p>
+		<?php echo _('Thank you for your registration') ?>,<br />
+		<strong><?php echo sprintf(_('%s team'), Config::get(App::APP_NAME)) ?></strong>
+	</p>
+	
+<?php $this->renderElement('mail-footer') ?>

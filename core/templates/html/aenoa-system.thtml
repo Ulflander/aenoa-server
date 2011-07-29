@@ -1,0 +1,73 @@
+<?php 
+
+/**********************************
+ * Aenoa Server Engine
+ * (c) Xavier Laumonier 2010
+ *
+ * Since : 1.0
+ * Author : Xavier Laumonier
+ *
+ **********************************/
+
+?>
+
+<?php $this->renderElement ( 'header-start' ) ; ?>
+
+		<title><?php echo Config::get(App::APP_NAME) ?></title>
+				
+			<!--[If IE]>
+			<link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ?>acf/ie.css" type="text/css" media="screen,projection" />
+			<![endif]-->			
+			<link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ?>acf/all.css" type="text/css" media="screen,projection" />
+		
+			<link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ?>acf/plugins/colorize.css" type="text/css" media="screen,projection" />
+			<link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ?>acf/plugins/roundify.css" type="text/css" media="screen,projection" />
+
+
+		<link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ?>acf/plugins/flashify/flashify.css" type="text/css" media="screen,projection" />
+			
+		<script type="text/javascript" src="<?php echo Config::get(App::STATIC_SERVER) ?>e-js/swfobject.js"></script>
+		<script id="js-aecore" type="text/javascript" src="<?php echo Config::get(App::STATIC_SERVER) ?>ajsf/aecore.js"></script>
+		<script type="text/javascript" src="<?php echo Config::get(App::STATIC_SERVER) ?>ajsf/plugins/aenoa-system.js"></script>
+		
+		<script type="text/javascript" src="<?php echo Config::get(App::STATIC_SERVER) ?>e-js/swfmacmousewheel2.js"></script>
+		<script type="text/javascript">
+			swfobject.registerObject("system", "10.0.0", "<?php echo Config::get(App::STATIC_SERVER) ?>swf/expressInstall.swf");
+			swfmacmousewheel.registerObject("system");
+		</script>
+
+	</head>
+	<body>
+		<div class="layout"> 
+			<object id="system" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%">
+				<param name="movie" value="<?php echo $swf ?>" />
+				<param name="wmode" value="window" />
+				<param name="allowfullscreen" value="true" />
+				<param name="menu" value="false" />
+				<param name="scale" value="noscale" />
+				<param name="width" value="100%" />
+				<param name="height" value="100%" />
+        		<!--[if !IE]>-->
+				<object type="application/x-shockwave-flash" data="<?php echo $swf ?>" width="100%" height="100%">
+				<param name="wmode" value="window" />
+				<param name="allowfullscreen" value="true" />
+				<param name="menu" value="false" />
+				<param name="scale" value="noscale" />
+				<param name="width" value="100%" />
+				<param name="height" value="100%" />
+				<!--<![endif]-->
+				<div class="alternate">
+					<h2><?php echo Config::get(App::APP_NAME) ?><br />needs<br />Adobe Flash Player</h2>
+					<p >
+						<a class="link" href="http://www.adobe.com/go/getflashplayer">
+						Click here to download the player</a>
+					</p>
+				</div>
+				<!--[if !IE]>-->
+				</object>
+				<!--<![endif]-->
+			</object>
+
+		</div>
+	</body>
+</html>

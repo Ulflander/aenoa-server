@@ -1,0 +1,7 @@
+
+	<ul class="expanded no-list-style inline">
+		<li><a href="<?php echo url() ?>user-core/account" title="<?php echo _('Account home') ?>"><?php echo _('Account home') ?></a></li>
+		<li><a href="<?php echo url() ?>user-core/password" title="<?php echo _('Change password') ?>"><?php echo _('Change password') ?></a></li>
+		<li><a href="<?php echo url() ?>user-core/identifier" title="<?php echo _('Change contact address') ?>"><?php echo _('Change contact address') ?></a></li>
+		<li><a href="<?php echo url() ?>user-core/profile" title="<?php echo _('Your profile') ?>"><?php echo _('Your profile') ?></a></li>
+	</ul>

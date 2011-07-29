@@ -1,0 +1,22 @@
+<?php if ( $widget['count'] < 1 ) $widget['count'] = 1 ; if(!ake('sub_class',$widget)) $widget['sub_class'] = '' ; ?>
+<ul id="_twitter_status" class="no-list-style">
+	
+</ul>
+<script type="text/javascript">
+	function twitterCallback2(twitters) {
+	  var statusHTML = [],l=twitters.length,i=0;
+	  for (i; i<l; i++){
+	    var username = twitters[i].user.screen_name;
+	    var status = twitters[i].text.replace(/((https?|s?ftp|ssh)\:\/\/[^"\s\<\>]*[^.,;'">\:\s\<\>\)\]\!])/g, function(url) {
+	      return '<a href="'+url+'">'+url+'</a>';
+	    }).replace(/\B@([_a-z0-9]+)/ig, function(reply) {
+	      return  reply.charAt(0)+'<a href="http://twitter.com/'+reply.substring(1)+'">'+reply.substring(1)+'</a>';
+	    });
+	    statusHTML.push('<li class="<?php echo $widget['sub_class'] ?>"><span>"'+status+'"</span><?php if ( $widget['display_date'] == true ): ?><br /><a class="minimized" href="http://twitter.com/'+username+'/statuses/'+twitters[i].id+'">'+$.relDat(twitters[i].created_at)+'</a><?php endif; ?></li>');
+	  }
+	  _('#_twitter_status').innerHTML = statusHTML.join('');
+	}
+	ajsf.ready(function(){
+		ajsf.load('http://twitter.com/statuses/user_timeline/<?php echo $widget['twitter_screen_name'] ?>.json?callback=twitterCallback2&count=<?php echo $widget['count'] ?>');
+	});
+</script>

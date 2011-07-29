@@ -1,0 +1,62 @@
+
+
+<?php if (Config::get(App::USER_CORE_SYSTEM) === true): ?>
+<ul class="no-list-style inline login">
+<?php
+	// User connected
+	if ( !is_null($user_object) ){
+
+?>
+
+	<?php if ( $user_object->getTrueLevel () == 0 && $user_object->getLevel () != 0 ): ?>
+	<li><a href="<?php echo url() ?>user-core/account" title="<?php echo _('My profile') ?>"><?php echo $user_object->getFirstname () . ' (' . $user_object->getTrueGroup () . '/' . $user_object->getGroup () .')' ?></a></li>
+	<?php else: ?>
+	<li><a href="<?php echo url() ?>user-core/account" title="<?php echo _('My profile') ?>"><?php echo $user_object->getFirstname () . ' (' . $user_object->getGroup () .')' ?></a></li>
+	<?php endif; ?>
+	<li><a href="<?php echo url() ?>user-core/logout" title="<?php echo _('Logout') ?>" class="icon16 user_red"><?php echo _('Logout') ?></a></li>
+
+	<?php if ( $user_object->getTrueLevel () == 0 ): ?>
+	</ul>
+	<ul class="no-list-style inline login">
+		<li><?php echo _('Current level:') ?></li>
+		<li>
+			<form method="POST" action="<?php echo url(); ?>user-core/fake" id="superadmin/fakelevel">
+				<select name="level">
+					<?php $list = $user_object->getGroupList () ; foreach( $list as $group ): ?>
+					<option value="<?php echo $group['level'] ?>" <?php if ( $user_object->getLevel () == $group['level'] ) echo 'selected="selected"' ?>><?php echo $group['label'] ?></option>
+					<?php endforeach; ?>
+				</select>
+			</form>
+			<script type="text/javascript">
+				ajsf.ready(function ()
+				{
+					_('select','#superadmin/fakelevel',false,false).addListener ( 'change' , function () {
+						_('#superadmin/fakelevel').submit () ;
+					} );
+				});
+			</script>
+		</li>
+		<li><a href="<?php echo url() ?>database/main/products/readAll" class="icon16 manage unlabeled"><?php echo _('Aenoa Manager')?></a></li>
+		<?php if($user_super_update == true ): ?>
+			<li><a href="<?php echo url(); ?>maintenance/update" class="icon16 add">Updates are available</a></li>
+		<?php endif; ?> 
+	<?php endif; ?> 
+
+<?php
+
+	// User not connected
+	}else{
+
+?>
+	
+	<li><a href="<?php echo url() ?>user-core/login" title="<?php echo _('Login') ?>" class="icon16 user"><?php echo _('Login') ?></a></li>
+	<?php if ( Config::get(App::USER_REGISTER_AUTH) === true ): ?>
+	<li><a href="<?php echo url() ?>user-core/register" title="<?php echo _('Register') ?>"><?php echo _('Register') ?></a></li>
+	<?php endif; ?>
+<?php
+
+	};
+
+?></ul>
+
+<?php endif; ?>
