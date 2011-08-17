@@ -6,7 +6,7 @@
 <div id="usercore/register/container" class="expanded">
 <?php endif; ?>
 
-	<div class="notify success"><?php echo _('Logged out.') ?></div>
+	<div class="notify success"><?php echo sprintf(_('You are not logged anymore on %s. You will be redirected to home in a few seconds.'),Config::get(App::APP_NAME)); ?></div>
 
 <?php if ( !App::isAjax() ) : ?>
 </div>

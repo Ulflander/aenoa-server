@@ -505,8 +505,8 @@ class DatabaseController extends Controller{
 					
 					if ( !is_null($slugField) )
 					{
-						$searchVal =  urlize ( $element ) ;
-						$row[$str.$slugField] = urlize ( $searchVal ) ;
+						$searchVal =  tl_get ( $element ) ;
+						$row[$str.$slugField] = tl_get ( $searchVal ) ;
 					}
 					
 					if ( $search )

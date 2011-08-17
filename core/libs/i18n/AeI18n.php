@@ -30,7 +30,7 @@ class AeI18n {
 	
 	private static $locales = null ;
 	
-	function __construct ( $domain = 'default' , $lang = null , $codeset = 'UTF8' )
+	function __construct ( $domain = 'default' , $lang = null , $codeset = 'UTF8', $path = null )
 	{
 		if ( is_null ( $lang ) )
 		{
@@ -49,29 +49,35 @@ class AeI18n {
 		
 		$this->_domain = $domain ;
 		
-		$this->_localePath = ROOT.'app'.DS.'locale'.DS ;
+		if ( is_null($path) )
+		{
+			$this->_localePath = ROOT.'app'.DS.'locale'.DS ;
+		} else {
+			$this->_localePath = $path ;
+		}
+		
+			
+		$dir = $this->_getLocale ( $lang ) ;
+		
+		if ( $dir == '' )
+		{
+			$dir = $this->_getLocale ( $lang.'.'.$codeset ) ;
+		}
 		
 		if ( is_null( self::$mainInstance ) )
 		{
 			self::$mainInstance = &$this ;
-			
-			$dir = $this->_getLocale ( $lang ) ;
-			
-			if ( $dir == '' )
-			{
-				$dir = $this->_getLocale ( $lang.'.'.$codeset ) ;
-			}
-		
-		
+				
 			if($dir =='')
 			{
 			//	App::do403('Localization initialization failed');
 			}
-			
-			bind_textdomain_codeset ($this->_domain, 'UTF8'); 
-			
-			textdomain($this->_domain);
 		}
+	
+		
+		bind_textdomain_codeset ($this->_domain, 'UTF8'); 
+		
+		textdomain($this->_domain);
 		
 	}
 	

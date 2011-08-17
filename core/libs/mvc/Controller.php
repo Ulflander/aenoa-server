@@ -520,11 +520,23 @@ class Controller {
 	}
 	
 	/**
-	 * @return controller
+	 * Returns the current loaded controller
+	 * 
+	 * @return Controller
 	 */
 	static function getCurrent ()
 	{
 		return self::$_ctrl ;
+	}
+	
+	/**
+	 * Returns true if a controller has been loaded
+	 * 
+	 * @return boolean
+	 */
+	static function hasCurrent ()
+	{
+		return is_object(self::$_ctrl) ;
 	}
 	
 	/**
@@ -538,7 +550,7 @@ class Controller {
 	 */
 	static function shutdown ()
 	{
-		if ( is_object(self::$_ctrl) )
+		if ( self::hasCurrent () )
 		{
 			self::$_ctrl->__destruct() ;
 			self::$_ctrl = null ;

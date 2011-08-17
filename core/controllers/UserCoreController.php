@@ -183,6 +183,7 @@ class UserCoreController extends Controller{
 					
 					$this->addResponse(sprintf(_('Your are logged into %s'), Config::get(App::APP_NAME) ) , self::RESPONSE_SUCCESS ) ;
 					
+					/*
 					if ( $userObj->isGod () )
 					{
 						$ftp = new AeFTPUpdate() ;
@@ -194,6 +195,7 @@ class UserCoreController extends Controller{
 							App::$session->set('Server.hasUpdate',true);
 						}
 					}
+					*/
 					
 					if ( $redirect != 'logout' && $redirect != 'logout-in' )
 					{
@@ -467,6 +469,10 @@ class UserCoreController extends Controller{
 	
 	function loggedOut ()
 	{
+		$this->view->render () ;
+		
+		$this->view->redirect ( url() , 3000 ) ;
+		
 		return;
 	}
 	

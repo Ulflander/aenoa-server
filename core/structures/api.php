@@ -30,7 +30,8 @@ $api = array (
 						'rule' => '[A-Za-z0-9]{8,16}',
 						'message' => _('First key must contain only A-Z, a-z and 0-8 characters')
 					),
-					'description' => _('Create the first key — this is the public key')
+					'description' => _('Create the first key — this is the public key'),
+					'js_plugin_edit' => 'ae-str-gen/AeStringGenerator/length:15'
 				),
 				array (
 					'name' => 'private',
@@ -42,7 +43,8 @@ $api = array (
 						'rule' => '[A-Za-z0-9]{8,16}',
 						'message' => _('Your email must be a valid email address')
 					),
-					'description' => _('Create the second key — this is the public key')
+					'description' => _('Create the second key — this is the public key'),
+					'js_plugin_edit' => 'ae-str-gen/AeStringGenerator/length:15'
 				)
 			),
 		);

@@ -1,10 +1,14 @@
 
 
-<?php if (Config::get(App::USER_CORE_SYSTEM) === true): ?>
+<?php if (Config::get(App::USER_CORE_SYSTEM) === true): 
+
+
+?>
 <ul class="no-list-style inline login">
 <?php
 	// User connected
 	if ( !is_null($user_object) ){
+
 
 ?>
 
@@ -18,6 +22,16 @@
 	<?php if ( $user_object->getTrueLevel () == 0 ): ?>
 	</ul>
 	<ul class="no-list-style inline login">
+	
+	<?php
+	
+		// In case of super admin we add a response message for Debug mode
+		if ( debuggin() ):
+		?>
+	<li><a href="<?php echo url() ?>maintenance/debug" class="icon16 warning" ><?php echo _('Debug mode: ON') ?></a></li>
+		<?php
+		endif;
+	?>
 		<li><?php echo _('Current level:') ?></li>
 		<li>
 			<form method="POST" action="<?php echo url(); ?>user-core/fake" id="superadmin/fakelevel">
@@ -37,9 +51,6 @@
 			</script>
 		</li>
 		<li><a href="<?php echo url() ?>database/main/products/readAll" class="icon16 manage unlabeled"><?php echo _('Aenoa Manager')?></a></li>
-		<?php if($user_super_update == true ): ?>
-			<li><a href="<?php echo url(); ?>maintenance/update" class="icon16 add">Updates are available</a></li>
-		<?php endif; ?> 
 	<?php endif; ?> 
 
 <?php

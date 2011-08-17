@@ -781,8 +781,14 @@ class App {
 		
 		if ( !self::getUser()->isLogged() )
 		{
-			App::getSession()->set('redirect',self::getQuery());
-			self::redirect( 'user-core/login/' );
+			App::getSession()->set('Controller.responses',array ( Controller::RESPONSE_ERROR => array(_('You have to be logged to run this action'))));
+			
+			if (!self::isAjax())
+			{
+				App::getSession()->set('redirect',self::getQuery());
+			}
+			
+			self::redirectGlobal( 'user-core/login/' );
 		} else {
 			self::doRespond(401, $headerResponse , true , _('Unauthorized action'), _('Server has triggered an unauthorized action.') ) ;
 		}

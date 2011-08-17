@@ -247,9 +247,9 @@ class AeAutoForm {
 				$field['type'] = AbstractDB::TYPE_STRING ;
 			}
 			
-			if ( ake('js-plugin',$field) )
+			if ( ake('js_plugin_edit',$field) )
 			{
-				$d .= ' data-plugin="' . $field['js-plugin'] . '"' ;
+				$d .= ' data-plugin="' . $field['js_plugin_edit'] . '"' ;
 			}
 			
 			if ( !empty($class) )
@@ -399,6 +399,8 @@ class AeAutoForm {
 					break;
 				
 			}
+			
+			
 			if ( !is_null($res) )
 			{
 				$this->_result[] = '<div class="control '.str_replace('/','-',$id).'">';

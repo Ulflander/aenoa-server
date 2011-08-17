@@ -28,6 +28,12 @@ class MaintenanceController extends FileController{
 		
 	}
 	
+	function status ( $key = null )
+	{
+		$this->checkMaintenanceKey($key) ;
+		
+	}
+	
 	private function checkMaintenanceKey ( $key )
 	{
 		if ( is_null($key) && !App::getUser()->isGod () )
@@ -329,8 +335,6 @@ class MaintenanceController extends FileController{
 		
 		$this->view->layoutName = 'layout-backend' ;
 		
-		$this->renderView();
-		
 		$bf = new File (ROOT.'app-conf.php',false);
 			
 		if($bf->exists() )
@@ -343,9 +347,9 @@ class MaintenanceController extends FileController{
 			{
 				if ( debuggin() )
 				{
-					$this->_sendMessage(_('Aenoa Server is in DEBUG MODE. This task will switch to PRODUCTION MODE.') , 'notice');
+					$this->addResponse(_('Aenoa Server is in DEBUG MODE. This task will switch to PRODUCTION MODE.') , 'notice');
 				} else {
-					$this->_sendMessage(_('Aenoa Server is in PRODUCTION MODE. This task will switch to DEBUG MODE.') , 'notice');
+					$this->addResponse(_('Aenoa Server is in PRODUCTION MODE. This task will switch to DEBUG MODE.') , 'notice');
 				}
 				
 				$str = preg_replace('/(define[\s]{0,}\([\s]{0,}\'DEBUG\'[\s]{0,},[\s]{0,}'.$val.'[\s]{0,}\))/','define ( \'DEBUG\' , '.$new.' )',$str,1) ;
@@ -354,12 +358,12 @@ class MaintenanceController extends FileController{
 				{
 					if ( debuggin() )
 					{
-						$this->_sendMessage(_('Aenoa Server is now in PRODUCTION MODE.') , 'success');
+						$this->addResponse(_('Aenoa Server is now in PRODUCTION MODE.') , 'success');
 					} else {
-						$this->_sendMessage(_('Aenoa Server is now in DEBUG MODE.') , 'success');
+						$this->addResponse(_('Aenoa Server is now in DEBUG MODE.') , 'success');
 					}
 				} else {
-					$this->_sendMessage(_('DEBUG MODE has not been modified. Bootstrap file may be unwritable.'), 'error' );
+					$this->addResponse(_('DEBUG MODE has not been modified. Bootstrap file may be unwritable.'), 'error' );
 				}
 				$bf->close () ;
 				
