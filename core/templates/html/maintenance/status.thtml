@@ -1,0 +1,95 @@
+<?php
+
+/**********************************
+ * Aenoa Server Engine
+ * (c) Xavier Laumonier 2010
+ *
+ * Since : 1.0
+ * Author : Xavier Laumonier
+ *
+ **********************************/
+
+
+
+?>
+
+
+	<div class="expanded p">
+	
+			<h2><?php echo _('Application status') ?></h2>
+			
+			
+			<?php $this->renderElement('responses'); ?>
+			
+			
+			
+			<div class="expanded layout">
+			
+				<div class="col-8 p b">
+					<?php echo _('Application name') ?>: <strong>
+						<?php echo Config::get(App::APP_NAME) ?></strong>
+				</div>
+				
+				<div class="col-8 col-last p b">
+					<?php echo _('Server name') ?>: <strong>
+						<?php echo AENOA_SERVER_NAME ?></strong>
+				</div>
+				
+				<hr class="hidden" />
+				
+				<div class="col-5 p b">
+					<?php echo _('Application email') ?>: <strong>
+						<?php echo Config::get(App::APP_EMAIL) ?></strong>
+				</div>
+				
+				<div class="col-6 p b">
+					<?php echo _('Application name') ?>: <strong>
+						<?php echo Config::get(App::APP_NAME) ?></strong>
+				</div>
+				
+				<div class="col-5 col-last p b">
+					<?php echo _('Application name') ?>: <strong>
+						<?php echo Config::get(App::APP_NAME) ?></strong>
+				</div>
+				
+				<hr class="hidden" />
+				
+				
+				<div class="col-8 p b">
+					<?php echo _('ROOT path') ?>: <strong>
+						<?php echo ROOT ?></strong>
+				</div>
+				
+				<div class="col-8 col-last p b">
+					<?php echo _('Aenoa Server path') ?>: <strong>
+						<?php echo AE_SERVER ?></strong>
+				</div>
+				
+				<hr class="hidden" />
+				
+				<div class="col-3 p b">
+					<?php echo _('Debug mode') ?>: <strong>
+						<?php if ( debuggin() ): ?>
+							<span class="icon16 bool_0"><?php echo _('Yes') ?></span>
+						<?php else: ?>
+							<span class="icon16 bool_1"><?php echo _('No') ?></span>
+						<?php endif; ?></strong>
+				</div>
+				
+				
+				<div class="col-7 p b">
+				</div>
+				
+				<div class="col-3 p b"><?php echo _('Locales') ?>: <strong><?php echo implode(', ',App::getI18n()->getLangList ()) ; ?></strong></div>
+				
+				<div class="col-3 col-last p b">
+					<?php echo _('Locales') ?>: <strong>
+						<?php echo implode(', ',App::getI18n()->getLangList ()) ; ?>
+						</strong>
+				</div>
+				
+				<hr class="hidden" />
+				
+				
+			</div>
+	</div>
