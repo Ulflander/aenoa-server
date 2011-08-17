@@ -11,6 +11,8 @@
  * define base paths as constants.
  * 
  * 
+ * 
+ * 
  */
 
 
@@ -163,7 +165,9 @@ define ( 'AE_ASSETS', AE_SERVER . DS . 'assets' . DS ) ;
 
 
 /**
- * Define Aenoa copyright constants
+ * Constant: AENOA_SERVER_NAME
+ *
+ * Name of the server
  */
 define ('AENOA_SERVER_NAME' , 'Aenoa Server Engine 1.0' ) ;
 define ('AENOA_SERVER_COPY' , 'Copyright 2010-2011 Aenoa Systems' ) ;
