@@ -503,7 +503,7 @@ class Controller {
 		// After the action : call afterAction
 		$controller->afterAction ( $action ) ;
 		
-		// End App (write session, close DB engines....)
+		// End App (write session, close DB engines....) without die
 		App::end(false);
 		
 		// If rendering required, let's render

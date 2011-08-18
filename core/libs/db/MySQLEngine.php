@@ -398,6 +398,10 @@ class MySQLEngine extends AbstractDB {
 				$childTable['multi'] = @$field['behavior'] & AbstractDB::BHR_PICK_IN ;
 				foreach ( $dbselection as $k => &$res )
 				{
+					if ( !is_array($res) ) 
+					{
+						$res = array( $res ) ;
+					}
 					if ( array_key_exists( $n , $res) && $res[$n] !== 0 && !is_array($res[$n]))
 					{
 						$childTable['ids'][] = $res[$n];
@@ -442,16 +446,15 @@ class MySQLEngine extends AbstractDB {
 					if ( array_key_exists($inf['source'],$subFields) && is_array ( $subFields[$inf['source']] ) )
 					{
 						$__f = $subFields[$inf['source']] ;
+						
+						if ( !in_array($primaryKey, $__f) )
+						{
+							array_unshift($__f, $primaryKey );
+						}
 					}
 					
 					$result = $this->findAll($inf['source'], array($primaryKey => $__ids), 0, $__f);
 					
-					if ( array_key_exists($inf['source'],$subFields) && is_array ( $subFields[$inf['source']] ) )
-					{
-					
-						$__f = $subFields[$inf['source']] ;
-					}
-				
 					foreach ( $result as &$res )
 					{
 						$this->__childCache[$inf['source']][$res[$primaryKey]] = $res;
@@ -757,6 +760,10 @@ class MySQLEngine extends AbstractDB {
 		
 		foreach( $dbselection as &$res )
 		{
+			if ( !is_array($res) )
+			{
+				continue;
+			}
 			foreach ( $res as $name => &$val )
 			{
 				if ( strpos($name,'___') === 0)

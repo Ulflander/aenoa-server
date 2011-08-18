@@ -17,6 +17,12 @@ class DatabaseController extends Controller{
 	
 	public $tableLength = 20 ;
 	
+	public $recursivity = 1 ;
+	
+	public $fields = array () ;
+	
+	public $subFields = array () ;
+	
 	protected $structure ;
 	
 	protected $errors = array () ;
@@ -34,6 +40,8 @@ class DatabaseController extends Controller{
 	protected $added = false ;
 	
 	protected $edited = false ;
+	
+	
 	
 	/**
 	 * Last ID on add operation
@@ -166,6 +174,10 @@ class DatabaseController extends Controller{
 			'urls' => array(), 
 		) ) ;
 		
+		if ( $this->recursivity > 10 )
+		{
+			$this->recursivity = 10 ;
+		}
 	}
 	
 	/**
@@ -850,9 +862,28 @@ class DatabaseController extends Controller{
 	 */
 	public function __enumerate ()
 	{
-		$this->output = $this->db->findAll ( $this->table ) ;
+		$this->output = $this->db->findRelatives ( $this->table , $this->db->findAll ( $this->table , $this->conditions, 0 , $this->fields ) , $this->subFields , $this->recursivity ) ;
 	}
 	
+	
+	/**
+	* Count entries of a table or number of pages for a agiven length
+	*
+	*
+	* This method is used only by REST api
+	*
+	*
+	* @return array
+	*/
+	public function __count ( $length = null )
+	{
+		$this->output = array ( 'total' => $this->db->count ( $this->table, $this->conditions ) ) ;
+		
+		if ( !is_null ( $length ) )
+		{
+			$this->output = array ( 'pages' => ceil($this->output['total']/$length) ) ;
+		}
+	}
 	
 	/**
 	 * Read entries
@@ -865,7 +896,7 @@ class DatabaseController extends Controller{
 	 * @param mixed $id A string or an int depending of the type of the primary field
 	 * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of 
 	 */
-	public function readAll ( $page = null , $order = null , $dir = null )
+	public function readAll ( $page = null , $order = null , $dir = null , $useSession = true )
 	{
 		if ( intval($page) < 1 || is_null($page) )
 		{
@@ -876,44 +907,46 @@ class DatabaseController extends Controller{
 				$page = 1 ;
 			}
 		}
-
-		App::getSession()->set('DB_PAGE_'.$this->databaseID . '_' .$this->table, $page ) ;
-		
-		
-		if (App::getSession()->has('DB_CONDITIONS_'.$this->databaseID . '_' . $this->table) )
+	
+		if ( $useSession === true )
 		{
-			$this->conditions = App::getSession()->get('DB_CONDITIONS_'.$this->databaseID . '_' .$this->table) ;
-		}
-		if (App::getSession()->has('DB_CONDITIONS_KEY_'.$this->databaseID . '_' .$this->table))
-		{
-			$this->view->set('autoTableConditions', App::getSession()->get('DB_CONDITIONS_KEY_'.$this->databaseID . '_' .$this->table)) ;
-		} else {
-			$this->view->set('autoTableConditions','');
-		}
-		
-		if ( App::getSession()->has('DB_TABLE_MODE_'.$this->databaseID . '_' .$this->table ) )
-		{
-			$this->view->set ('tableMode' , App::getSession()->get('DB_TABLE_MODE_'.$this->databaseID . '_' .$this->table ) );
-		}
-		
-		if ( is_null($order) )
-		{
-			if ( App::getSession()->has('DB_TABLE_ORDER_'.$this->databaseID . '_' .$this->table ) )
+			App::getSession()->set('DB_PAGE_'.$this->databaseID . '_' .$this->table, $page ) ;
+			
+			if (App::getSession()->has('DB_CONDITIONS_'.$this->databaseID . '_' . $this->table) )
 			{
-				$order = App::getSession()->get('DB_TABLE_ORDER_'.$this->databaseID . '_' .$this->table );
+				$this->conditions = App::getSession()->get('DB_CONDITIONS_'.$this->databaseID . '_' .$this->table) ;
 			}
-		} else {
-			App::getSession()->set('DB_TABLE_ORDER_'.$this->databaseID . '_' .$this->table, $order );
-		}
-		
-		if ( is_null($dir) )
-		{
-			if ( App::getSession()->has('DB_TABLE_DIR_'.$this->databaseID . '_' .$this->table ) )
+			if (App::getSession()->has('DB_CONDITIONS_KEY_'.$this->databaseID . '_' .$this->table))
 			{
-				$dir = App::getSession()->get('DB_TABLE_DIR_'.$this->databaseID . '_' .$this->table );
+				$this->view->set('autoTableConditions', App::getSession()->get('DB_CONDITIONS_KEY_'.$this->databaseID . '_' .$this->table)) ;
+			} else {
+				$this->view->set('autoTableConditions','');
 			}
-		} else {
-			App::getSession()->set('DB_TABLE_DIR_'.$this->databaseID . '_' .$this->table, $dir );
+			
+			if ( App::getSession()->has('DB_TABLE_MODE_'.$this->databaseID . '_' .$this->table ) )
+			{
+				$this->view->set ('tableMode' , App::getSession()->get('DB_TABLE_MODE_'.$this->databaseID . '_' .$this->table ) );
+			}
+			
+			if ( is_null($order) )
+			{
+				if ( App::getSession()->has('DB_TABLE_ORDER_'.$this->databaseID . '_' .$this->table ) )
+				{
+					$order = App::getSession()->get('DB_TABLE_ORDER_'.$this->databaseID . '_' .$this->table );
+				}
+			} else {
+				App::getSession()->set('DB_TABLE_ORDER_'.$this->databaseID . '_' .$this->table, $order );
+			}
+			
+			if ( is_null($dir) )
+			{
+				if ( App::getSession()->has('DB_TABLE_DIR_'.$this->databaseID . '_' .$this->table ) )
+				{
+					$dir = App::getSession()->get('DB_TABLE_DIR_'.$this->databaseID . '_' .$this->table );
+				}
+			} else {
+				App::getSession()->set('DB_TABLE_DIR_'.$this->databaseID . '_' .$this->table, $dir );
+			}
 		}
 		
 		$length = $this->tableLength ;
@@ -951,9 +984,20 @@ class DatabaseController extends Controller{
 		$this->view->set ('order',$order);
 		$this->view->set ('dir',$dir);
 		
-		App::getSession()->set('DB_PREV_PAGE', $baseURL ) ;
+		if ( $useSession === true )
+		{
+			App::getSession()->set('DB_PREV_PAGE', $baseURL ) ;
+		}
 		
-		$this->view->set ( 'data' , $this->output = $this->db->findRelatives ( $this->table , $this->db->findAll ( $this->table , $this->conditions , $limit ))) ;
+		if ( $this->recursivity > 0 )
+		{
+			$this->output = $this->db->findRelatives ( $this->table , $this->db->findAll ( $this->table , $this->conditions , $limit , $this->fields) , $this->subFields , $this->recursivity ) ;
+		} else {
+			$this->output =  $this->db->findAll ( $this->table , $this->conditions , $limit , $this->fields ) ;
+		}
+		
+		
+		$this->view->set ( 'data' , $this->output ) ;
 		
 		$urls = array (
 			sprintf(_('Add a new entry to %s'), $this->table) => array ( 'url' => $this->baseURL . 'add', 'class' => 'icon16 add' ),

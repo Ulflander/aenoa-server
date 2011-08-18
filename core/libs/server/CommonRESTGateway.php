@@ -3,40 +3,7 @@
 /**
  * <p>The REST Service in Aenoa System lets you select, edit and delete data of the system.</p>
  * 
- * <h3>Getting started</h3>
- * 
- * <p>Here is an example of URL to access to a table in main database structure (assuming your application is located at http://example.com)</p>
- * 
- * <pre>http://example.com/rest/structure_id/table_id/identifier.format</pre>
- * 
- * <p>For example, to retrieve the user #1 of the core authentication system, formatted in JSON, we would do</p>
- * 
- * <pre>http://example.com/rest/main/ae_users/1.json</pre>
- * 
- * <h3>Let's see how Aenoa Server manage this query</h3>
- * <ul><li>REST Protocol will check for a database structure with id 'structure_id'</li>
- * <li>If found, it will check a table named 'tabled_id' in that structure</li>
- * <li>If found, it will delegate to DatabaseController the runtime of the query</li>
- * <li>Once DatabaseController has done the action, it returns data (for GET queries only)</li>
- * <li>Data is formatted into required format, and sent </li></ul>
- * 
- * <h3>Available formats</h3>
- * 
- * <p>For now, the only format is json. But implementation of new formats is easy: contact us if you require another format.</p>
- * 
- * 
- * <h3>Result codes</h3>
- * <p>Aenoa REST service uses HTTP response codes:</p>
- * 
- * 
- * <h3>Global codes</h3>
- * <ul><li>200: query is successful</li>
- * <li>401: Authentication failure</li>
- * <li>404: Required structure / table / element not found</li>
- * <li>500: System has triggered an error </li></ul>
- * 
- * <h3>POST</h3>
- * <ul><li>201: Element has been created - Successful query will redirect to the newly created resource using Location header</li></ul>
+ * Check out class CommonRESTProtocol for detailed documentation about REST Service features. 
  * 
  * <h3>Authentication</h3>
  * 
@@ -115,17 +82,23 @@ class CommonRESTGateway extends Gateway {
 				break;
 		}
 		
+		$this->data = App::$sanitizer->getAll('GET') ;
+		
 		if ( $struct != '' && $table != '' )
 		{
-			$this->data = array (
+			$this->data = array_merge( array (
 				'structure' => $struct,
 				'table' => $table ,
 				'element' => $element ,
 				'format' => $format
-			);
+			), $this->data ) ;
+			
+			
 		} else {
 			$this->data = null ;
 		}
+		
+		
 		
 		$this->protocol = $this->getProtocol () ;
 		
