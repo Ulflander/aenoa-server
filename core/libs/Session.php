@@ -93,7 +93,7 @@ class Session {
 		
 		if ( is_dir(Config::get ( App::SESS_PATH )) && is_writable( Config::get ( App::SESS_PATH ) ))
 		{
-			session_save_path( unsetTrailingSlash ( Config::get ( App::SESS_PATH ) ) ) ;
+		//	session_save_path( unsetTrailingSlash ( Config::get ( App::SESS_PATH ) ) ) ;
 			ini_set('session.gc_probability', 1);
 		} else {
 			$this->_lastError = 'Session save path problem' ;
