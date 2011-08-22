@@ -13,10 +13,11 @@
  * <li>index.php loads configuration and call App::start () ;</li>
  * <li>App::start () initializes application depending on configuration, then call Dispatcher::dispatch ()</li>
  * <li>Dispatcher::dispatch () breaks query into simple tokens, in this first example the tokens will be "token1", "token2", "token3"</li>
- * <li>Dispatcher will dispatch depending on the first token:
+ * <li>Dispatcher will dispatch depending on the first token:</li>
  * <li>If token is "rest" then it will load the REST system</li>
  * <li>If token is "api" then it will load the Aenoa API system</li>
- * <li>If token is "api" then it will load the Aenoa API system</li>
+ * <li>If token is "dev" then it will load the Aenoa Dev Kit system</li>
+ * <li>If any other token, Dispatcher will check controllers and pages</li>
  * </ul>
  * 
  * <h3>Controller dispatch</h3>
@@ -73,24 +74,36 @@ class Dispatcher {
 	
 	
 	/**
-	 * First token in URLs to access to core DatabaseController:
+	 * First token in URLs to access to core DatabaseController
+	 * 
+	 * Value:
 	 * 'database'
 	 */
 	const DB_TOKEN = 'database' ;
 	
 	/**
-	 * First token in URLs to access to Server/Services system:
+	 * First token in URLs to access to Server/Services system
+	 * 
+	 * Value:
 	 * 'api'
 	 */
 	const SERVICES_TOKEN = 'api' ;
 	
 	/**
-	 * First token in URLs to access to REST service:
+	 * First token in URLs to access to REST service
+	 * 
+	 * Value:
 	 * 'rest'
 	 */
 	const REST_TOKEN = 'rest' ;
 	
-	
+	/**
+	 * First token in URLs to access Dev Kit features
+	 * 
+	 * Value:
+	 * 'dev'
+	 */
+	const DEV_TOKEN = 'dev' ;
 	
 	static private $_more = array () ;
 	
@@ -277,6 +290,21 @@ class Dispatcher {
 				} else {
 					App::do404 ( 'No such service available' ) ;
 				}
+				break;
+				
+			// For Services access
+			case $q[0]==self::DEV_TOKEN:
+				if(App::getUser()->isGod() && debuggin() )
+				{
+					if ( file_exists(AE_SERVER.'dev-kit'.DS.'devkit-bootstrap.php') )
+					{
+						require_once(AE_SERVER.'dev-kit'.DS.'devkit-bootstrap.php');
+					} else {
+						App::do404 ( _('Dev Kit not installed') ) ;
+					}
+					break;
+				}
+				App::do401 ( _('Attempt to access dev kit in Production mode') ) ;
 				break;
 				
 			// For Services access

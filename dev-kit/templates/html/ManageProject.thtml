@@ -1,0 +1,385 @@
+
+<div class="col-3">
+	
+	
+    <ul id="sidebar" class="col-3 r-2 no-list-style light-block p bordertop ">
+        <li class="bold">
+            Name: <span>
+                <?php echo $project->name ?>
+            </span>
+        </li>
+        <hr/>
+        <?php
+	if ( isset ( $projectData ) && !empty ( $projectData ) ):
+	foreach ( $projectData as $k => $v ): ?>
+        <li>
+            <?php echo $k; ?>
+            : <span>
+                <?php echo $v ?>
+            </span>
+        </li>
+        <hr class="hidden" />
+        <?php
+	endforeach ;
+	endif;
+	?>
+        <li>
+            Size on disk: <span id="sidebar_size"></span>
+        </li>
+        <hr class="hidden" />
+        <li>
+            Files count: <span id="sidebar_files"></span>
+        </li>
+        <hr class="hidden" />
+        <li>
+            URL: <span><a href="<?php echo $project->URL ?>">
+                    <?php echo $project->URL ?>
+                </a></span>
+        </li>
+    </ul>
+    <?php if ( !empty ( $subprojects ) ): ?>
+    <hr class="hidden" />
+    <ul class="col-3 r-2 left no-list-style light-block p bordertop ">
+        <li class="bold">
+            Subprojects
+        </li>
+        <hr/>
+        <?php foreach ( $subprojects as $name => $type ): ?>
+        <li>
+            <a href="<?php echo url() ?><?php echo $project->name ?>/<?php echo $name ?>">
+                <?php echo $name; ?>
+            </a>: <span>
+                <?php echo $type ?>
+            </span>
+        </li>
+        <?php endforeach; ?>
+    </ul>
+    <?php endif; ?>
+	<?php if ($project->isCVSEnable() && $project->getCVSTag() != '' ): ?>
+	    <div class="col-3 r-2 no-list-style green-block p bordertop icon folder margedbottom">
+	    	<?php 
+				$url = url() .
+					'AutoBackup:'.$project->name .
+					'/CleanFiles:'.$project->name .
+					'/GenerateIconifyPlugin:'.$project->name .
+					'/CheckForAenoaProductPackage:'.$project->name .
+					'/GenerateDocumentation:'.$project->name .
+					'/ZipProjectAsAenoa:'.$project->name  .
+					'/SendProjectToAenoaFTP:'.$project->name ;
+			?>
+	    	<a href="<?php echo $url ?>"><h3>Package as Aenoa</h3>
+	                <div class="right col-2 minimized bold">
+	                    Publish as Aenoa Product and send to update FTP
+	                </div>
+	            </a>
+	    </div>
+		
+		<?php if ($project->hasOwnUpdateFTP () ): ?>
+		    <div class="col-3 r-2 no-list-style purple-block p bordertop icon folder margedbottom">
+		    	<?php 
+					$url = url() .
+						/*'AutoBackup:'.$project->name .*/
+						'CleanFiles:'.$project->name .
+						'/PHPI18n:'.$project->name  .
+						'/GenerateIconifyPlugin:'.$project->name .
+						'/GenerateDocumentation:'.$project->name .
+						'/CheckForAenoaProductPackage:'.$project->name .
+						'/ZipProjectAsApp:'.$project->name  .
+						'/SendProjectToOwnFTP:'.$project->name ;
+				?>
+		    	<a href="<?php echo $url ?>"><h3>Package as App</h3>
+		                <div class="right col-2 minimized bold">
+		                    Publish as App and send to dedicated update FTP
+		                </div>
+		            </a>
+		    </div>
+		<?php endif; ?>
+		
+	<?php endif; ?>
+	
+    <div class="col-3 r-2 no-list-style ice-block p bordertop icon folder margedbottom">
+    	<?php 
+			$url = url() .
+				'AutoBackup:'.$project->name .
+				'/CleanFiles:'.$project->name .
+				'/GenerateIconifyPlugin:'.$project->name .
+				'/ZipProject:'.$project->name  .
+				'/ManageProject:'.$project->name ;
+		?>
+    	<a href="<?php echo $url ?>"><h3>Publish</h3>
+                <div class="right col-2 minimized bold">
+                    Backup, Clean, and Zip your project
+                </div>
+            </a>
+    </div>
+	
+</div>
+<div id="project" class="col-13 col-last">
+    <div class="col-13 col-last r-2 r-bottom p light-block inline bordertop">
+        <h3 class="">Basics</h3>
+        <hr/>
+        <div class="col-3 unmarged icon network">
+            <a href="<?php echo $project->URL ?>"><h3>Visit</h3>
+                <div class="right col-2 minimized bold">
+                    See project in your browser
+                </div>
+            </a>
+        </div>
+        <div class="col-3 unmarged icon rename">
+            <a href="<?php echo url() ?>RenameProject:<?php echo $project->name ?>"><h3>RenameProject</h3>
+                <div class="right col-2 minimized bold">
+                    Give to a new name
+                </div>
+            </a>
+        </div>
+        <div class="col-3 unmarged icon lock">
+            <a href="<?php echo url() ?>LockProject:<?php echo $project->name ?>"><h3>LockProject</h3>
+                <div class="right col-2 minimized bold">
+                    Lock the project (it won't appear on Home)
+                </div>
+            </a>
+        </div>
+        <hr class="hidden thin" />
+    </div>
+    
+    
+    <hr class="hidden thin" />
+    
+    <div class="col-13 col-last r-2 r-bottom p light-block inline bordertop">
+        <h3 class="">Documentation</h3>
+        <hr/>
+        <div class="col-3 unmarged icon file">
+            <a href="<?php echo url() ?>GenerateDocumentation:<?php echo $project->name ?>"><h3>GenerateDocumentation</h3>
+                <div class="right col-2 minimized bold">
+                    Generate documentation using NaturalDocs
+                </div>
+            </a>
+        </div>
+        <div class="col-3 unmarged icon file">
+            <a href="<?php echo url() ?>GenerateStructureDocFile:<?php echo $project->name ?>"><h3>GenerateStructureDocFile</h3>
+                <div class="right col-2 minimized bold">
+                    Generate structure documentation file
+                </div>
+            </a>
+        </div>
+        <hr class="hidden thin" />
+    </div>
+    
+    
+    <hr class="hidden thin" />
+    <div class="line125">
+        <div class="col-9 r-2 r-bottom p lined light-block inline bordertop">
+            <h3 class="">Backup</h3>
+            <hr class="" />
+            <div class="col-3 unmarged icon backup">
+                <a href="<?php echo url() ?>AutoBackup:<?php echo $project->name ?>"><h3>AutoBackup</h3>
+                    <div class="right col-2 minimized bold">
+                        Backup your project into Aenoa dev-kit archives
+                    </div>
+                </a>
+            </div>
+            <div class="col-3 unmarged icon backup">
+                <a href="<?php echo url() ?>ExploreBackups:<?php echo $project->name ?>"><h3>ExploreBackups</h3>
+                    <div class="right col-2 minimized bold">
+                        Explore auto backups for project 
+                        <u>
+                            <?php echo $project->name ?>
+                        </u>
+                    </div>
+                </a>
+            </div>
+            <div class="col-3 unmarged icon backup">
+                <a href="<?php echo url() ?>ManualBackup:<?php echo $project->name ?>"><h3>ManualBackup</h3>
+                    <div class="right col-2 minimized bold">
+                        Copy your project into a safe place
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-4 col-last r-2 r-bottom p lined light-block inline bordertop">
+            <h3 class="">Deploy model</h3>
+            <hr class="" />
+            <div class="col-3 icon add">
+                <a href="<?php echo url() ?>DeployModelAsSub:<?php echo $project->name ?>"><h3>DeployModelAsSub</h3>
+                    <div class="right col-2 minimized bold">
+                        Deploy a model in a sub folder of your project
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <hr class="hidden thin" />
+    <?php if ( $project->type == DevKitProjectType::AENOA ): ?>
+    <div class="col-13 col-last r-2 r-bottom p light-block inline bordertop">
+        <h3 class="">Aenoa Server & System tasks</h3>
+        <hr/>
+        <div class="col-4 unmarged icon service">
+            <a href="<?php echo url() ?>CreateServiceDescription:<?php echo $project->name ?>"><h3>CreateServiceDescription</h3>
+                <div class="right col-3 minimized bold">
+                    Automatic writing of your service descriptions files
+                </div>
+            </a>
+        </div>
+        <div class="col-3 unmarged icon i18n">
+            <a href="<?php echo url() ?>PHPI18n:<?php echo $project->name ?>"><h3>PHPI18n</h3>
+                <div class="right col-2 minimized bold">
+                    Extract all I18n terms in your Aenoa Server and PHP application
+                </div>
+            </a>
+        </div>
+        <div class="col-3 unmarged icon i18n">
+            <a href="<?php echo url() ?>I18n:<?php echo $project->name ?>"><h3>I18n</h3>
+                <div class="right col-2 minimized bold">
+                    Extract all I18n terms in your Aenoa AS System
+                </div>
+            </a>
+        </div>
+        <div class="col-3 unmarged icon play">
+            <a href="<?php echo url() ?>AenoaCompile:<?php echo $project->name ?>"><h3>AenoaCompile</h3>
+                <div class="right col-2 minimized bold">
+                    Use the shipped Flex compiler to compile your system and apps
+                </div>
+            </a>
+        </div>
+    </div>
+    <hr class="hidden thin" />
+    <?php elseif ( $project->type == DevKitProjectType::AENOA_PLUGIN ): ?>
+    <div class="col-13 col-last r-2 r-bottom p light-block inline bordertop">
+        <h3 class="">Aenoa SDK Plugin development</h3>
+        <hr/>
+        <div class="col-3 unmarged icon run">
+            <a href="<?php echo url() ?>PluginConfig:<?php echo $project->name ?>"><h3>PluginConfig</h3>
+                <div class="right col-2 minimized bold">
+                    Edit configuration of your plugin
+                </div>
+            </a>
+        </div>
+        <div class="col-3 unmarged icon file_php">
+            <a href="<?php echo url() ?>EditPluginProject:<?php echo $project->name ?>/ManageProject:<?php echo $project->name ?>"><h3>EditPluginProject</h3>
+                <div class="right col-2 minimized bold">
+                    Edit the PHP file of your plugin
+                </div>
+            </a>
+        </div>
+        <div class="col-3 unmarged icon test">
+            <a href="<?php echo url() ?>StartTestPlugin:<?php echo $project->name ?>"><h3>TestPlugin</h3>
+                <div class="right col-2 minimized bold">
+                    Test the plugin in your Aenoa SDK
+                </div>
+            </a>
+        </div>
+        <div class="col-3 unmarged icon package">
+            <a href="<?php echo url() ?>PackageAndPublishPlugin:<?php echo $project->name ?>"><h3>PackageAndPublishPlugin</h3>
+                <div class="right col-2 minimized bold">
+                    Package and publish your plugin
+                </div>
+            </a>
+        </div>
+		<hr class="hidden" />
+        <div class="col-3 unmarged icon install">
+            <a href="<?php echo url() ?>DeployProjectAsPlugin:<?php echo $project->name ?>"><h3>DeployProjectAsPlugin</h3>
+                <div class="right col-2 minimized bold">
+                    Install the plugin in the SDK
+                </div>
+            </a>
+        </div>
+    </div>
+    <hr class="hidden thin" />
+    <?php endif; ?>
+    <div class="line125">
+        <div class="col-4 r-2 r-bottom p lined light-block inline bordertop">
+            <h3 class="">Aenoa</h3>
+            <hr/>
+            <div class="col-3 unmarged icon aenoa">
+                <a href="<?php echo url() ?>AenoaDeployment:<?php echo $project->name ?>"><h3>AenoaDeployment</h3>
+                    <div class="right col-2 minimized bold">
+                        Deploy or undeploy Aenoa Server for this project
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-9 col-last r-2 r-bottom lined p light-block inline bordertop">
+            <h3 class="">Misc</h3>
+            <hr/>
+            <div class="col-3 unmarged icon filter">
+                <a href="<?php echo url() ?>CleanFiles:<?php echo $project->name ?>"><h3>CleanFiles</h3>
+                    <div class="right col-2 minimized bold">
+                        Delete odd files in project
+                    </div>
+                </a>
+            </div>
+            <div class="col-3 unmarged icon run">
+                <a href="<?php echo url() ?>RunTask:<?php echo $project->name ?>"><h3>RunTask</h3>
+                    <div class="right col-2 minimized bold">
+                        Run a given task on 
+                        <u>
+                            <?php echo $project->name ?>
+                        </u>
+                    </div>
+                </a>
+            </div>
+            <div class="col-3 unmarged icon trash_empty">
+                <a href="<?php echo url() ?>TrashProject:<?php echo $project->name ?>"><h3>TrashProject</h3>
+                    <div class="right col-2 minimized bold">
+                        Send your project to trash
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <hr class="hidden thin" />
+    <div class="col-4 r-2 r-bottom p light-block inline bordertop">
+        <h3 class="">CSS related</h3>
+        <hr/>
+        <div class="col-3 unmarged icon plugin">
+            <a href="<?php echo url() ?>GenerateIconifyPlugin:<?php echo $project->name ?>"><h3>GenerateIconifyPlugin</h3>
+                <div class="right col-2 minimized bold">
+                    Generate list of icons for iconify plugin
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-9 col-last r-2 r-bottom p light-block inline bordertop">
+        <h3 class="">Packaging</h3>
+        <hr/>
+        <div class="col-3 unmarged icon folder">
+            <a href="<?php echo url() ?>ZipProject:<?php echo $project->name ?>"><h3>ZipProject</h3>
+                <div class="right col-2 minimized bold">
+                    Create a ZIP file of your project
+                </div>
+            </a>
+        </div>
+        <div class="col-3 unmarged icon folder">
+            <a href="<?php echo url() ?>ZipProjectAsApp:<?php echo $project->name ?>"><h3>ZipProjectAsApp</h3>
+                <div class="right col-2 minimized bold">
+                    Create a ZIP file of your project for an Aenoa Server application
+                </div>
+            </a>
+        </div>
+        <div class="col-3 unmarged icon folder">
+            <a href="<?php echo url() ?>ZipProjectAsAenoa:<?php echo $project->name ?>"><h3>ZipProjectAsAenoa</h3>
+                <div class="right col-2 minimized bold">
+                    Create a ZIP file of your project for an Aenoa Core package
+                </div>
+            </a>
+        </div>
+    </div>
+    <?php if ( !empty ( $plugins ) ) : ?>
+    <div class="col-13 col-last r-2 r-bottom p light-block inline bordertop">
+        <h3 class="">Plugins</h3>
+        <hr/>
+        <?php foreach ( $plugins as $plugin ) : ?>
+        <div class="col-3 unmarged icon plugin">
+            <a href="<?php echo url() ?><?php echo $plugin ?>:<?php echo $project->name ?>"><h3>
+                    <?php echo $plugin ?>
+                </h3>
+                <div class="right col-2 minimized bold">
+                    Plugin
+                </div>
+            </a>
+        </div>
+        <?php endforeach; ?>
+    </div>
+    <hr class="hidden thin" />
+    <?php endif; ?>
+</div>

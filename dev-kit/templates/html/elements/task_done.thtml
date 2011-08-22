@@ -1,0 +1,19 @@
+<div class="notify success <?php if ( $substatus == true ) { echo 'little' ; } ?>">
+<?php 
+	
+		if ( is_array ( $message ) )
+		{?>
+		<ul>
+			<?php foreach ( $message as $v )
+			{?>
+			<li><?php echo $v ; ?></li>
+			<?php } ?>
+			
+		</ul>	
+		<?php 
+		} else {
+			echo $message ;
+		}
+	
+	?>
+</div>

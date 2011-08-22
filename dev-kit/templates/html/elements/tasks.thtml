@@ -1,0 +1,32 @@
+
+<?php if ( !empty ( $menu ) ) : ?>
+	<ul id="menu" class="col-16 r-2 inline light hidden">
+		<?php foreach ( $menu as $item ) :?>
+			<li class="right"><a class=" r-2 light p-5 icon16 <?php echo $item['class'] ?>"href="<?php echo $item['URL'] ?>" target="<?php echo $item['target']; ?>"> <?php echo $item['title'] ?></a></li>
+		<?php endforeach; ?>
+		<li class="free-space light r-2 p-5">&nbsp;</li>
+	</ul>
+	<hr class="hidden thin" />
+<?php endif; ?>
+
+<div id="tasks" class="col-16">
+
+	<?php echo $content_for_layout ; ?>
+	
+</div>
+
+<?php if ( isset ( $status_message ) || isset ( $nextTask ) ) 
+{ ?>
+<hr />
+<div class="col-16 spanlist white-block">
+		<?php echo $status_message ; ?>
+
+		<?php 
+		if ( isset ( $nextTask ) ) : ?>
+		<span id="nextTask">
+			Next task(s) &raquo; <?php echo $nextTask ?>
+		</span>
+		<?php endif; ?>
+</div>
+
+<?php } ?>

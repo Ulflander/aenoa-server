@@ -1,0 +1,1 @@
+<?php $data['name']='HelloWorldPlugin'; $data['size']='0'; $data['version']='0'; $data['copyright']='Xav 2010'; $data['author']='Xav'; $data['description']='Un plugin Hello World'; $data['support_url']='No support'; $data['author_url']='http://www.aenoa-systems.com'; $data['has_update']='false'; $data['activated']='true';  ?>

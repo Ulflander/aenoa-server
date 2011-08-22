@@ -17,10 +17,6 @@ class FileService extends Service {
 		) ;
 	}
 	
-
-	public function downloadFile ( $path = '.' , $fileContent = null )
-	{
-	}
 }
 
 

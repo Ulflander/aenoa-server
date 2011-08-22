@@ -1,0 +1,47 @@
+
+	
+<?php if ( !empty ( $results['approx'] ) ): ?>
+	<div class="approx">Do you mean <?php echo $results['approx']; ?> ?</div> 
+<?php endif; ?>
+
+<?php $this->renderElement ( 'search_form' ) ; ?>	
+<script type="text/javascript">
+	focusOnLastSearchForm () ;
+</script>
+<h2>Search results for <?php echo $query ?></h2>
+
+<div class="col-16 no-list-style">
+	<h3 class="col-7 alignright">projects</h3>
+	<div class="col-8 col-last">
+		
+		<ul>
+		<?php if ( empty ( $results['projects'] ) ) : ?>
+			<li>There is no result in projects</li>
+		<?php else: ?>
+			<li><?php echo count ( $results['projects'] ) ; ?> result(s) in projects : click to manage</li>
+		<?php foreach ( $results['projects'] as $result ): ?>
+			<li><?php echo $result; ?></li>
+		<?php endforeach; ?>
+		<?php endif; ?>
+		</ul>
+	</div>
+</div>
+<hr class="hidden" />
+<div class="col-16 no-list-style">
+	
+	<h3 class="col-7 alignright">tasks</h3>
+	<div class="col-8 col-last">
+		<ul>
+		<?php if ( empty ( $results['tasks'] ) ) : ?>
+			<li>There is no result in tasks</li>
+		<?php else: ?>
+			<li><?php echo count ( $results['tasks'] ) ; ?> result(s) in tasks : click to run</li>
+		<?php foreach ( $results['tasks'] as $result ): ?>
+			<li><?php echo $result; ?></li>
+		<?php endforeach; ?>
+		</ul>
+		<?php endif; ?>
+	</div>
+	
+	
+</div>

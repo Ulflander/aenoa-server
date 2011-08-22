@@ -1,0 +1,21 @@
+<div class="notify warning <?php if ( $substatus == true ) { echo 'little' ; } ?>">
+	<?php 
+	
+		if ( is_array ( $message ) && !empty ( $message ) )
+		{?>
+		<ul>
+			<?php foreach ( $message as $v )
+			{?>
+			<li><?php echo $v ; ?></li>
+			<?php } ?>
+			
+		</ul>	
+		<?php 
+		} else if ( is_array ( $message ) && empty ( $message ) ) {
+			echo 'Empty status returned' ;
+		} else {
+			echo $message ;
+		}
+	
+	?>
+</div>

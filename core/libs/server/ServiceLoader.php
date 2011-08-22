@@ -26,6 +26,9 @@ class ServiceLoader {
 			case 'core':
 				$rootPath = AE_CORE_SERVICES ;
 				break;
+			case null:
+				$rootPath = ROOT .'app'.DS. 'services' . DS ;
+				break;
 			default:
 				$rootPath = ROOT .'app'.DS. 'services' . DS . $query->servicePackage . DS ;
 				break;

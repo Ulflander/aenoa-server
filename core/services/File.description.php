@@ -25,29 +25,6 @@
 				),
 			'description' => 'This methods let\\\'s explore the public file system of an Aenoa Server',
 			),
-		'downloadFile' => array (
-			'name' => 'downloadFile',
-			'arguments' => array (
-				0 => array (
-					'name' => 'path',
-					'optional' => true,
-					'default' => '"."',
-					'description' => 'Path where download the file',
-					),
-				1 => array (
-					'name' => 'fileContent',
-					'optional' => true,
-					'default' => 'null',
-					'description' => 'Content of the file to download',
-					),
-				),
-			'firstLevelReturns' => array (
-				),
-			'secondLevelReturns' => array (
-				),
-			'description' => 'ODd ',
-			),
-		),
 	);
 }
 ?>

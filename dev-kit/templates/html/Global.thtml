@@ -1,0 +1,15 @@
+
+<?php
+	// HEADER
+	$this->renderElement ( 'dev-kit-header' ) ;
+?>
+		
+<?php
+	$this->renderElement ( 'tasks' ) ;
+?>
+		
+		
+<?php
+	// FOOTER
+	$this->renderElement ( 'footer' ) ;
+?>

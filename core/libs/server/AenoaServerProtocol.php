@@ -1,21 +1,28 @@
 <?php
 
-
+/**
+ * AenoaServerProtocol is used to control Aenoa services
+ * 
+ * @see Gateway
+ * @see Service
+ * @see ServerAuthCheck
+ */
 class AenoaServerProtocol extends AbstractProtocol {
 	
-	const SID_KEY = '__SID' ;
+	const SID_KEY = 'sid' ;
 	
-	const SERVICE_KEY = '__SERVICE_ID' ;
+	const SERVICE_KEY = 'service' ;
 	
-	const DATA_KEY = '__DATA' ;
+	const DATA_KEY = 'data' ;
 	
-	const ENCRYPTION_KEY = '__KEY' ;
+	const ENCRYPTION_KEY = 'seckey' ;
 	
-	const ERROR_KEY_PREFIX = '__ERR_' ;
+	const ERROR_KEY_PREFIX = 'error_' ;
 	
-	const SUCCESS_KEY = '__SUCCESS' ;
+	const SUCCESS_KEY = 'success' ;
 	
 	const SERVICE_STRING_TOKEN = '::' ;
+	
 	
 	
 	private $_preformatted = null ;
@@ -83,10 +90,14 @@ class AenoaServerProtocol extends AbstractProtocol {
 				$res[] = $this->_receivedData[$argument[ServiceDescription::ARG_ID_KEY]] ;
 			} else
 			{
-				$res[] = ($argument[ServiceDescription::ARG_DEFAULT_KEY] == '""' ? '' : $argument[ServiceDescription::ARG_DEFAULT_KEY] ) ;
+				if ( ake(ServiceDescription::ARG_DEFAULT_KEY, $argument) )
+				{
+					$res[] = ($argument[ServiceDescription::ARG_DEFAULT_KEY] == '""' ? '' : $argument[ServiceDescription::ARG_DEFAULT_KEY] ) ;
+				} else {
+					return false ;
+				}
 			}
 		}
-		
 		
 		return $res ;
 	}
@@ -100,6 +111,11 @@ class AenoaServerProtocol extends AbstractProtocol {
 			$query->servicePackage = $s_arr[0] ;
 			$query->serviceClass = $s_arr[1] ; 
 			$query->serviceMethod = $s_arr[2] ; 
+			$query->serviceData = $this->_receivedData ;
+			return $query ;
+		} else {
+			$query->serviceClass = $s_arr[0] ; 
+			$query->serviceMethod = $s_arr[1] ; 
 			$query->serviceData = $this->_receivedData ;
 			return $query ;
 		}
@@ -197,6 +213,7 @@ class AenoaServerProtocol extends AbstractProtocol {
 			
 			$arguments = $this->getMethodArguments ( $loader->getMethod () ) ;
 			
+			
 			if ( $arguments === false )
 			{
 				$this->setFailure ( array ( ServiceError::ERR_3008 ) ) ;
@@ -210,19 +227,19 @@ class AenoaServerProtocol extends AbstractProtocol {
 		}
 	}
 	
-	private function setFailure ( $errorCode )
+	public function setFailure ( $errorCode )
 	{
 		if ( is_array ( $errorCode ) ) 
 		{
 			foreach ( $errorCode as $code )
 			{
-				$this->protocol->addError ( $code ) ;
+				$this->addError ( $code ) ;
 			}
 		} else {
-			$this->protocol->addError ( $errorCode ) ;
+			$this->addError ( $errorCode ) ;
 		}
 		
-		$this->protocol->respond () ;
+		$this->respond () ;
 		App::end () ;
 	}
 }

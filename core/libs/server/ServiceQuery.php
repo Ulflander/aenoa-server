@@ -3,7 +3,7 @@
 
 class ServiceQuery {
 	
-	public $servicePackage = '' ;
+	public $servicePackage = null ;
 	
 	public $serviceClass = '' ;
 	

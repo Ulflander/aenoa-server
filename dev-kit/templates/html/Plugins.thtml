@@ -1,0 +1,68 @@
+<form class="line100 margedleft">
+        <?php foreach ( $plugins as $plugin ): ?>
+		
+		<div class="col-5 unmarged light-block bordertop borderbottom lined p ">
+			
+			<h2><?php echo $plugin->taskName ?></h2>
+			<div class="col-4">
+				<?php echo $plugin->getConfValue ( 'description' ) ; ?>
+			</div>
+		</div>
+	
+		<?php if ( $plugin->confExists () == true ): ?>
+		<ul class="col-7 unmarged light-block bordertop borderbottom lined p "
+			<li>Author: <?php echo $plugin->getConfValue ( 'author' ) ; ?></li>
+			<li>Licence: <?php echo $plugin->getConfValue ( 'copyright' ) ; ?></li>
+			<li>Support URL: <?php echo $plugin->getConfValue ( 'support_url' ) ; ?></li>
+			<li>Author URL: <?php echo $plugin->getConfValue ( 'author_url' ) ; ?></li>
+		</ul>
+		<?php else: ?>
+		<div class="col-7 unmarged orange-block bordertop borderbottom lined p ">
+			<h3>No configuration file</h3>
+			<p>No configuration file has been found for this plugin. You should uninstall and reinstall it from the repository.</p>
+		</div>
+		<?php endif; ?>
+		
+		
+		<?php if ( $plugin->confExists () == false ): ?>
+		<div class="col-4 unmarged orange-block bordertop borderbottom lined p ">
+			<h3>Unusable</h3>
+			<p>This plugin is not usable. <br />
+			<ul class="inline">
+			
+		<?php elseif ( $plugin->isActivated () == true ): ?>
+		<div class="col-4 unmarged green-block bordertop borderbottom lined p ">
+			<h3>Activated</h3>
+			<p>This plugin is installed and activated in your Aenoa SDK. <br />
+			<ul class="inline">
+			<li><a href="<?php echo url() ; ?>SwitchPluginActivation:<?php echo $plugin->taskName ?>">
+				Unactivate
+			</a></li>
+			
+		<?php else: ?>
+		<div class="col-4 unmarged red-block bordertop borderbottom lined p ">
+			<h3>Unactivated</h3>
+			<p>This plugin is installed but not activated in your Aenoa SDK. <br />
+			<ul class="inline">
+			<li><a href="<?php echo url() ; ?>SwitchPluginActivation:<?php echo $plugin->taskName ?>">
+				Activate
+			</a></li>
+		<?php endif; ?>
+			
+			<?php if ( $plugin->hasUpdate () == true ): ?>
+			<li><a href="<?php echo url() ; ?>UpdatePlugin:<?php echo $plugin->taskName ?>">
+				Update
+			</a></li> 
+			<?php endif; ?>
+			<li><a href="<?php echo url() ; ?>UninstallPlugin:<?php echo $plugin->taskName ?>">
+				Uninstall
+			</a></li>
+			</ul>
+			</p>
+		</div>
+		
+		<hr class="hidden thin" />
+		
+        <?php endforeach; ?>
+</form>
+<hr class="hidden" />

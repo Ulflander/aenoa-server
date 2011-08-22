@@ -1,0 +1,3 @@
+<div class="notify error <?php if ( $substatus == true ) { echo 'little' ; } ?>">
+	<?php echo $error ?>
+</div>

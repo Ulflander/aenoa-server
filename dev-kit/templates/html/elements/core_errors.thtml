@@ -1,0 +1,34 @@
+
+
+<?php
+	if ( isset ( $errors ) || isset ( $warnings ) || isset ( $notices ) ) :
+?>
+
+<div class="messages">
+	
+	<?php if ( isset ( $errors ) ) : foreach ( $errors as $msg ): ?>
+		<div class="message error">
+			<h3>Error</h3>
+			<?php echo $msg ?>
+		</div>
+	<?php endforeach; endif; ?>
+	
+	<?php if ( isset ( $warnings ) ) : foreach ( $warnings as $msg ): ?>
+		<div class="message warning">
+			<h3>Warning</h3>
+			<?php echo $msg ?>
+		</div>
+	<?php endforeach; endif; ?>
+
+	<?php if ( isset ( $infos ) ) : foreach ( $infos as $msg ): ?>
+		<div class="message warning">
+			<h3>Notice</h3>
+			<?php echo $msg ?>
+		</div>
+	<?php endforeach; endif; ?>
+	
+</div>
+
+<?php
+	endif;
+?>

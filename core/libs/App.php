@@ -5,7 +5,10 @@
  * 
  * It initializes everything required to run a webapp.
  * 
- * It stores Session, and main tools.
+ * It stores Session, Databases and main tools.
+ * 
+ * @see Database
+ * @see Session
  * 
  */
 class App {
@@ -24,229 +27,274 @@ class App {
 	
 	/**
 	 * Config identifier for session auto connect 
+	 * 
 	 * @var string
 	 */
 	const SESS_AUTO_CONNECT = 'Application.sessionAutoConnect' ;
 	
 	/**
 	 * Security string. On webapp should have an unique session security string.
+	 * 
 	 * @var string
 	 */
 	const SESS_STRING = 'Application.sessionString' ;
 	
 	/**
 	 * Should session regenrate session ID
+	 * 
 	 * @var string
 	 */
 	const SESS_REGENERATE_ID = 'Session.regenerateId' ;
 	
 	/**
 	 * Enables some security enhancements
+	 * 
 	 * @var string
 	 */
 	const SESS_SECURITY = 'Session.highSecurity';
 	
 	/**
 	 * Session save path
+	 * 
 	 * @var string
 	 */
 	const SESS_PATH = 'Session.savePath';
 	
 	/**
 	 * Static aenoa-server repo : used to find ACF, AJSF, and others static files
+	 * 
 	 * @var string
 	 */
 	const STATIC_SERVER = 'Server.staticServerURI';
 	
 	/**
 	 * Name of the application
+	 * 
 	 * @var string
 	 */
 	const APP_NAME = 'Application.name' ;
 	
 	/**
 	 * Copyright of application
+	 * 
 	 * @var string
 	 */
 	const APP_COPY = 'Application.copyright' ;
 	
 	/**
 	 * URL of application
+	 * 
 	 * @var string
 	 */
 	const APP_URL = 'Application.URI' ;
 	
 	/**
 	 * Link for copyright
+	 * 
 	 * @var string
 	 */
 	const APP_COPY_LINK = 'Application.copyLink' ;
 	
 	/**
 	 * Filesystem path to root of the application
+	 * 
 	 * @var string
 	 */
 	const APP_PATH = 'Application.path' ;
 	
 	/**
 	 * App encoding
+	 * 
 	 * @var string
 	 */
 	const APP_ENCODING = 'Application.encoding' ;
 	
 	/**
 	 * App language
+	 * 
 	 * @var string
 	 */
 	const APP_LANG = 'Application.lang' ;
 	
 	/**
 	 * App default language
+	 * 
 	 * @var string
 	 */
 	const APP_DEFAULT_LANG = 'Application.defaultLang' ;
 	
 	/**
 	 * Public folder for downloaded files
+	 * 
 	 * @var string
 	 */
 	const APP_PUBLIC_REPOSITORY = 'Application.publicRepository' ;
 	
 	/**
 	 * Main FTP connection parameters
+	 * 
 	 * @var string
 	 */
 	const APP_FTP = 'Application.ftp' ;
 	
 	/**
 	 * Tracker id
+	 * 
 	 * @var string
 	 */
 	const APP_GG_TRACKER = 'Application.googleTracker' ;
 	
 	/**
 	 * Name of Server engine (should be Aenoa Systems or related)
+	 * 
 	 * @var string
 	 */
 	const SERVER_NAME = 'Application.serverName' ;
 	
 	/**
 	 * Copyright of Server engine
+	 * 
 	 * @var string
 	 */
 	const SERVER_COPY = 'Application.serverCopyright' ;
 	
 	/**
 	 * Main email of application
+	 * 
 	 * @var string
 	 */
 	const APP_EMAIL = 'Application.email' ;
 	
 	/**
 	 * Contact email for application
+	 * 
 	 * @var string
 	 */
 	const APP_CONTACT_EMAIL = 'Application.contactEmail' ;
 	
 	/**
 	 * Mailer From email
+	 * 
 	 * @var string
 	 */
 	const MAILER_EMAIL = 'Mailer.email' ;
 	
 	/**
 	 * Mailer ReturnTo email
+	 * 
 	 * @var string
 	 */
 	const MAILER_RETURN_TO = 'Mailer.returnTo' ;
 	
 	/**
 	 * Should mailer send IP of server (if yes, less chances for emails to be considered as spam)
+	 * 
 	 * @var string
 	 */
 	const MAILER_SEND_IP = 'Mailer.sendIp' ;
 	
 	/**
 	 * Mailer domain
+	 * 
 	 * @var string
 	 */
 	const MAILER_DOMAIN = 'Mailer.domain' ;
 	
 	/**
 	 * Mailer abuse email
+	 * 
 	 * @var string
 	 */
 	const MAILER_ABUSE = 'Mailer.abuse' ;
 	
 	/**
 	 * Mailer SMTP user if using SMTP
+	 * 
 	 * @var string
 	 */
 	const MAILER_SMTP_USER = 'Mailer.smtpUser' ;
 	
 	/**
 	 * Should Aenoa Server use core user and authentification system
+	 * 
 	 * @var string
 	 */
 	const USER_CORE_SYSTEM = 'User.core' ;
 	
 	/**
 	 * Authorize registration for user core system
+	 * 
 	 * @var string
 	 */
 	const USER_REGISTER_AUTH = 'User.registrationAuth' ;
 	
 	/**
 	 * Default group on registration
+	 * 
 	 * @var string
 	 */
 	const USER_REGISTER_GROUP = 'User.registrationGroup' ;
 	
 	/**
 	 * Unique ID for the application
+	 * 
 	 * @var string
 	 */
 	const TEMP_SESS_STRING = 'he2mqV9HS5nza3sdXv7gyuk9' ;
 	
 	/**
 	 * Name of the hosting
+	 * 
 	 * @var string
 	 */
 	const HOSTING_NAME = 'Hosting.name' ;
 	
 	/**
 	 * Contact of hosting
+	 * 
 	 * @var string
 	 */
 	const HOSTING_CONTACT = 'Hosting.contact' ;
 	
 	/**
 	 * AJSF root
+	 * 
+	 * @var string
 	 */
 	const AJSF_ROOT = 'Server.ajsf.root' ;
 	
 	/**
 	 * ACF root
+	 * 
+	 * @var string
 	 */
 	const ACF_ROOT = 'Server.acf.root' ;
 	
 	/**
 	 * Dependencies root
+	 * 
+	 * @var string
 	 */
 	const DEPS_ROOT = 'Server.dependencies.root' ;
 	
 	/**
 	 * Avoid using a main databse for system
+	 * 
+	 * @var string
 	 */
 	const NO_DB = 'Server.nodb' ;
 	
 	/**
 	 * Does MySQLEngine auto expand database structure
+	 * 
+	 * @var string
 	 */
 	const DBS_AUTO_EXPAND = 'Server.dbAutoExpand' ;
 	
 	/**
 	 * Does the API require a key
+	 * 
+	 * @var string
 	 */
 	const API_REQUIRE_KEY = 'API.requireKey' ;
 	
@@ -868,7 +916,7 @@ class App {
 	 * @param string $id
 	 * @return AbstractDB
 	 */
-	static public function hasDatabase ( $id )
+	static public function hasDatabase ( $id = 'main' )
 	{
 		return array_key_exists($id, self::$_dbs ) ;
 	}
@@ -1005,10 +1053,12 @@ class App {
 	/**
 	 * Returns a database by ID
 	 * 
-	 * @param string $id
+	 * By default, will try to return 'main' database if no database structure ID given
+	 * 
+	 * @param string $id Structure ID of db to return
 	 * @return AbstractDB
 	 */
-	static public function getDatabase ( $id )
+	static public function getDatabase ( $id = 'main' )
 	{
 		if ( array_key_exists( $id, self::$_dbs ) )
 		{

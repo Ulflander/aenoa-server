@@ -1,0 +1,93 @@
+
+
+<?php $this->renderElement ( 'header' ); ?>
+
+		<title><?php echo $title ?><?php 
+				if ( isset ( $project ) )
+				{  echo ' | ' . $project->name ; } ?> | <?php echo Config::get ( App::APP_NAME ) ?></title>
+				
+	</head>
+	<body class="light sans-serif">
+		
+		<div id="top">
+			<?php echo Config::get ( App::APP_NAME ) ?>
+			
+		</div>
+		
+		<ul class="top right inline marged-5 light b">
+			<li><a href="<?php echo url() ?>" class="icon16 back">Back to project</a>
+			<?php if ( isset ( $task ) && $task->taskName !='ManageProject' ) : ?>
+			<li><a href="<?php echo url() ?>dev/ManageProject" class="icon16 home">Dev Kit home</a></li>
+			<?php endif; ?>
+			<li><a href="<?php echo url() ?>dev/CreateTask" class="icon16 add">Create new task</a></li>
+		</ul>
+			
+		<div id="main" class="layout block-centered p white clearfix"> 
+		
+			<div id="header" class="line50">
+				
+				
+			<?php 
+				if ( isset ( $project ) )
+				{ ?>
+		
+				<div class="col-6 col-last r-5 r-top lined borderbottom p unpadtop <?php echo $project_class; ?>">
+					<h2>
+					<?php if ( $project->valid == true && $title_class != 'ManageProject') { ?>
+						<a href="<?php echo url() ?>ManageProject:<?php echo $project->name ?>"><?php echo $project->name ?></a>
+					<?php ; } else { echo $project->name ; } ?>
+					</h2>
+					
+					
+					<div class="minimized">
+						<?php if ( $project->valid && $project->isCVSEnable() ) : ?>
+							<abbr>v. </abbr><?php echo $project->getCVSTag() ; ?></a> | 
+							
+						<?php endif; ?>
+						
+							<?php if ( $project->valid == false ) { ?> This is not a project.
+							<?php } else if ( $project->type == DevKitProjectType::UNKNOWN ) { ?>Dev-kit has not recognized type of project.
+							<?php } else { echo $project->type ; } ?> Project
+					</div>
+				</div>
+			
+				<h1 class="col-9 <?php echo $project_class; ?> lined r-5 r-top borderbottom p icon <?php echo strtolower( $title_class ) ?> "><?php echo $title ?></h1>
+				
+				<?php if ( $project->isLocked () == false ): ?>
+					<?php if ( $project->valid ): ?>
+					<div class="col-1 r-5 r-top lined borderbottom <?php echo $project_class; ?>">
+							 <a href="<?php echo $project->URL ?>" target="_blank" title="Visit project" class="icon network unlabeled lined">Visit</a>
+					<?php else: ?>
+					<div class="col-1 r-5 r-top lined borderbottom <?php echo $project_class; ?>">
+							 <span class="icon network-off unlabeled lined">You can't visit this project</span>
+					<?php endif; ?>
+				<?php else: ?>
+				<div class="col-1 r-5 r-top lined borderbottom grass-block">
+						 <a href="<?php echo url() ?>UnlockProject:<?php echo $project->name ?>" title="Unlock project" class="icon unlock unlabeled lined">Unlock</a>
+				<?php endif; ?>
+				</div>
+				<?php 
+				} else { 
+			 ?>
+				<h1 class="col-16 light-block lined r-5 r-top borderbottom p icon <?php echo strtolower( $title_class ) ?>"><?php echo $title ?></h1>
+			<?php } ?>
+			</div>
+			
+			<div id="indicator" class="notify critic">Task is running, please don't quit this page. However, you can <a href="<?php echo url() ?>" target="_blank">open a new window</a>.</div>
+			
+			
+			
+		<?php 
+		// MESSAGES
+		if ( $this->has ( 'system_message' ) ): ?>
+			<div class="content<?php if (isset($message_class)){echo ' ' . $message_class;}?>">
+				<?php echo $message ?>
+			</div>
+			
+		<?php endif; ?>
+		
+		<?php
+				// HEADER
+				$this->renderElement ( 'core_errors' ) ;
+		?>
+				

@@ -1,0 +1,156 @@
+
+
+<form method="post" action="" id="<?php echo ( isset ( $id ) ? $id : 'form' ) ; ?>">
+	<input type="hidden" name="__odd_field" value="odd" />
+	<?php 
+	$openedFieldset = false ;
+	foreach ( $controls as $control ) :
+		
+		if ( is_string ( $control->value ) )
+		{
+			$control->value = str_replace ( array('\\\'','\\"') , array ('\'', '"' ) , $control->value ) ;
+		}
+		
+	if ( $control->type == 'hidden' ) : ?>
+	
+			<input type="hidden" id="<?php echo $control->name ?>" name="<?php echo $control->name ?>" value="<?php echo $control->value ?>" />
+				
+	<?php continue;
+		elseif ( $control->type == 'textfield_code' ) : ?>
+		
+				<textarea rows="10" cols="100" id="<?php echo $control->name ?>" name="<?php echo $control->name ?>" <?php echo $this->extractAttributes ( $control->attributes ) ?> ><?php echo nl2dec ( $control->value ) ?></textarea>
+				
+				<script type="text/javascript">
+					
+					var content = _("#<?php echo $control->name ?>").innerHTML ;
+					content = content.split("\\'").join("'") ;
+					_("<?php echo $control->name ?>").innerHTML = content ;
+					
+					CodeMirror.fromTextArea("<?php echo $control->name ?>", {
+						basefiles: ["<?php echo url() ?>dev-kit/assets/js/code-mirror-all.js"],
+						stylesheet: "<?php echo url() ?>dev-kit/assets/css/code-mirror/phpcolors.css",
+   						continuousScanning: 500,
+						tabMode:"spaces",
+						enterMode:"keep"
+						
+					});
+				</script>
+		
+	<?php continue;
+		endif;
+	
+	if ( $control->fieldset != null )
+	{
+		if ( $openedFieldset == true )
+		{ ?>
+			</fieldset>
+		<?php }
+		
+		$openedFieldset = true ;
+		?>
+		<fieldset>
+			<legend><?php echo $control->fieldset ?></legend>
+			<hr class="hidden thin" />
+		<?php
+	}
+	 ?>
+	
+	<div class="control <?php if ( $control->valid === false ) { echo 'red-block' ; } else if ( $control->valid === true ) { echo 'green-block' ; } ; ?>">
+		<label for="<?php echo $control->name ?>"><?php 
+		echo $control->label ;
+		if ( $control->required == true )
+		{
+			echo ' <span>(required)</span>' ;
+		}
+		?></label><?php
+		
+		
+		switch ( $control->type )
+		{
+			case 'checkbox':
+				?>
+				<input type="checkbox" id="<?php echo $control->name ?>" name="<?php echo $control->name ?>"<?php echo $this->extractAttributes ( $control->attributes ) ?> /> 
+				
+				<?php
+				break;
+			case 'input':
+				?>
+				<input type="text" id="<?php echo $control->name ?>" name="<?php echo $control->name ?>" value="<?php echo $control->value ?>"<?php echo $this->extractAttributes ( $control->attributes ) ?> /> 
+				
+				<?php
+				break;
+			case 'password':
+				?>
+				<input type="password" id="<?php echo $control->name ?>" name="<?php echo $control->name ?>" value="<?php echo $control->value ?>"<?php echo $this->extractAttributes ( $control->attributes ) ?> /> 
+				
+				<?php
+				break;
+			case 'radio': ?>
+				<ul>
+				<?php
+				foreach ( $control->values as $k => $v ) 
+				{
+				?>
+				<li><input type="radio" id="<?php echo $control->name ?>" name="<?php echo $control->name ?>" value="<?php echo $k ?>"<?php if ($control->value===$k) echo ' checked="checked" '; ?>/> <?php echo $v ?></li>
+				<?php
+				}
+				?></ul>
+				
+				<?php
+				break;
+			case 'select':?>
+				<select id="<?php echo $control->name ?>" name="<?php echo $control->name ?>" <?php echo $this->extractAttributes ( $control->attributes ) ?>>
+				<?php foreach ( $control->values as $k => $v ) : ?>
+					<option value="<?php echo $k ?>" <?php if ( $control->value == $k ) { ?>selected="selected"<?php ;}; ?> ><?php echo $v ?></option>
+				<?php endforeach ; ?>
+				</select>
+				
+				<?php
+				break; 
+			case 'textfield':
+				?>
+				
+				<textarea rows="10" cols="100" id="<?php echo $control->name ?>" name="<?php echo $control->name ?>" <?php echo $this->extractAttributes ( $control->attributes ) ?> ><?php echo nl2dec ( $control->value ) ?></textarea>
+				<?php
+				break;
+			case 'label':
+				if ( is_string($control->value) || is_numeric($control->value) ):
+				?>
+				<span class="bold p"><?php echo $control->value ?></span>
+				<?php
+				elseif ( is_array ( $control->value) ):?>
+					<ul class="">
+					<?php foreach($control->value as $k=>$v ): ?>
+						<li><div class="col-1 "><?php echo ucfirst($k) ?>: </div><div class="bold"><?php 
+							echo (is_bool($v)?($v===true?'<span class="icon16 yes">yes</span>':'<span class="icon16 no">no</span>'):$v);
+						?></div></li>
+					<?php endforeach; ?>
+					</ul>
+				<?php endif;
+		}
+		
+		if ( $control->description )
+		{
+			?>
+			<span class="description"><?php echo $control->description ?></span>
+			<?php 
+		}
+		
+		?>
+		
+	</div>
+	
+	<?php endforeach; 
+	
+	if ( $openedFieldset == true )
+	{ ?>
+		</fieldset>
+	<?php }?>
+	
+	<hr class="hidden thin" />
+
+	<div class="submit">
+		<input type="submit" value="Send" />
+	</div>
+	
+</form>

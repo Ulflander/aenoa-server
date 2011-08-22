@@ -1,0 +1,8 @@
+
+		
+		</div>
+		
+	<div id="bottom"><?php echo Config::get ( App::APP_NAME ) ?> | <?php echo Config::get ( App::SERVER_COPY ) ?><br />Powered by <?php echo Config::get ( App::SERVER_NAME ) ?></div>
+
+	</body>
+</html>

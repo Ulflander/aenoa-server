@@ -326,6 +326,18 @@ class MySQLEngine extends AbstractDB {
 		return array() ;
 	}
 	
+	function findAndRelatives ( $table , $id , $fields = array (), $subfields = array () , $recursivity = 1 )
+	{
+		$this->tableExistsOr403($table);
+		
+		$res = $this->findRelatives($table, $this->findAll ( $table , array ( $primaryKey = AbstractDB::getPrimary($this->struct[$table]) => $id ) , 1 , $fields ) , $subfields, $recursivity ) ;
+		if ( !empty($res) ) 
+		{
+			return $res[0] ;
+		}
+		return array() ;
+	}
+	
 	function findAll ( $table , $cond = array () , $limit = 0 , $fields = array () )
 	{
 		$this->tableExistsOr403($table);

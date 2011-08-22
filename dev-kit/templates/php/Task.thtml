@@ -1,0 +1,39 @@
+
+class <?php echo $taskName ?> extends Task {
+
+	var $requireProject = <?php echo $requireProject ?> ;
+	
+	var $requireValidProject = <?php echo $requireValidProject ?> ;
+	
+	<?php if ( isset ( $requireTypes ) ): ?>var $requireTypes = <?php echo $requireTypes ?> ;<?php endif; ?>  
+	
+	function init ()
+	{
+		
+	}
+	
+	function getOptions ()
+	{
+		// We create an array of options
+		$options = array () ;
+		
+		
+		return $options ;
+	}
+	
+	function onSetParams ( $options )
+	{
+		return true ;
+	}
+	
+	function process ()
+	{
+	
+	}
+	
+	function beforeEnd () 
+	{
+		
+	}
+
+}

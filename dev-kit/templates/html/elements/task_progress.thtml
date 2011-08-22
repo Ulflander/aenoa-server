@@ -1,0 +1,7 @@
+<div class="notify notice <?php if ( $substatus == true ) { echo 'little' ; } ?>">
+	<?php echo $message ; ?>
+	<strong><div id="status-<?php echo $id ?>"></div></strong>
+	<div id="container-<?php echo $id ?>" class="percent-block">
+		<span id="<?php echo $id ?>" class="running" style="<?php echo $percent ?>"></span>
+	</div>
+</div>

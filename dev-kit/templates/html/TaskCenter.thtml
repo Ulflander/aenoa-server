@@ -1,0 +1,98 @@
+
+<div class="col-16 line125">
+
+
+	<div class="col-4 r-2 r-bottom lined p light-block bordertop">
+		
+		<h3 class="">Preferences</h3>
+		<hr class="thin" />
+		
+		<div class="col-3 icon run"><a href="<?php echo url() ?>SDKPrefs">
+		<h3>SDKPrefs</h3>
+		<div class="right col-2 minimized bold">Set up the SDK preferences</div></a>
+		</div>
+		
+	</div>
+	<div class="col-12 col-last r-2 lined r-bottom p light-block bordertop">
+		
+		<h3 class="">Backup</h3>
+		<hr class="thin" />
+		
+		<div class="col-3 icon backup"><a href="<?php echo url() ?>GlobalBackup">
+		<h3>GlobalBackup</h3>
+		<div class="right col-2 minimized bold">Backup all your projects at once</div></a>
+		</div>
+		
+		<div class="col-3 icon backup"><a href="<?php echo url() ?>DevKitBackup">
+		<h3>DevKitBackup</h3>
+		<div class="right col-2 minimized bold">Backup all the dev-kit, including projects, backups, trash...</div></a>
+		</div>
+		
+		<div class="col-3 icon backup"><a href="<?php echo url() ?>ExploreBackups">
+		<h3>ExploreBackups</h3>
+		<div class="right col-2 minimized bold">Display and restore your old projects backups</div></a>
+		</div>
+		
+	</div>
+	
+	<hr class="hidden thin" />
+	
+	<div class="col-16 r-2 r-bottom bordertop p light-block">
+		<h3 class="">Plugins Management</h3>
+		<hr class="thin" />
+		<div class="col-3 icon plugin"><a href="<?php echo url() ?>InstalledPlugins">
+			<h3>InstalledPlugins</h3>
+			<div class="right col-2 minimized bold">Show the currently installed plugins</div></a>
+		</div>
+		<div class="col-3 icon plugin"><a href="<?php echo url() ?>CreatePlugin">
+			<h3>CreatePlugin</h3>
+			<div class="right col-2 minimized bold">Create a new plugin from the SDK plugin template</div></a>
+		</div>
+		<div class="col-3 icon wizard"><a href="<?php echo url() ?>PublishPlugin">
+			<h3>PublishPlugin</h3>
+			<div class="right col-2 minimized bold">Wizard: Package and publish your plugin</div></a>
+		</div>
+		<div class="col-3 icon plugin"><a href="<?php echo url() ?>PluginsRepository">
+			<h3>PluginsRepository</h3>
+			<div class="right col-2 minimized bold">Download new plugins from aenoa-systems.com</div></a>
+		</div>
+	</div>
+	<hr class="hidden thin" />
+	
+	
+	<?php if ( !empty ( $plugins ) ) : ?>
+	<div class="col-16 r-2 r-bottom bordertop p light-block">
+		<h3 class="">Plugins</h3>
+		<hr class="thin" />
+		<?php foreach ( $plugins as $plugin ) : ?>
+			<div class="col-3 icon run"><a href="<?php echo url() ?><?php echo $plugin ?>">
+			<h3><?php echo $plugin ?></h3>
+			<div class="right col-2 minimized bold">Plugin</div></a>
+			</div>
+		<?php endforeach; ?>
+	</div>
+	<hr class="hidden thin" />
+	<?php endif; ?>
+	
+	
+	<div class="col-16 r-2 r-bottom p light-block">
+		<h3 class="">Misc</h3>
+		<hr class="thin" />
+		
+		<div class="col-3 icon run"><a href="<?php echo url() ?>PHPInfo">
+		<h3>PHPInfo</h3>
+		<div class="right col-2 minimized bold">Display php info</div>
+		</div>
+		
+		<div class="col-3 icon run"><a href="<?php echo url() ?>ReadDevKitLog">
+		<h3>ReadDevKitLog</h3>
+		<div class="right col-2 minimized bold">Check out dev-kit log and delete it</div>
+		</div>
+		
+		<div class="col-3 icon run"><a href="<?php echo url() ?>ExploreTrash">
+		<h3>ExploreTrash</h3>
+		<div class="right col-2 minimized bold">Display and restore files in trash</div>
+		</div>
+		
+	</ul>
+</div>
