@@ -1,6 +1,8 @@
 <?php
 
-
+/**
+ * ServerAuthCheck checks for get 
+ */
 class ServerAuthCheck {
 	
 	

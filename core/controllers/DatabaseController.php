@@ -637,7 +637,12 @@ class DatabaseController extends Controller{
 		
 		$id = $this->__getId ( $primaryKey, $id ) ;
 		
-		$data = $this->db->findAscendants($this->table, $this->db->findChildren($this->table, $this->db->find ( $this->table , $id ), array(), 2) );
+		if ( $this->recursivity < 2 )
+		{
+			$this->recursivity = 2 ;
+		}
+		
+		$data = $this->db->findRelatives($this->table, $this->db->find ( $this->table , $id, $this->fields ), $this->subFields, $this->recursivity );
 	
 		if ( empty ( $data ) )
 		{
