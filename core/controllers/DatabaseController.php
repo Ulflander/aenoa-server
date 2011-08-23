@@ -643,7 +643,7 @@ class DatabaseController extends Controller{
 		}
 		
 		$data = $this->db->findRelatives($this->table, $this->db->find ( $this->table , $id, $this->fields ), $this->subFields, $this->recursivity );
-	
+		
 		if ( empty ( $data ) )
 		{
 			App::do404('Element not found');

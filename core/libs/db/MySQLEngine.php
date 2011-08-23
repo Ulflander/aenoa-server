@@ -314,9 +314,29 @@ class MySQLEngine extends AbstractDB {
 		}
 	}
 	
+	function checkFields ( $tableName , $fields = array () )
+	{
+		if ( empty($fields) )
+		{
+			return $fields ;
+		}
+		$ffields = array () ;
+		foreach ( $fields as &$f )
+		{
+			if ( ake($f, $this->struct[$tableName] ) )
+			{
+				$ffields[] = $f ;
+			}
+		}
+		
+		return $ffields ;
+	}	
+	
 	function find ( $table , $id , $fields = array () )
 	{
 		$this->tableExistsOr403($table);
+		
+		$fields = $this->checkFields( $table , $fields ) ;
 		
 		$res = $this->findAll ( $table , array ( $primaryKey = AbstractDB::getPrimary($this->struct[$table]) => $id ) , 1 , $fields );
 		if ( !empty($res) ) 
@@ -329,6 +349,7 @@ class MySQLEngine extends AbstractDB {
 	function findAndRelatives ( $table , $id , $fields = array (), $subfields = array () , $recursivity = 1 )
 	{
 		$this->tableExistsOr403($table);
+		
 		
 		$res = $this->findRelatives($table, $this->findAll ( $table , array ( $primaryKey = AbstractDB::getPrimary($this->struct[$table]) => $id ) , 1 , $fields ) , $subfields, $recursivity ) ;
 		if ( !empty($res) ) 
@@ -349,7 +370,8 @@ class MySQLEngine extends AbstractDB {
 		$this->_log[] = 'Query(findAll): ' . $q ;
 		$res = mysql_query($q, $this->getConnection()) ;
 		if ( $res === false )
-		{	return $res ;
+		{
+			return $res ;
 		}
 		$result =  $this->__fetchArr($res,$this->struct[$table],$fields,array(),false);
 		@mysql_free_result ( $res ) ;
@@ -414,9 +436,14 @@ class MySQLEngine extends AbstractDB {
 					{
 						$res = array( $res ) ;
 					}
-					if ( array_key_exists( $n , $res) && $res[$n] !== 0 && !is_array($res[$n]))
+					if ( array_key_exists( $n , $res) && $res[$n] !== 0 && $res[$n] !== '0' && !is_array($res[$n]))
 					{
-						$childTable['ids'][] = $res[$n];
+						if ( $childTable['multi'] )
+						{
+							$childTable['ids'] = array_merge($childTable['ids'] , explode(',',$res[$n]) );
+						} else {
+							$childTable['ids'][] = $res[$n];
+						}
 					}
 				}
 				
@@ -428,7 +455,6 @@ class MySQLEngine extends AbstractDB {
 		
 		foreach( $childTables as &$inf )
 		{
-			
 			if ( !empty ($inf['ids']) )
 			{
 				$primaryKey = $inf['fieldName'] ;
@@ -634,11 +660,11 @@ class MySQLEngine extends AbstractDB {
 				{
 					if ( is_array($res) )
 					{
-						if ( array_key_exists( $n , $res ) && $res[$n] != '' && !is_array($res[$n]) )
+						if ( array_key_exists( $n , $res) && $res[$n] !== 0 && $res[$n] !== '0' && !is_array($res[$n]))
 						{
-							if ( strpos($res[$n],',') !== false )
+							if ( $childTable['multi'] )
 							{
-								$childTable['ids'] = array_merge($childTable['ids'], explode(',',$res[$n]) );
+								$childTable['ids'] = array_merge($childTable['ids'] , explode(',',$res[$n]) );
 							} else {
 								$childTable['ids'][] = $res[$n];
 							}
@@ -652,7 +678,6 @@ class MySQLEngine extends AbstractDB {
 		}
 		foreach( $childTables as &$inf )
 		{
-			
 			if ( !empty ($inf['ids']) )
 			{
 				$primaryKey = $inf['fieldName'] ;
@@ -902,7 +927,7 @@ class MySQLEngine extends AbstractDB {
 	{
 		return ( empty ( $fields ) ?
 			'`' . implode('`,`',$this->__getStructureFields($table)) . '`' :
-			'`' . implode('`,`',$fields) . '`'
+			'`' . implode('`,`',$this->checkFields( $table , $fields )) . '`'
 			);
 	}
 	
