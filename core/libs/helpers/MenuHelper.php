@@ -47,8 +47,11 @@ class MenuHelper {
 	public static function displayBackendMenu ( $struct = 'main' , $class = '' , $showCurrent = true ) 
 	{
 		
+		$baseURL = url() ;
+		
 		$str = '<ul class="no-list-style aemenu '. $class .'">' . "\n" ;
 		$str .= '<li class=""><a href="'.url().'" class="icon16 home">' . ucfirst(sprintf(_('Home'),$struct)) . '</a></li>' . "\n" ;
+		$str .= '<li><a href="' . $baseURL .'maintenance/status" class="icon16 filter">' . _('Maintenance') . '</a></li>' . "\n" ;
 		$str .= '</ul>' ;
 		
 		echo $str ;
@@ -61,16 +64,6 @@ class MenuHelper {
 			self::displayStructuresMenu($id) ;
 		}
 		
-		
-		$baseURL = url() ;
-		
-		$str .= '<ul class="no-list-style aemenu '. $class .'">' . "\n" . "\n" ; ;
-		$str .= '<li class="caption">' . ucfirst(sprintf(_('System'),$struct)) . '</li>' . "\n" ;
-		$str .= '<li><a href="' . $baseURL .'maintenance/update" class="icon16 update">' . _('Updates') . '</a></li>' . "\n" ;
-		$str .= '<li><a href="' . $baseURL .'maintenance/logs" class="icon16 files">' . _('Logs') . '</a></li>' . "\n" ;
-		$str .= '<li><a href="' . $baseURL .'maintenance/robots" class="icon16 filter">' . _('robots.txt') . '</a></li>' . "\n" ;
-		$str .= '<li><a href="' . $baseURL .'maintenance/check-context" class="icon16 security_ok">' . _('System check') . '</a></li>' . "\n" ;
-		$str .= '</ul>'  . "\n" ;
 		
 		
 		echo $str ;

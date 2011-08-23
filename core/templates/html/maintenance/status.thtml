@@ -14,43 +14,40 @@
 ?>
 
 
-	<div class="expanded p">
+	<div class="layout p">
 	
-			<h2><?php echo _('Application status') ?></h2>
+			<h2><?php echo sprintf(_('%s Application status'), Config::get(App::APP_NAME)) ?></h2>
 			
 			
 			<?php $this->renderElement('responses'); ?>
 			
 			
+			<ul class="no-list-style inline">
+				<li><a href="<?php echo url() ?>maintenance/check-context" class="icon16 reload"><?php echo _('Check context') ?></a></li>
+				<li><a href="<?php echo url() ?>maintenance/logs" class="icon16 files"><?php echo _('Logs') ?></a></li>
+				<li><a href="<?php echo url() ?>maintenance/robots" class="icon16"><?php echo _('Robots.txt') ?></a></li>
+				<li><a href="<?php echo url() ?>maintenance/update" class="icon16 update"><?php echo _('Updates') ?></a></li>
+				<li><a href="<?php echo url() ?>maintenance/debug" class="icon16 warning"><?php echo _('Debug mode') ?></a></li>
+			</ul>
 			
-			<div class="expanded layout">
+			<hr />
 			
-				<div class="col-8 p b">
+			
+				<div class="col-5 p b">
 					<?php echo _('Application name') ?>: <strong>
 						<?php echo Config::get(App::APP_NAME) ?></strong>
 				</div>
 				
-				<div class="col-8 col-last p b">
+				<div class="col-6 p b">
 					<?php echo _('Server name') ?>: <strong>
 						<?php echo AENOA_SERVER_NAME ?></strong>
 				</div>
-				
-				<hr class="hidden" />
-				
-				<div class="col-5 p b">
+
+				<div class="col-5 col-last p b">
 					<?php echo _('Application email') ?>: <strong>
 						<?php echo Config::get(App::APP_EMAIL) ?></strong>
 				</div>
 				
-				<div class="col-6 p b">
-					<?php echo _('Application name') ?>: <strong>
-						<?php echo Config::get(App::APP_NAME) ?></strong>
-				</div>
-				
-				<div class="col-5 col-last p b">
-					<?php echo _('Application name') ?>: <strong>
-						<?php echo Config::get(App::APP_NAME) ?></strong>
-				</div>
 				
 				<hr class="hidden" />
 				
@@ -67,29 +64,20 @@
 				
 				<hr class="hidden" />
 				
-				<div class="col-3 p b">
+				<div class="col-8 p b">
 					<?php echo _('Debug mode') ?>: <strong>
 						<?php if ( debuggin() ): ?>
-							<span class="icon16 bool_0"><?php echo _('Yes') ?></span>
+							<span class="icon16 warning"><?php echo _('Yes') ?></span>
 						<?php else: ?>
 							<span class="icon16 bool_1"><?php echo _('No') ?></span>
-						<?php endif; ?></strong>
+						<?php endif; ?></strong><a href="<?php echo url() ?>maintenance/debug" class="minimized">(<?php echo _('Manage debug mode') ?>)</a>
 				</div>
 				
 				
-				<div class="col-7 p b">
-				</div>
 				
-				<div class="col-3 p b"><?php echo _('Locales') ?>: <strong><?php echo implode(', ',App::getI18n()->getLangList ()) ; ?></strong></div>
+				<div class="col-8 col-last p b"><?php echo _('Locales') ?>: <strong><?php echo implode(', ',App::getI18n()->getLangList ()) ; ?></strong></div>
 				
-				<div class="col-3 col-last p b">
-					<?php echo _('Locales') ?>: <strong>
-						<?php echo implode(', ',App::getI18n()->getLangList ()) ; ?>
-						</strong>
-				</div>
 				
 				<hr class="hidden" />
 				
-				
-			</div>
 	</div>

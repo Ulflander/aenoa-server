@@ -20,7 +20,10 @@
 			
 			<ul class="no-list-style inline">
 				<li><a href="<?php echo url() ?>maintenance/empty-log" class="icon16 trash_empty"><?php echo _('Empty log') ?></a></li>
+				<li><a href="<?php echo url() ?>maintenance/status" class="icon16 back"><?php echo _('Back to maintenance home') ?></a></li>
 			</ul>
+			
+			<hr />
 			
 			<?php $this->renderElement('responses'); ?>
 			

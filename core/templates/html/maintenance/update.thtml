@@ -17,6 +17,10 @@
 	
 	<h2><?php echo $title ?></h2>
 	
+			<ul class="no-list-style inline">
+				<li><a href="<?php echo url() ?>maintenance/status" class="icon16 back"><?php echo _('Back to maintenance home') ?></a></li>
+			</ul>
+			
 	<div id="messages">
 		<?php if (isset($message)){echo $message;} ?>
 	</div>

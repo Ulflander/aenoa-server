@@ -31,6 +31,7 @@
 		<?php echo _('Ajax mode') ?>: <?php echo (App::isAjax() ? 'Yes' : 'No') ?> <br />
 		<?php echo _('Post data') ?>:<br />
 		<?php pr( $_POST ) ; ?>
+		<?php echo _('API Key') ?>: <?php echo ServerAuthCheck::getUseReport () ?><br />
 		<?php echo _('User') ?>:<br />
 		<?php pr( App::getUser() ) ; ?>
  	</p>

@@ -1,0 +1,43 @@
+<?php
+
+/**********************************
+ * Aenoa Server Engine
+ * (c) Xavier Laumonier 2010
+ *
+ * Since : 1.0
+ * Author : Xavier Laumonier
+ *
+ **********************************/
+
+
+
+?>
+
+
+<div class="layout">
+
+	<h2>
+		<?php echo _('Debug mode management') ?>
+	</h2>
+	
+	<ul class="no-list-style inline">
+		<li><a href="<?php echo url() ?>maintenance/status" class="icon16 back"><?php echo _('Back to maintenance home') ?></a></li>
+	</ul>
+	
+	<hr />
+	
+	<?php if ( debuggin () ): ?>
+		<div class="notify warning">
+			<a href="<?php echo url() ?>maintenance/debug-off">
+				<?php echo _('Debug mode is currently ON. Clic here to set debug mode to OFF.') ?>
+			</a>
+		</div>
+	<?php else: ?>
+		<div class="notify success">
+			<a href="<?php echo url() ?>maintenance/debug-on">
+				<?php echo _('Debug mode is currently OFF. Clic here to set debug mode to ON.') ?>
+			</a>
+		</div>
+	<?php endif; ?>
+
+</div>

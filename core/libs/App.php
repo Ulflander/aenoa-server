@@ -1171,6 +1171,7 @@ class App {
 	
 	/**
 	 * Static method to check if user is a bot. Init a confirm process.
+	 * 
 	 * @param Controller $controller The controller object where checkForBot has been called
 	 * @param string $action Action to execute (url query) after check
 	 */
