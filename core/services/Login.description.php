@@ -12,8 +12,8 @@
  * 
  * 
  * @param email - (Optional: no) The main user identifier, his email.
- * @param pwdPrivKeyHash - (Optional: no) A hash that is a combination of an API clear private key and a sha1 hash of a user password.
- * @param apiKey - (Optional: no) The public API key correspondign to the private API key used to create the pwdPrivKeyHash parameter
+ * @param pwdHash - (Optional: no) A hash that is a combination of an API clear private key and a sha1 hash of a user password.
+ * @param publicKey - (Optional: no) The public API key correspondign to the private API key used to create the pwdPrivKeyHash parameter
  * 
  * <h3>Service method: logout</h3>
  * 
@@ -26,7 +26,7 @@
  */
 
 class LoginServiceDescription { 
-	public $generated = 'August 24, 2011, 11:12 am' ;
+	public $generated = 'August 24, 2011, 12:08 pm' ;
 	public $methods = array (
 	'description' => 'The Aenoa core Login service authorize remote applications to login and logout users based on Aenoa application users list.',
 	'methods' => array (
@@ -39,12 +39,12 @@ class LoginServiceDescription {
 					'description' => 'The main user identifier, his email.',
 					),
 				1 => array (
-					'name' => 'pwdPrivKeyHash',
+					'name' => 'pwdHash',
 					'optional' => false,
 					'description' => 'A hash that is a combination of an API clear private key and a sha1 hash of a user password.',
 					),
 				2 => array (
-					'name' => 'apiKey',
+					'name' => 'publicKey',
 					'optional' => false,
 					'description' => 'The public API key correspondign to the private API key used to create the pwdPrivKeyHash parameter',
 					),
