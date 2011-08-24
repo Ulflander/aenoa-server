@@ -268,6 +268,8 @@ class AbstractDB {
 	
 	const BHR_LAT_LNG = 8192 ;
 	
+	const BHR_SERIALIZED = 16384 ;
+	
 
 	/////////////////////////////////////////////////////
 	// TYPES

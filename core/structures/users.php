@@ -93,6 +93,7 @@ $users = array (
 					'name' => 'app_properties',
 					'label' => _('App properties'),
 					'type' =>  AbstractDB::TYPE_TEXT,
+					'behavior' => AbstractDB::BHR_SERIALIZED,
 					'uneditable' => true,
 					'hide-from-table' => true
 				),

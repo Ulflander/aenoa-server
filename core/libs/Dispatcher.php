@@ -65,7 +65,7 @@
  * 
  * @see App
  * @see Controller
- * @see CommonRESTGateway
+ * @see RESTGateway
  * @see Gateway
  * @see Webpage
  * @see AenoaRights
@@ -286,7 +286,7 @@ class Dispatcher {
 			case $q[0]==self::REST_TOKEN:
 				if ( $c > 2 )
 				{
-					$gateway = new CommonRESTGateway () ;
+					$gateway = new RESTGateway () ;
 				} else {
 					App::do404 ( 'No such service available' ) ;
 				}

@@ -191,6 +191,10 @@ class DBHelper {
 		{
 			$value = self::datetimeToTimestamp ( $value ) ;
 		}
+		if ( ake ('behavior' , $fieldDesc ) && $fieldDesc['behavior'] & AbstractDB::BHR_SERIALIZED )
+		{
+			$value = unserialize($value);
+		}
 		return $value ;
 	}
 
@@ -285,6 +289,10 @@ class DBHelper {
 				case $b & AbstractDB::BHR_PICK_ONE:
 					if(is_array($value)) $value = serialize($value);
 					else $value = trim($value);
+					break;
+				case $b & AbstractDB::BHR_SERIALIZED:
+					$value = serialize($value);
+					break;
 			}
 		}
 

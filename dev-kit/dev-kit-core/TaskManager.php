@@ -493,6 +493,11 @@ class TaskManager {
 		
 		$dirs = $this->futil->getDirsList ( DK_PLUGINS ) ;
 		
+		if ( !$dirs )
+		{
+			return;
+		}
+		
 		foreach ( $dirs as $v )
 		{
 			$this->paths[] = $v['path'] ;

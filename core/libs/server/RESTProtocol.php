@@ -123,11 +123,11 @@
  * <pre>dir=[asc|desc]</pre>
  * <p>set the direction of order (asc for ascending, desc for descending). Use this parameter with <b>orderby</b> parameter.</p>
  * 
- * @see CommonRESTGateway
+ * @see RESTGateway
  *
  */
 
-class CommonRESTProtocol extends AbstractProtocol {
+class RESTProtocol extends AbstractProtocol {
 	
 	
 	
@@ -229,11 +229,14 @@ class CommonRESTProtocol extends AbstractProtocol {
 	
 	function callService ()
 	{
+		// Common parameters for DatabaseController	
 		$params = array (
 			'databaseID' => $this->_service['structure'],
 			'table' => $this->_service['table'],
 			'avoidRender' => true
 		);
+		
+		
 		switch ( $this->mode )
 		{
 			case 'GET':

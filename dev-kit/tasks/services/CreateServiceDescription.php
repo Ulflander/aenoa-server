@@ -26,10 +26,11 @@ class CreateServiceDescription extends Task {
 			$service = ( $this->hasParam ( 'service' ) ? $this->params['service'] : $this->params['secondStep'] ) ;
 			
 			
-			
 			if ( strpos($service, 'core/') === false && is_file ( ROOT. 'app' .DS . 'services' . DS . $service . '.service.php' ) )
 			{
 				$this->_methods = ServiceIntrospector::introspect ( ROOT. 'app' .DS . 'services' . DS . $service . '.service.php' , $service ) ;
+				
+				$serviceName = $service ;
 				
 				if ( is_file (  ROOT. 'app' .DS . 'services' . DS . $service . '.description.php' ) )
 				{
@@ -42,16 +43,16 @@ class CreateServiceDescription extends Task {
 				
 			} else if ( strpos($service, 'core/') === 0 )
 			{
-				$service = str_replace('core/', '', $service) ;
+				$serviceName = str_replace('core/', '', $service) ;
 				
 				$this->_isCore = true ;
 				
-				$this->_methods = ServiceIntrospector::introspect ( AE_CORE_SERVICES . $service . '.service.php' , $service ) ;
+				$this->_methods = ServiceIntrospector::introspect ( AE_CORE_SERVICES . $serviceName . '.service.php' , $serviceName ) ;
 				
-				 if ( is_file ( AE_CORE_SERVICES . $service . '.description.php' ) )
+				 if ( is_file ( AE_CORE_SERVICES . $serviceName . '.description.php' ) )
 				 {
-					require_once ( AE_CORE_SERVICES . $service . '.description.php' ) ;
-					$descClassName = $service . 'ServiceDescription' ;
+					require_once ( AE_CORE_SERVICES . $serviceName . '.description.php' ) ;
+					$descClassName = $serviceName . 'ServiceDescription' ;
 					$descClass = new $descClassName () ;
 					$this->_description = $descClass->methods ;
 				 }
@@ -233,6 +234,8 @@ class CreateServiceDescription extends Task {
 	{
 		$service = $this->params['secondStep'] ; 
 		
+		$service = str_replace('core/', '', $service)  ;
+		
 		$params = array () ;
 		
 		foreach ($this->params as $k => $p )
@@ -298,8 +301,46 @@ class CreateServiceDescription extends Task {
 			'description' => $this->params['description'],
 			'methods' => $this->_methods[0]
 			) ;
-			
+		
 		$methods = printArray ( $methods , "\t" ) ;
+		
+		$doc = array (
+			'<h2>'.sprintf( _('%s %s service documentation') , $this->_isCore ? 'Aenoa' : Config::get(App::APP_NAME), camelize($service) ) . '</h2>' ,
+			'' ,
+			'<p>' . $this->params['description'] .'</p>',
+			'' ,
+			'' 
+		) ;
+		
+		foreach ( $this->_methods[0] as $m => $dsc )
+		{
+			$doc[] = '<h3>Service method: ' . $m .'</h3>';
+			$doc[] = '' ;
+			$doc[] = '' ;
+			$doc[] = '<p>'.$dsc['description'].'</p>' ;
+			$doc[] = '' ;
+			
+			if ( !empty ( $dsc['firstLevelReturns'] ) )
+			{
+			
+			}
+				
+			if ( !empty ( $dsc['arguments'] ) )
+			{
+				$doc[] = '' ;
+				foreach ( $dsc['arguments'] as $arg )
+				{
+					$doc[] = "@param " . $arg['name']
+							. ' - (Optional: ' . ($arg['optional'] == true ? 'yes, default value is *'.$arg['default'].'*) ' : 'no) ' ) 
+							. $arg['description'] ;
+				}
+				$doc[] = '' ;
+			}
+			
+		}
+		
+		$doc[] = '' ;
+		$doc[] = '' ;
 		
 		
 		
@@ -310,12 +351,12 @@ class CreateServiceDescription extends Task {
 			$f = new File ( ROOT. 'app' .DS  . 'services' . DS . $service . '.description.php' , true ) ;
 		}
 		
-		$c = "<?php \n class " . camelize($service) . "ServiceDescription { \n\tpublic \$generated = '".date("F j, Y, g:i a")."' ;\n\tpublic \$methods = " . $methods . ";\n}\n?>";
+		$c = "<?php \n/**\n * ". implode("\n * ",$doc) ."\n * \n */\n\nclass " . camelize($service) . "ServiceDescription { \n\tpublic \$generated = '".date("F j, Y, g:i a")."' ;\n\tpublic \$methods = " . $methods . ";\n}\n?>";
 		if ( $f->write ( $c ) && $f->close () )
 		{
 			$this->view->setSuccess ( 'Description file for service ' . $service . ' saved.') ;
 		} else {
-			$this->view->setError ( 'Description file for service ' . $service . ' saved.') ;	
+			$this->view->setError ( 'Description file for service ' . $service . ' not saved.') ;	
 		}
 		
 		$this->view->setMenuItem ( 'New service description' ,  url() . 'CreateServiceDescription') ;

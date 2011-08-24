@@ -29,7 +29,7 @@ class GenerateStructureDocFile extends Task {
 
 
 
-		$lg = $this->futil->getDirsList($this->project->path.'app'.DS.'locale');
+		$lg = $this->futil->getDirsList(ROOT.'app'.DS.'locale');
 
 		$langs = array ( 'nolang' => 'No language binding' ) ;
 
@@ -58,7 +58,7 @@ class GenerateStructureDocFile extends Task {
 		{
 			$this->view->setStatus ( 'Starting structure doc generation with language: ' . $this->params['language'] ) ;
 
-			$_i18n = new AeI18n ( 'default', $this->params['language'] , 'UTF8', $this->project->path.'app'.DS.'locale' ) ;
+			$_i18n = new AeI18n ( 'default', $this->params['language'] , 'UTF8', ROOT.'app'.DS.'locale' ) ;
 		} else {
 			$this->view->setStatus ( 'Starting structure doc generation with core language' ) ;
 		}
@@ -66,7 +66,7 @@ class GenerateStructureDocFile extends Task {
 		$this->renderFileHeader ()  ;
 
 
-		$structures = $this->futil->getFilesList($this->project->path.'app'.DS.'structures', false);
+		$structures = $this->futil->getFilesList(ROOT.'app'.DS.'structures', false);
 
 		foreach($structures as $structure)
 		{
@@ -79,7 +79,7 @@ class GenerateStructureDocFile extends Task {
 				
 			$this->view->setStatus ('Opening structure ' . $structure['name']) ;
 				
-			include( $this->project->path.'app'.DS.'structures'.DS.$structure['name']) ;
+			include(ROOT.'app'.DS.'structures'.DS.$structure['name']) ;
 				
 
 			$this->rendering[] = '/*' ;
@@ -98,7 +98,7 @@ class GenerateStructureDocFile extends Task {
 				
 			$this->view->setStatus ('Opening core Aenoa Users structure') ;
 				
-			include( ROOT.'aenoa-server'.DS.'core'.DS.'structures'.DS.'users.php') ;
+			include( AE_STRUCTURES.'users.php') ;
 				
 			$this->renderStructure ( 'Core Aenoa structure' , $users ) ;
 		}
@@ -107,14 +107,14 @@ class GenerateStructureDocFile extends Task {
 		{
 			$this->view->setStatus ('Opening core Aenoa API structure') ;
 				
-			include( ROOT.'aenoa-server'.DS.'core'.DS.'structures'.DS.'api.php') ;
+			include( AE_STRUCTURES.'api.php') ;
 
 			$this->renderStructure ( 'Core Aenoa structure' , $api ) ;
 		}
 
 		$this->renderFileFooter ()  ;
 
-		$f = new File ( $this->project->path.'app'.DS.'structures'.DS.'structures.doc.php' , true) ;
+		$f = new File ( ROOT.'app'.DS.'structures'.DS.'structures.doc.php' , true) ;
 		$f->write(implode("\n",$this->rendering));
 		$f->close () ;
 
@@ -310,34 +310,42 @@ class GenerateStructureDocFile extends Task {
 				break;
 		}
 
-		switch ( @$field['behavior'] )
+		if ( ake ( 'behavior', $field ) )
 		{
-			case AbstractDB::BHR_UNIQUE:
-				$this->rendering[] = "\t" . _('Field behavior') .':' ;
-				$this->rendering[] = "\t" . _('The value of this field must be unique in the table (Behavior BHR_UNIQUE).');
-				$this->rendering[] = "\t" ;
-				$this->rendering[] = "\t" ;
-				break;
-			case AbstractDB::BHR_PICK_IN:
-				$this->rendering[] = "\t" . _('Field behavior') .':' ;
-				$this->rendering[] = "\t" . sprintf(_('The value of this field is a selection of rows identifiers of table *%s* (Behavior BHR_PICK_IN).'), $field['source']) ;
-				$this->rendering[] = "\t" ;
-				$this->rendering[] = "\t" ;
-				break;
-			case AbstractDB::BHR_PICK_ONE:
-				$this->rendering[] = "\t" . _('Field behavior') .':' ;
-				$this->rendering[] = "\t" . sprintf(_('The value of this field is a row identifier of table *%s* (Behavior BHR_PICK_ONE).'), $field['source']) ;
-				$this->rendering[] = "\t" ;
-				$this->rendering[] = "\t" ;
-				break;
-			case AbstractDB::BHR_URLIZE:
-				$this->rendering[] = "\t" . _('Field behavior') .':' ;
-				$this->rendering[] = "\t" . sprintf(_('The value of this field will be urlized before DB insertion (Behavior BHR_URLIZE).'), $field['source']) ;
-				$this->rendering[] = "\t" ;
-				$this->rendering[] = "\t" ;
-				break;
+			switch ( true )
+			{
+				case $field['behavior'] & AbstractDB::BHR_UNIQUE:
+					$this->rendering[] = "\t" . _('Field behavior') .':' ;
+					$this->rendering[] = "\t" . _('The value of this field must be unique in the table (Behavior BHR_UNIQUE).');
+					$this->rendering[] = "\t" ;
+					$this->rendering[] = "\t" ;
+					break;
+				case $field['behavior'] & AbstractDB::BHR_PICK_IN:
+					$this->rendering[] = "\t" . _('Field behavior') .':' ;
+					$this->rendering[] = "\t" . sprintf(_('The value of this field is a selection of rows identifiers of table *%s* (Behavior BHR_PICK_IN).'), $field['source']) ;
+					$this->rendering[] = "\t" ;
+					$this->rendering[] = "\t" ;
+					break;
+				case $field['behavior'] & AbstractDB::BHR_PICK_ONE:
+					$this->rendering[] = "\t" . _('Field behavior') .':' ;
+					$this->rendering[] = "\t" . sprintf(_('The value of this field is a row identifier of table *%s* (Behavior BHR_PICK_ONE).'), $field['source']) ;
+					$this->rendering[] = "\t" ;
+					$this->rendering[] = "\t" ;
+					break;
+				case $field['behavior'] & AbstractDB::BHR_URLIZE:
+					$this->rendering[] = "\t" . _('Field behavior') .':' ;
+					$this->rendering[] = "\t" . _('The value of this field will be urlized before DB insertion (Behavior BHR_URLIZE).') ;
+					$this->rendering[] = "\t" ;
+					$this->rendering[] = "\t" ;
+					break;
+				case $field['behavior'] & AbstractDB::BHR_SERIALIZED:
+					$this->rendering[] = "\t" . _('Field behavior') .':' ;
+					$this->rendering[] = "\t" . _('The value of this field will be serialized before DB insertion and unserialized after DB selection. Serialization algorithm is the PHP core one. (Behavior BHR_SERIALIZED).') ;
+					$this->rendering[] = "\t" ;
+					$this->rendering[] = "\t" ;
+					break;
+			}
 		}
-
 		if ( $field['name'] == 'created' )
 		{
 			$this->rendering[] = "\t" . _('Automatic field behavior') .':' ;

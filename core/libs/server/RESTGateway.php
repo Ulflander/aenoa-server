@@ -3,7 +3,7 @@
 /**
  * <p>The REST Service in Aenoa System lets you select, edit and delete data of the system.</p>
  * 
- * Check out class CommonRESTProtocol for detailed documentation about REST Service features. 
+ * Check out class RESTProtocol for detailed documentation about REST Service features. 
  * 
  * <h3>Authentication</h3>
  * 
@@ -17,9 +17,9 @@
  * 
  * <pre>http://example.com/rest/main/ae_users/1.json?key=yourPublicKey&hash=sha1OfYourPrivateKey</pre>
  * 
- * @see CommonRESTProtocol
+ * @see RESTProtocol
  */
-class CommonRESTGateway extends Gateway {
+class RESTGateway extends Gateway {
 	
 	
 	// REST mode : GET, POST, PUT or DELETE, HEAD, OPTIONS
@@ -95,11 +95,11 @@ class CommonRESTGateway extends Gateway {
 	 * Concrete implementation of Gateway::getProtocol 
 	 * 
 	 * @see Gateway::getProtocol()
-	 * @return CommonRESTProtocol A new instance of CommonRESTProtocol class
+	 * @return RESTProtocol A new instance of RESTProtocol class
 	 */
 	protected function getProtocol ()
 	{
-		return new CommonRESTProtocol() ;
+		return new RESTProtocol() ;
 	}
 	
 	/**
