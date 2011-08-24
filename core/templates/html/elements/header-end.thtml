@@ -8,4 +8,3 @@
 				<?php $this->renderWidget('quick-account-access') ?>
 			</div>
 		</div>
-		
