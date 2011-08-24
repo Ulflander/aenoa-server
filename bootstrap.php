@@ -270,6 +270,8 @@ if ( strpos( url(), 'localhost' ) !== false || strpos( url(), '192.168.0.42' ) !
 
 if ( debuggin () )
 {
+	ini_set('display_errors', 1);
+	
 	Config::set(App::DBS_AUTO_EXPAND , true );
 } else {
 	Config::set(App::DBS_AUTO_EXPAND , false );
