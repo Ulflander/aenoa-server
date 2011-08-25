@@ -194,7 +194,7 @@ final class User {
 			$db = App::getDatabase('main') ;
 
 			$user = $db->findFirst('ae_users', array ('email' => $this->_identifier, 'password'=> $sha1password ) ) ;
-				
+
 			return !empty($user) ;
 		}
 		return false ;
@@ -213,9 +213,9 @@ final class User {
 		if ( $this->_logged == false && !is_null(App::$session) )
 		{
 			$db = App::getDatabase('main') ;
-				
+
 			$user = $db->findFirst('ae_users', array ('email' => $email, 'password'=> $sha1password ) ) ;
-				
+
 			if ( !empty ( $user ) )
 			{
 				$db->edit ('ae_users', $user['id'], array ('last_connection' => DBHelper::getTimestamp(time())));
@@ -223,26 +223,20 @@ final class User {
 				$user = $db->findChildren('ae_users',$user) ;
 				$this->_logged = 1 ;
 				$this->_identifier = $email ;
+				App::$session->regenerate ();
 
 				$this->_id = $user['id'] ;
-				$this->_firstname = $user['firstname'] ;
-				$this->_lastname = $user['lastname'] ;
-				$this->_group = $user['group'] ;
-				$this->_properties = $user['app_properties'] ;
-				$this->_level = $user['group']['level'];
-
-				App::$session->regenerate ();
+				$this->_loadInfos($user) ;
+				
+				App::$session->set('User.id' , $this->_id ) ;
 				App::$session->set('User.logged' , 1 ) ;
 				App::$session->set('User.identifier' , $email ) ;
-				App::$session->set('User.properties' , $this->_properties ) ;
-				App::$session->set('User.id' , $this->_id ) ;
-				App::$session->set('User.firstname' , $user['firstname'] ) ;
-				App::$session->set('User.lastname' , $user['lastname'] ) ;
-				App::$session->set('User.data' , $user['user_info'] ) ;
+				App::$session->set('User.groups' , $db->findAll('ae_groups') ) ;
 				App::$session->set('User.group' , $this->_group) ;
 				App::$session->set('User.level' , $this->_level) ;
 
-				App::$session->set('User.groups' , $db->findAll('ae_groups') ) ;
+
+				App::$session->regenerate ();
 
 				self::$_currentlogged = $this ;
 
@@ -252,6 +246,34 @@ final class User {
 
 
 		return false ;
+	}
+
+
+	function reloadInfos ()
+	{
+		if ( $this->isLogged() )
+		{
+			$db = App::getDatabase() ;
+			$this->_loadInfos( $db->findChildren('ae_users',$db->find('ae_users', $this->_id ) ) ) ;
+				
+		}
+	}
+
+	private function _loadInfos ( $user )
+	{
+
+		$this->_firstname = $user['firstname'] ;
+		$this->_lastname = $user['lastname'] ;
+		$this->_group = $user['group'] ;
+		$this->_properties = $user['app_properties'] ;
+		$this->_level = $user['group']['level'];
+		$this->_data = $user['user_info'] ;
+			
+		App::$session->set('User.properties' , $this->_properties ) ;
+		App::$session->set('User.firstname' , $user['firstname'] ) ;
+		App::$session->set('User.lastname' , $user['lastname'] ) ;
+		App::$session->set('User.data' , $user['user_info'] ) ;
+
 	}
 
 	/**
@@ -343,14 +365,14 @@ final class User {
 
 	/**
 	 * Get all application dedicated properties
-	 * 
+	 *
 	 * @return array An array of application dedicated properties
 	 */
-	function getProperties () 
+	function getProperties ()
 	{
 		return $this->_properties ;
 	}
-	
+
 
 	function getGroupLabelByLevel ( $level )
 	{
@@ -397,7 +419,7 @@ final class User {
 				case 2: $chr = chr( rand(65,90) ) ;  break ;     /* A-Z */
 				case 3: $chr = chr( rand(97,122) ) ; break ;     /* a-z */
 			}
-				
+
 			/* To not mix up 0 (zero) and O (maj o) or 1 (one) and I (maj i) */
 			if ( $chr == chr ( 79 ) || $chr == chr ( 73 ) )
 			{
@@ -405,7 +427,7 @@ final class User {
 			} else {
 				$pass .= $chr ;
 			}
-				
+
 			$i ++ ;
 		}
 

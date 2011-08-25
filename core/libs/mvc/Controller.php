@@ -159,6 +159,10 @@ class Controller {
 		return $this->data ;
 	}
 	
+	function getResponses () 
+	{
+		return $this->responses ;
+	}
 	
 	protected function validateInputs ( $ruleArray )
 	{
@@ -452,7 +456,7 @@ class Controller {
 	 * A static function to instanciate a controller and launch its corresponding action.
 	 * 
 	 * @param string $controllerName
-	 * @return bool True if controller file has been found, false otherwise
+	 * @return Controller
 	 */
 	static function launchController ( $controllerName , $action , $mainParam = null, $controllerParams = array (), $othersParams = array () )
 	{

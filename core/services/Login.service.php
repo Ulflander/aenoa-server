@@ -31,6 +31,12 @@ class LoginService extends Service {
 		
 		$dbuser = $this->db->findFirst ('ae_users', array ('email'=>$email) ) ;
 		
+		if ( empty ($dbuser) )
+		{
+			$this->protocol->setFailure('Invalid email');
+			return ;
+		}
+		
 		if ( sha1($key['private'] . $dbuser['password']) !== $pwdHash )
 		{
 			$this->protocol->setFailure('Private API authentication failed');
@@ -49,11 +55,12 @@ class LoginService extends Service {
 		if ( $user->isLogged() )
 		{
 			$this->protocol->addData('user', array (
+				'dbid' => $user->getDatabaseId(),
 				'user' => $user->getIdentifier(),
 				'firstname' => $user->getFirstname(),
 				'lastname' => $user->getFirstname(),
 				'properties' => $user->getProperties(),
-				
+				'level' => $user->getLevel()
 			) ) ;
 		} else {
 			$this->protocol->setFailure('Authentication failed');

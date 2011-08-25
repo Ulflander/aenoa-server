@@ -35,7 +35,7 @@ class DatabaseController extends Controller{
 	
 	protected $conditions = array () ;
 	
-	protected $RESTResult = true ;
+	public $RESTResult = true ;
 	
 	protected $added = false ;
 	
@@ -692,6 +692,7 @@ class DatabaseController extends Controller{
 	 */
 	public function edit($id=null, $child_table = null )
 	{
+		
 		if ( $id == 'ae:last' )
 		{
 			$key = 'Application.db.add.'.$this->databaseID.'.'.$this->table ;

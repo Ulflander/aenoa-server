@@ -281,6 +281,9 @@ class UserCoreController extends Controller{
 			unset($data['user_id']) ;
 		}
 		
+		unset ($data['created']);
+		unset ($data['updated']);
+		
 		$this->view->set('data', $this->db->keysToLabel('ae_users_info' , $data ) ) ;
 	}
 	
@@ -464,7 +467,50 @@ class UserCoreController extends Controller{
 	
 	function profile ()
 	{
+		User::requireLogged () ;
+	
+		$structure = App::getDatabase()->getTableStructure('ae_users_info') ;
 		
+		$user = App::getUser() ;
+		
+		$user->reloadInfos() ;
+			
+		foreach ( $structure as $k => $v )
+		{
+			if ( $v['name'] == 'created' || $v['name'] == 'updated' || $v['name'] == 'user_id')
+			{
+				unset ($structure[$k]);
+			}
+		}
+		
+		$user_info = $user->getData() ;
+		
+		$this->view->set('structure', $structure);
+		
+		$this->view->set ('data', $user_info ) ;
+		
+		if ( !empty( $this->data ) )
+		{
+			
+			$controller = Controller::launchController ( 'Database' , 'edit' , $user->getDatabaseId() , array (
+				'databaseID' => 'main',
+				'table' => 'ae_users',
+				'avoidRender' => true
+			), array ( 'ae_users_info' ) , false );
+			
+			if ( $controller->RESTResult == false )
+			{
+				$user->reloadInfos() ;
+			
+				$this->responses = $controller->getResponses() ;
+
+				$this->view->set ('data', $controller->output);
+			} else {
+				$this->addResponse(_('Your profile has been updated'));
+			}
+			
+			
+		}
 	}
 	
 	function loggedOut ()
