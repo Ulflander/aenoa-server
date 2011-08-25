@@ -64,7 +64,7 @@ class AeCSSCompressor extends AeCSSEdition
 		),
 		array (
 			'preg_replace_callback',
-			'/[^a-z0-9-_\{\}\<\>:;\*\.\#,\/\/\s\'\)\(\[\]!%@=\$\^]{1,}/i' ,
+			'/[^a-z0-9-_\{\}\<\>:;\*\.\+\#,\/\/\s\'\)\(\[\]!%@=\$\^]{1,}/i' ,
 			'AeCSSEdition::toIso10646',
 			'Unauthorized chains encoded into ISO 10646'
 		),

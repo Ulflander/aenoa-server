@@ -38,7 +38,7 @@ final class User {
 	/**
 	 * If user is not logged, send a 401 HTTP response and a HTML page that display the Authentication problem
 	 *
-	 * @return void
+	 * @return the current logged user
 	 */
 	public static function requireLogged ()
 	{
@@ -46,7 +46,10 @@ final class User {
 		{
 			App::do401 ( 'Require logged user' ) ;
 		}
+		
+		return self::$_currentlogged ;
 	}
+	
 
 	/**
 	 *
