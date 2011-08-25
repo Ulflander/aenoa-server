@@ -3,5 +3,5 @@
 		<li><a href="<?php echo url() ?>user-core/account" title="<?php echo _('Account home') ?>" class="<?php echo App::getQuery() == 'user-core/account' ? 'current' : '' ; ?>"><?php echo _('Your account') ?></a></li>
 		<li><a href="<?php echo url() ?>user-core/profile" title="<?php echo _('Your profile') ?>" class="<?php echo App::getQuery() == 'user-core/profile' ? 'current' : '' ; ?>"><?php echo _('Edit profile') ?></a></li>
 		<li><a href="<?php echo url() ?>user-core/password" title="<?php echo _('Change password') ?>" class="<?php echo App::getQuery() == 'user-core/password' ? 'current' : '' ; ?>"><?php echo _('Change password') ?></a></li>
-		<li><a href="<?php echo url() ?>user-core/identifier" title="<?php echo _('Change contact address') ?>" class="<?php echo App::getQuery() == 'user-core/identifier' ? 'current' : '' ; ?>"><?php echo _('Change contact address') ?></a></li>
+		<li><a href="<?php echo url() ?>user-core/identifier" title="<?php echo _('Change email address') ?>" class="<?php echo App::getQuery() == 'user-core/identifier' ? 'current' : '' ; ?>"><?php echo _('Change email address') ?></a></li>
 	</ul>

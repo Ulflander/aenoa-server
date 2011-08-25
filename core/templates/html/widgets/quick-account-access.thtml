@@ -12,11 +12,7 @@
 
 ?>
 
-	<?php if ( $user_object->getTrueLevel () == 0 && $user_object->getLevel () != 0 ): ?>
-	<li><a href="<?php echo url() ?>user-core/account" title="<?php echo _('My profile') ?>"><?php echo $user_object->getFirstname () . ' (' . $user_object->getTrueGroup () . '/' . $user_object->getGroup () .')' ?></a></li>
-	<?php else: ?>
-	<li><a href="<?php echo url() ?>user-core/account" title="<?php echo _('My profile') ?>"><?php echo $user_object->getFirstname () . ' (' . $user_object->getGroup () .')' ?></a></li>
-	<?php endif; ?>
+	<li><a href="<?php echo url() ?>user-core/account" title="<?php echo _('Your profile') ?>" class="icon16 user"><?php echo sprintf(_('Your profile (%s, %s)'), $user_object->getFirstname (),$user_object->getGroup ()) ?></a></li>
 	<li><a href="<?php echo url() ?>user-core/logout" title="<?php echo _('Logout') ?>" class="icon16 user_red"><?php echo _('Logout') ?></a></li>
 
 	<?php if ( $user_object->getTrueLevel () == 0 ): ?>
@@ -29,9 +25,6 @@
 		if ( debuggin() ):
 		?>
 	<li><a href="<?php echo url() ?>maintenance/debug" class="icon16 warning" ><?php echo _('Debug mode: ON') ?></a></li>
-		<?php
-		endif;
-	?>
 		<li><?php echo _('Current level:') ?></li>
 		<li>
 			<form method="POST" action="<?php echo url(); ?>user-core/fake" id="superadmin/fakelevel">
@@ -50,6 +43,10 @@
 				});
 			</script>
 		</li>
+		
+		<?php
+		endif;
+	?>
 		<li><a href="<?php echo url() ?>database/main/products/readAll" class="icon16 manage unlabeled"><?php echo _('Aenoa Manager')?></a></li>
 	<?php endif; ?> 
 

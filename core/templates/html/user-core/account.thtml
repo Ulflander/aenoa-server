@@ -9,12 +9,12 @@
 
 	<?php $this->renderElement('responses'); ?>
 	<h3><?php echo _('Login & password') ?></h3>
-	<ul class="expanded">
-		<li><?php echo _('Your email address') ?>: <strong><?php echo $user_object->getIdentifier () ?></strong> <span class="right">[<a href="<?php echo url() ?>user-core/identifier" title="<?php echo _('Change contact address') ?>"><?php echo _('Change') ?></a>]</span></li>
-		<li><?php echo _('Your password') ?>: ****</strong> <span class="right">[<a href="<?php echo url() ?>user-core/identifier" title="<?php echo _('Change contact address') ?>"><?php echo _('Change') ?></a>]</span></li>
+	<ul class="expanded no-list-style">
+		<li class="expanded"><?php echo _('Your email address') ?>: <strong><?php echo $user_object->getIdentifier () ?></strong> <span class="right">[<a href="<?php echo url() ?>user-core/identifier" title="<?php echo _('Change email address') ?>"><?php echo _('Change') ?></a>]</span></li>
+		<li class="expanded"><?php echo _('Your password') ?>: <strong>****</strong> <span class="right">[<a href="<?php echo url() ?>user-core/identifier" title="<?php echo _('Change contact address') ?>"><?php echo _('Change') ?></a>]</span></li>
 	</ul>
 	<h3><?php echo _('Personal informations') ?></h3>
-	<ul class="expanded">
+	<ul class="expanded no-list-style">
 		<li><?php echo _('Your firstname') ?>: <strong><?php echo $user_object->getFirstname () ?></strong> <span class="right">[<a href="<?php echo url() ?>user-core/profile" title="<?php echo _('Edit profile') ?>"><?php echo _('Edit') ?></a>]</span></li> 
 		<li><?php echo _('Your lastname') ?>: <strong><?php echo $user_object->getLastname () ?></strong></li>
 	<?php 
