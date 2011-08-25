@@ -836,7 +836,7 @@ class App {
 				App::getSession()->set('redirect',self::getQuery());
 			}
 			
-			self::redirectGlobal( url().'/user-core/login' );
+			self::redirectGlobal( url().'user-core/login' );
 		} else {
 			self::doRespond(401, $headerResponse , true , _('Unauthorized action'), _('Server has triggered an unauthorized action.') ) ;
 		}
