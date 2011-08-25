@@ -226,7 +226,7 @@ final class User {
 				App::$session->regenerate ();
 
 				$this->_id = $user['id'] ;
-				$this->_loadInfos($user) ;
+				$this->reloadInfos($user) ;
 				
 				App::$session->set('User.id' , $this->_id ) ;
 				App::$session->set('User.logged' , 1 ) ;
