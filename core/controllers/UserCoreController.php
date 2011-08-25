@@ -281,8 +281,15 @@ class UserCoreController extends Controller{
 			unset($data['user_id']) ;
 		}
 		
-		unset ($data['created']);
-		unset ($data['updated']);
+		if ( ake('created',$data) )
+		{
+			unset ($data['created']);
+		}
+		
+		if ( ake('updated',$data) )
+		{
+			unset ($data['updated']);
+		}
 		
 		$this->view->set('data', $this->db->keysToLabel('ae_users_info' , $data ) ) ;
 	}
