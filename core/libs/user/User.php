@@ -267,7 +267,7 @@ final class User {
 		$this->_group = $user['group'] ;
 		$this->_properties = $user['app_properties'] ;
 		$this->_level = $user['group']['level'];
-		$this->_data = $user['user_info'] ;
+		$this->_data = is_array($user['user_info']) ? $user['user_info'] : array () ;
 			
 		App::$session->set('User.properties' , $this->_properties ) ;
 		App::$session->set('User.firstname' , $user['firstname'] ) ;
