@@ -254,7 +254,7 @@ final class User {
 		if ( $this->isLogged() )
 		{
 			$db = App::getDatabase() ;
-			$this->_loadInfos( $db->findChildren('ae_users',$db->find('ae_users', $this->_id ) ) ) ;
+			$this->_loadInfos( $db->findAndRelatives('ae_users', $this->_id ) ) ;
 				
 		}
 	}
