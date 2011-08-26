@@ -217,22 +217,20 @@
  * 
  * You can use a strict equality creating a simple associative array:
  * 
- * // This will search for all entries which name is foo and password is bar
- * $conditions = array ( 'name' => 'foo' , 'password' => 'bar' );
+ * > // This will search for all entries which name is foo and password is bar
+ * > $conditions = array ( 'name' => 'foo' , 'password' => 'bar' );
  * 
  * 
- * // This will search for all entries which name is foo and password is different than bar
- * $conditions = array ( 'name' => 'foo' , 'password' => '!= bar' );
+ * > // This will search for all entries which name is foo and password is different than bar
+ * > $conditions = array ( 'name' => 'foo' , 'password' => '!= bar' );
  * 
  * 
- * // This will search for all entries which name is foo and password is different than bar
- * $conditions = array ( 'datetime' => '< NOW()' , 'password' => '!= bar' );
+ * > // This will search for all entries which name is foo and password is different than bar
+ * > $conditions = array ( 'datetime' => '< NOW()' , 'password' => '!= bar' );
  * 
  * 
  * 
  */
-
-// TODO: create a checkStructure method to run before setStructure, to avoid bad structures
 class AbstractDB {
 	
 
@@ -730,7 +728,7 @@ class AbstractDB {
 	function delete ( $table , $id ) { return false; }
 	
 	/**
-	 * Delete an entry based on its ID
+	 * Delete entries based on some conditions
 	 * 
 	 * @param object $table The table where to search
 	 * @param array $cond [optional]
