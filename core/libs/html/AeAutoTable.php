@@ -18,6 +18,10 @@ class AeAutoTable {
 	
 	protected $_odd = false ;
 	
+	
+	protected $_hasSearch = false ;
+	
+	
 	public $isUpdate = false ;
 	
 	public $showActions = true ;
@@ -132,8 +136,11 @@ class AeAutoTable {
 			
 			$this->_result[] = '</form>' ;
 			
+			$this->_hasSearch = true ;
+			
 		} else if ( ($field = AbstractDB::getSearchable($this->_struct) ) !== false )
 		{
+			
 			$this->_result[] = '<form action="' . $this->getURL() . 'edit/_selected" method="post" id="'.$this->_table.'/search" class="">' ;
 			$this->_result[] = '<div class="control">' ;
 			$this->_result[] = '<input type="hidden" id="'.$this->_dbID.'/'.$this->_table.'/field" name="'.$this->_dbID.'/'.$this->_table.'/field" />' ;
@@ -236,13 +243,16 @@ class AeAutoTable {
 		
 		$this->_result[] = '</table>' ;
 		
-		$this->_result[] = '<script type="text/javascript">if(ajsf){';
-		$this->_result[] = 'ajsf.load("aejax");';
-		$this->_result[] = 'ajsf.load("ae-dynamic-table");';
-		$this->_result[] = 'ajsf.load("aepopup");';
-		$this->_result[] = 'ajsf.load("aeforms");';
-		$this->_result[] = 'ajsf.ready (function(){var f = new ajsf.forms.Form ( _u(\'#'.$this->_table.'/search\') ) ; var t = new ajsf.DynamicTable(f, _u(\'#table_'.$this->_table.'\')); });' ;
-		$this->_result[] = '}</script>' ;
+		if ( $this->_hasSearch )
+		{
+			$this->_result[] = '<script type="text/javascript">if(ajsf){';
+			$this->_result[] = 'ajsf.load("aejax");';
+			$this->_result[] = 'ajsf.load("ae-dynamic-table");';
+			$this->_result[] = 'ajsf.load("aepopup");';
+			$this->_result[] = 'ajsf.load("aeforms");';
+			$this->_result[] = 'ajsf.ready (function(){var f = new ajsf.forms.Form ( _u(\'#'.$this->_table.'/search\') ) ; var t = new ajsf.DynamicTable(f, _u(\'#table_'.$this->_table.'\')); });' ;
+			$this->_result[] = '}</script>' ;
+		}
 		if ( $this->showGlobalActions )
 		{
 			$this->_result[] = '<input type="submit" value="'._('Delete selection').'" onclick="javascript: return confirm(\''._('Are you sure you want to delete these elements ?').'\');" />' ;

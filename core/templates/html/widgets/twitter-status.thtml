@@ -16,6 +16,7 @@
 	  }
 	  _('#_twitter_status').innerHTML = statusHTML.join('');
 	}
+	ajsf.load('ae-extended');
 	ajsf.ready(function(){
 		ajsf.load('http://twitter.com/statuses/user_timeline/<?php echo $widget['twitter_screen_name'] ?>.json?callback=twitterCallback2&count=<?php echo $widget['count'] ?>');
 	});
