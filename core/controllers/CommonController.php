@@ -163,7 +163,7 @@ class CommonController extends Controller{
 		$fieldStruct = array () ;
 		foreach ( $struct[$table] as $f )
 		{
-			if ( $f['name'] == $field && $f['type'] == AbstractDB::TYPE_FILE )
+			if ( $f['name'] == $field && $f['type'] == DBSchema::TYPE_FILE )
 			{
 				$fieldStruct = $f ;
 				break;

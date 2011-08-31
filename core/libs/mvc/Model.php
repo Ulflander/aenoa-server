@@ -11,7 +11,7 @@ class Model {
 	
 	/**
 	 * 
-	 * @var AbstractDB
+	 * @var AbstractDBEngine
 	 */
 	protected $db ;
 	
@@ -19,7 +19,7 @@ class Model {
 	
 	protected $table ;
 	
-	function __construct ( Controller &$controller , AbstractDB &$db = null , $table = null ) 
+	function __construct ( Controller &$controller , AbstractDBEngine &$db = null , $table = null ) 
 	{
 		$this->controller = $controller ;
 		

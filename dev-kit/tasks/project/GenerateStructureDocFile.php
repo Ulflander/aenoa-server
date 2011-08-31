@@ -214,19 +214,19 @@ class GenerateStructureDocFile extends Task {
 
 		switch ( $field['type'] )
 		{
-			case AbstractDB::TYPE_CHILD:
+			case DBSchema::TYPE_CHILD:
 				$this->rendering[] = "\t" . _('Field type specifications') .':' ;
 				$this->rendering[] = "\t" .sprintf(_('This field links each table row to *%s* parent table.'), $field['source']);
 				$this->rendering[] = "\t" ;
 				$this->rendering[] = "\t" ;
 				break;
-			case AbstractDB::TYPE_PARENT:
+			case DBSchema::TYPE_PARENT:
 				$this->rendering[] = "\t" . _('Field type specifications') .':' ;
 				$this->rendering[] = "\t" .sprintf(_('This field links the current table to the *%s* child table.'), $field['source']);
 				$this->rendering[] = "\t" ;
 				$this->rendering[] = "\t" ;
 				break;
-			case AbstractDB::TYPE_ENUM:
+			case DBSchema::TYPE_ENUM:
 				$this->rendering[] = "\t" . _('Field available values') .':' ;
 				$l = count($field['values']);
 				$default = 'No default value' ;
@@ -244,7 +244,7 @@ class GenerateStructureDocFile extends Task {
 				$this->rendering[] = "\t" ;
 				break;
 
-			case AbstractDB::TYPE_FILE:
+			case DBSchema::TYPE_FILE:
 				$this->rendering[] = "\t" . _('File specifications') .':' ;
 				$this->rendering[] = "\t - " . _('This field links to a file in the filesystem.');
 				if ( ake('requirements',$field) )
@@ -314,31 +314,31 @@ class GenerateStructureDocFile extends Task {
 		{
 			switch ( true )
 			{
-				case $field['behavior'] & AbstractDB::BHR_UNIQUE:
+				case $field['behavior'] & DBSchema::BHR_UNIQUE:
 					$this->rendering[] = "\t" . _('Field behavior') .':' ;
 					$this->rendering[] = "\t" . _('The value of this field must be unique in the table (Behavior BHR_UNIQUE).');
 					$this->rendering[] = "\t" ;
 					$this->rendering[] = "\t" ;
 					break;
-				case $field['behavior'] & AbstractDB::BHR_PICK_IN:
+				case $field['behavior'] & DBSchema::BHR_PICK_IN:
 					$this->rendering[] = "\t" . _('Field behavior') .':' ;
 					$this->rendering[] = "\t" . sprintf(_('The value of this field is a selection of rows identifiers of table *%s* (Behavior BHR_PICK_IN).'), $field['source']) ;
 					$this->rendering[] = "\t" ;
 					$this->rendering[] = "\t" ;
 					break;
-				case $field['behavior'] & AbstractDB::BHR_PICK_ONE:
+				case $field['behavior'] & DBSchema::BHR_PICK_ONE:
 					$this->rendering[] = "\t" . _('Field behavior') .':' ;
 					$this->rendering[] = "\t" . sprintf(_('The value of this field is a row identifier of table *%s* (Behavior BHR_PICK_ONE).'), $field['source']) ;
 					$this->rendering[] = "\t" ;
 					$this->rendering[] = "\t" ;
 					break;
-				case $field['behavior'] & AbstractDB::BHR_URLIZE:
+				case $field['behavior'] & DBSchema::BHR_URLIZE:
 					$this->rendering[] = "\t" . _('Field behavior') .':' ;
 					$this->rendering[] = "\t" . _('The value of this field will be urlized before DB insertion (Behavior BHR_URLIZE).') ;
 					$this->rendering[] = "\t" ;
 					$this->rendering[] = "\t" ;
 					break;
-				case $field['behavior'] & AbstractDB::BHR_SERIALIZED:
+				case $field['behavior'] & DBSchema::BHR_SERIALIZED:
 					$this->rendering[] = "\t" . _('Field behavior') .':' ;
 					$this->rendering[] = "\t" . _('The value of this field will be serialized before DB insertion and unserialized after DB selection. Serialization algorithm is the PHP core one. (Behavior BHR_SERIALIZED).') ;
 					$this->rendering[] = "\t" ;

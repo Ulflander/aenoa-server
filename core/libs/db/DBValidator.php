@@ -17,5 +17,7 @@ class DBValidator {
 	const VALID_INT = '^[0-9]{1,5}$' ;
 	
 	const PASSWORD = '.{6,}' ;
+	
+	
 }
 ?>

@@ -3,8 +3,13 @@
 
 
 
-
-class MySQLEngine extends AbstractDB {
+/**
+ * Concrete implementation of AbstractDBEngine for MySQL
+ * 
+ * @see AbstractDBEngine
+ */
+class MySQLEngine extends AbstractDBEngine {
+	
 	
 	private $__connection = false ;
 	
@@ -13,7 +18,7 @@ class MySQLEngine extends AbstractDB {
 	protected $__lastId ;
 	
 	/////////////////////////////////////////////////////
-	// AbstractDB implementation
+	// AbstractDBEngine implementation
 	
 	
 	function isUsable () 
@@ -30,6 +35,8 @@ class MySQLEngine extends AbstractDB {
 	{
 		$this->_doTemp = true ;
 	}
+	
+	
 	
 	/**
 	 * Disable sql TRANSACTION mode : all queries since call of startTransaction are sended
@@ -61,7 +68,7 @@ class MySQLEngine extends AbstractDB {
 	
 	
 	/**
-	 * For MySQLEngine, $databse must be an array containing:
+	 * For MySQLEngine, $database must be an array containing:
 	 * ['host'] => 'your.mysql.host.com'
 	 * ['login'] => 'mysql_login'
 	 * ['password'] => 'mysql_passwd'
@@ -90,7 +97,7 @@ class MySQLEngine extends AbstractDB {
 			return true ;
 		}
 		
-		$this->database = $database ;
+		$this->source = $database ;
 		
 		$this->close () ;
 		
@@ -106,12 +113,12 @@ class MySQLEngine extends AbstractDB {
 	 */
 	function isSameDatabase ( $database )
 	{
-		return ( $this->isValidDatabaseArr ( $this->database )
+		return ( $this->isValidDatabaseArr ( $this->source )
 			&& $this->isValidDatabaseArr ( $database ) 
-			&& $this->database['host'] == $database['host'] 
-			&& $this->database['login'] == $database['login'] 
-			&& $this->database['password'] == $database['password'] 
-			&& $this->database['database'] == $database['database'] ) ;
+			&& $this->source['host'] == $database['host'] 
+			&& $this->source['login'] == $database['login'] 
+			&& $this->source['password'] == $database['password'] 
+			&& $this->source['database'] == $database['database'] ) ;
 	}
 	
 	
@@ -135,16 +142,16 @@ class MySQLEngine extends AbstractDB {
 	
 	function open ()
 	{
-		if( !is_resource($this->__connection) && !empty($this->database) )
+		if( !is_resource($this->__connection) && !empty($this->source) )
 		{
-			if ( array_key_exists('persistent', $this->database ) && $this->database['persistent'] == true )
+			if ( array_key_exists('persistent', $this->source ) && $this->source['persistent'] == true )
 			{
-				$this->__connection = mysql_pconnect ( $this->database['host'] , $this->database['login'] , $this->database['password'] ) ;
+				$this->__connection = mysql_pconnect ( $this->source['host'] , $this->source['login'] , $this->source['password'] ) ;
 			} else {
-				$this->__connection = mysql_connect ( $this->database['host'] , $this->database['login'] , $this->database['password'] ) ;
+				$this->__connection = mysql_connect ( $this->source['host'] , $this->source['login'] , $this->source['password'] ) ;
 			}
 			
-			if ( is_resource($this->__connection) && mysql_select_db ( $this->database['database'], $this->__connection) === true ) 
+			if ( is_resource($this->__connection) && mysql_select_db ( $this->source['database'], $this->__connection) === true ) 
 			{
 				mysql_query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'", $this->__connection);
 				
@@ -153,6 +160,7 @@ class MySQLEngine extends AbstractDB {
 				$this->_log[] = 'Connection attempt failed' ;
 			}
 		}
+		
 		return is_resource($this->__connection)  ;
 	}
 	
@@ -259,7 +267,7 @@ class MySQLEngine extends AbstractDB {
 			foreach ( $struct as &$field ) 
 			{
 				
-				if ( DBHelper::validateField ( $field ) )
+				if ( DBTableSchema::validateField ( $field ) )
 				{
 					$tstruct2[$table][$field['name']] = $field;
 					$tstruct[$table][] = $field ;
@@ -338,7 +346,7 @@ class MySQLEngine extends AbstractDB {
 		
 		$fields = $this->checkFields( $table , $fields ) ;
 		
-		$res = $this->findAll ( $table , array ( $primaryKey = AbstractDB::getPrimary($this->struct[$table]) => $id ) , 1 , $fields );
+		$res = $this->findAll ( $table , array ( $primaryKey = AbstractDBEngine::getPrimary($this->struct[$table]) => $id ) , 1 , $fields );
 		if ( !empty($res) ) 
 		{
 			return $res[0] ;
@@ -351,7 +359,7 @@ class MySQLEngine extends AbstractDB {
 		$this->tableExistsOr403($table);
 		
 		
-		$res = $this->findRelatives($table, $this->findAll ( $table , array ( $primaryKey = AbstractDB::getPrimary($this->struct[$table]) => $id ) , 1 , $fields ) , $subfields, $recursivity ) ;
+		$res = $this->findRelatives($table, $this->findAll ( $table , array ( $primaryKey = AbstractDBEngine::getPrimary($this->struct[$table]) => $id ) , 1 , $fields ) , $subfields, $recursivity ) ;
 		if ( !empty($res) ) 
 		{
 			return $res[0] ;
@@ -363,7 +371,7 @@ class MySQLEngine extends AbstractDB {
 	{
 		$this->tableExistsOr403($table);
 		
-		$q = 'SELECT ' . $this->__selectFields($fields,$table) . ' FROM `' . $this->database['database'] . '`.`' . $table . '` ' ;
+		$q = 'SELECT ' . $this->__selectFields($fields,$table) . ' FROM `' . $this->source['database'] . '`.`' . $table . '` ' ;
 		$q .= $this->__getCond ( $cond , $table) ;
 		$q .= $this->__getLimit ( $table , $limit ) ;
 		$q .= ';';
@@ -386,7 +394,7 @@ class MySQLEngine extends AbstractDB {
 		
 		if ( array_key_exists($table , $this->struct ) == false )
 		{
-			trigger_error('Table ' . $table . ' does not exists in structure ' . $this->database['host'] ) ;
+			trigger_error('Table ' . $table . ' does not exists in structure ' . $this->source['host'] ) ;
 			return $dbselection ;
 		}
 		
@@ -414,14 +422,14 @@ class MySQLEngine extends AbstractDB {
 	
 		foreach( $this->struct[$table] as $fieldName => &$field )
 		{
-			if ( @$field['behavior'] & AbstractDB::BHR_PICK_IN || @$field['behavior'] & AbstractDB::BHR_PICK_ONE || $field['type'] == AbstractDB::TYPE_PARENT || $field['type'] == AbstractDB::TYPE_CHILD )
+			if ( @$field['behavior'] & DBSchema::BHR_PICK_IN || @$field['behavior'] & DBSchema::BHR_PICK_ONE || $field['type'] == DBSchema::TYPE_PARENT || $field['type'] == DBSchema::TYPE_CHILD )
 			{
 				if ( array_key_exists($field['source'],$subFields) && empty($subFields[$field['source']]) )
 				{
 					continue;
 				}
 				$n = $fieldName ;
-				$n2 = AbstractDB::getPrimary($this->struct[$field['source']]) ;
+				$n2 = AbstractDBEngine::getPrimary($this->struct[$field['source']]) ;
 				
 				$childTable = array () ;
 				$childTable['fieldName'] = $n2;
@@ -429,7 +437,7 @@ class MySQLEngine extends AbstractDB {
 				$childTable['resName'] = $n;
 				$childTable['source'] = $field['source'];
 				$childTable['ids'] = array () ;
-				$childTable['multi'] = @$field['behavior'] & AbstractDB::BHR_PICK_IN ;
+				$childTable['multi'] = @$field['behavior'] & DBSchema::BHR_PICK_IN ;
 				foreach ( $dbselection as $k => &$res )
 				{
 					if ( !is_array($res) ) 
@@ -560,7 +568,7 @@ class MySQLEngine extends AbstractDB {
 						{
 							$ids = explode(',',$res[$n]);
 							$arr = array () ;
-							$primary = AbstractDB::getPrimary($this->getTableStructure($table)) ;
+							$primary = AbstractDBEngine::getPrimary($this->getTableStructure($table)) ;
 							foreach($ids as $_id)
 							{
 								foreach($res[$name] as $k=>$r)
@@ -604,7 +612,7 @@ class MySQLEngine extends AbstractDB {
 		
 		if ( array_key_exists($table , $this->struct ) == false )
 		{
-			trigger_error('Table ' . $table . ' does not exists in structure ' . $this->database['host'] ) ;
+			trigger_error('Table ' . $table . ' does not exists in structure ' . $this->source['host'] ) ;
 			return $dbselection ;
 		}
 		
@@ -632,7 +640,7 @@ class MySQLEngine extends AbstractDB {
 	
 		foreach( $this->struct[$table] as $fieldName => &$field )
 		{
-			if ( @$field['behavior'] & AbstractDB::BHR_PICK_IN || @$field['behavior'] & AbstractDB::BHR_PICK_ONE || $field['type'] == AbstractDB::TYPE_PARENT || $field['type'] == AbstractDB::TYPE_CHILD )
+			if ( @$field['behavior'] & DBSchema::BHR_PICK_IN || @$field['behavior'] & DBSchema::BHR_PICK_ONE || $field['type'] == DBSchema::TYPE_PARENT || $field['type'] == DBSchema::TYPE_CHILD )
 			{
 				if ( array_key_exists($field['source'],$subFields) && empty($subFields[$field['source']]) )
 				{
@@ -641,11 +649,11 @@ class MySQLEngine extends AbstractDB {
 				
 				if ( $field['source'] == $table )
 				{
-					$n = AbstractDB::getPrimary($this->struct[$table]) ;
+					$n = AbstractDBEngine::getPrimary($this->struct[$table]) ;
 					$n2 = $field['name'] ;
 				} else {
 					$n = $field['name'] ;
-					$n2 = AbstractDB::getPrimary($this->struct[$field['source']]) ;
+					$n2 = AbstractDBEngine::getPrimary($this->struct[$field['source']]) ;
 				}
 				
 				$childTable = array () ;
@@ -654,7 +662,7 @@ class MySQLEngine extends AbstractDB {
 				$childTable['resName'] = $n;
 				$childTable['source'] = $field['source'];
 				$childTable['ids'] = array () ;
-				$childTable['multi'] = @$field['behavior'] & AbstractDB::BHR_PICK_IN ;
+				$childTable['multi'] = @$field['behavior'] & DBSchema::BHR_PICK_IN ;
 				
 				foreach ( $dbselection as $k => &$res )
 				{
@@ -813,7 +821,7 @@ class MySQLEngine extends AbstractDB {
 						{
 							$ids = explode(',',$res[$n]);
 							$arr = array () ;
-							$primary = AbstractDB::getPrimary($this->getTableStructure($table)) ;
+							$primary = AbstractDBEngine::getPrimary($this->getTableStructure($table)) ;
 							foreach($ids as $_id)
 							{
 								foreach($res[$name] as $k=>$r)
@@ -910,7 +918,7 @@ class MySQLEngine extends AbstractDB {
 		
 		$q = '' ;
 		
-		$q = 'SELECT ' . $this->__selectFields($fields,$table) . ' FROM `' . $this->database['database'] . '`.`' . $table . '` '.$this->__getCond($conds, $table).' ORDER BY RAND() LIMIT 1 ' ;
+		$q = 'SELECT ' . $this->__selectFields($fields,$table) . ' FROM `' . $this->source['database'] . '`.`' . $table . '` '.$this->__getCond($conds, $table).' ORDER BY RAND() LIMIT 1 ' ;
 		$this->_log[] = 'Query(add): ' . $q ;
 		$res =  mysql_query( $q , $this->getConnection()) ;
 		$result =  $this->__fetchArr($res,$this->struct[$table],$fields);
@@ -952,7 +960,7 @@ class MySQLEngine extends AbstractDB {
 				$fieldname = trim($fieldname) ;
 				
 				$escapeVal = true ;
-				if ( ake($fieldname, $this->struct[$table]) && @$this->struct[$table][$fieldname]['behavior'] & AbstractDB::BHR_PICK_IN )
+				if ( ake($fieldname, $this->struct[$table]) && @$this->struct[$table][$fieldname]['behavior'] & DBSchema::BHR_PICK_IN )
 				{
 					$val = '\'(^' . $val . '\,)|(\,' . $val . '$)|(\,' . $val . '\,)|(^' . $val . '$)\'';
 					$escapeVal = false ;
@@ -1017,10 +1025,10 @@ class MySQLEngine extends AbstractDB {
 				return ' LIMIT ' . $limit[1] . ', ' . $limit[0] ;
 			} else if ( ($c == 2 || $c == 1) && is_string($limit[0]) )
 			{
-				return ' ORDER BY `' . $this->database['database'] . '`.`' . $table . '`.`' .$limit[0] .'` ' . ($c == 1 || strtoupper($limit[1]) == 'ASC' ? 'ASC' : 'DESC' ) ;
+				return ' ORDER BY `' . $this->source['database'] . '`.`' . $table . '`.`' .$limit[0] .'` ' . ($c == 1 || strtoupper($limit[1]) == 'ASC' ? 'ASC' : 'DESC' ) ;
 			} else if ( $c == 4 )
 			{
-				return ' ORDER BY `' . $this->database['database'] . '`.`' . $table . '`.`' .$limit[2] .'` ' . (strtoupper($limit[3]) == 'ASC' ? 'ASC' : 'DESC' ) . ' LIMIT ' . $limit[1] . ', ' . $limit[0] ;
+				return ' ORDER BY `' . $this->source['database'] . '`.`' . $table . '`.`' .$limit[2] .'` ' . (strtoupper($limit[3]) == 'ASC' ? 'ASC' : 'DESC' ) . ' LIMIT ' . $limit[1] . ', ' . $limit[0] ;
 			} 
 		}
 	}
@@ -1060,7 +1068,7 @@ class MySQLEngine extends AbstractDB {
 					continue;
 				}
 				
-				$val &= DBHelper::applyBehaviors ( $field , $val , true, $this->getConnection() ) ;
+				$val &= DBTableSchema::applyInputBehaviors ( $field , $val , true, $this->getConnection() ) ;
 				
 				if ( $val != '' )
 				{
@@ -1071,9 +1079,9 @@ class MySQLEngine extends AbstractDB {
 				
 			}
 			
-			$q = 'UPDATE `' . $this->database['database'] . '`.`' . $table . '` SET ' ;
+			$q = 'UPDATE `' . $this->source['database'] . '`.`' . $table . '` SET ' ;
 			$q .= implode ( ', ' , $entries ) ;
-			$q .= ' WHERE `' . $this->database['database'] . '`.`' . $table . '`.`'.AbstractDB::getPrimary($this->struct[$table]).'` = ' . (is_numeric($id) ? $id : '\'' .$id . '\'')  . ' LIMIT 1';
+			$q .= ' WHERE `' . $this->source['database'] . '`.`' . $table . '`.`'.AbstractDBEngine::getPrimary($this->struct[$table]).'` = ' . (is_numeric($id) ? $id : '\'' .$id . '\'')  . ' LIMIT 1';
 			$this->_log[] = 'Query(edit): ' . $q ;
 			if ( !$this->_doTemp )
 			{
@@ -1112,7 +1120,7 @@ class MySQLEngine extends AbstractDB {
 					continue;
 				}
 				
-				$val &= DBHelper::applyBehaviors ( $field , $val , true , $this->getConnection() ) ;
+				$val &= DBTableSchema::applyInputBehaviors ( $field , $val , true , $this->getConnection() ) ;
 				
 				if ( $val != '' )
 				{
@@ -1128,7 +1136,7 @@ class MySQLEngine extends AbstractDB {
 				
 			}
 			
-			$q = 'UPDATE `' . $this->database['database'] . '`.`' . $table . '` SET ' ;
+			$q = 'UPDATE `' . $this->source['database'] . '`.`' . $table . '` SET ' ;
 			$q .= implode ( ', ' , $entries ) ;
 			$q .= $this->__getCond ( $cond , $table) ;
 			$this->_log[] = 'Query(edit): ' . $q ;
@@ -1216,7 +1224,7 @@ class MySQLEngine extends AbstractDB {
 				$val = '' ;	
 			}
 			
-			$val &= DBHelper::applyBehaviors ( $field , $val , false , $this->getConnection()) ;
+			$val &= DBTableSchema::applyInputBehaviors ( $field , $val , false , $this->getConnection()) ;
 			
 			$row[$name] = &$val ;
 			
@@ -1229,7 +1237,7 @@ class MySQLEngine extends AbstractDB {
 		
 		if ( $onlyValues == false )
 		{
-			$q = 'INSERT INTO `' . $this->database['database'] . '`.`' . $table . '` (`' ;
+			$q = 'INSERT INTO `' . $this->source['database'] . '`.`' . $table . '` (`' ;
 			$q .= implode ( '`,`' , $keys ) ;
 			$q .= '`) VALUES' ;
 		} else {
@@ -1246,7 +1254,7 @@ class MySQLEngine extends AbstractDB {
 	{
 		$this->tableExistsOr403($table);
 		
-		$q = 'SELECT COUNT(*) FROM `' . $this->database['database'] . '`.`' . $table . '` ' . ( !empty ( $cond ) ? $this->__getCond($cond, $table) : '' ) . ' ;' ;
+		$q = 'SELECT COUNT(*) FROM `' . $this->source['database'] . '`.`' . $table . '` ' . ( !empty ( $cond ) ? $this->__getCond($cond, $table) : '' ) . ' ;' ;
 		$this->_log[] = 'Query(count): ' . $q ;
 		$res =  mysql_fetch_array ( mysql_query($q, $this->getConnection()) ) ;
 		return $res[0] ;
@@ -1263,7 +1271,7 @@ class MySQLEngine extends AbstractDB {
 	{
 		$this->tableExistsOr403($table);
 		
-		$q = 'DELETE FROM `' . $this->database['database'] . '`.`' . $table . '` WHERE `' . $table . '`.`' . AbstractDB::getPrimary($this->struct[$table]) . '` = ' .(is_numeric($id) ? $id : '\'' .$id . '\'')  . ' ;';
+		$q = 'DELETE FROM `' . $this->source['database'] . '`.`' . $table . '` WHERE `' . $table . '`.`' . AbstractDBEngine::getPrimary($this->struct[$table]) . '` = ' .(is_numeric($id) ? $id : '\'' .$id . '\'')  . ' ;';
 		
 		$this->_log[] = 'Query(delete): ' . $q ;
 		$res =  mysql_query( $q, $this->getConnection() ) ;
@@ -1274,7 +1282,7 @@ class MySQLEngine extends AbstractDB {
 	{
 		$this->tableExistsOr403($table);
 		
-		$q = 'DELETE FROM `' . $this->database['database'] . '`.`' . $table . '` ' . $this->__getCond($cond, $table). ' ;';
+		$q = 'DELETE FROM `' . $this->source['database'] . '`.`' . $table . '` ' . $this->__getCond($cond, $table). ' ;';
 		
 		$this->_log[] = 'Query(delete): ' . $q ;
 		$res =  mysql_query( $q, $this->__connection ) ;
@@ -1283,7 +1291,7 @@ class MySQLEngine extends AbstractDB {
 	
 	function hasAnyTable ()
 	{
-		$tables = $this->__fetchArr(mysql_query ( 'SHOW TABLES FROM `' . $this->database['database'] . '`' , $this->__connection)) ;
+		$tables = $this->__fetchArr(mysql_query ( 'SHOW TABLES FROM `' . $this->source['database'] . '`' , $this->__connection)) ;
 		return !empty($tables);
 	}
 	
@@ -1311,7 +1319,7 @@ class MySQLEngine extends AbstractDB {
 			
 			$res = true ;
 			
-			$q =  'SHOW TABLES FROM `' . $this->database['database'] . '`' ;
+			$q =  'SHOW TABLES FROM `' . $this->source['database'] . '`' ;
 			
 			$this->_log[] = 'Query(__applyStructure): ' . $q ;
 			
@@ -1328,10 +1336,10 @@ class MySQLEngine extends AbstractDB {
 			{
 				// If the table does not exist in the structure we DROP it
 				if ( array_key_exists( $tableName , $this->struct ) == false 
-					&& (array_key_exists ( 'no_drop' , $this->database ) == false 
-					|| $this->database['no_drop'] === true) )
+					&& (array_key_exists ( 'no_drop' , $this->source ) == false 
+					|| $this->source['no_drop'] === true) )
 				{
-					$q = 'DROP TABLE `' . $this->database['database'] . '`.`' . $tableName . '`' ;
+					$q = 'DROP TABLE `' . $this->source['database'] . '`.`' . $tableName . '`' ;
 					$this->_log[] = 'Query(__applyStructure): ' . $q ;
 					$res = mysql_query ($q, $this->getConnection()) ;
 					unset ( $tables[$k] ) ;
@@ -1347,7 +1355,7 @@ class MySQLEngine extends AbstractDB {
 					continue;
 				}
 				
-				$q =  'DESCRIBE `' . $this->database['database'] . '`.`' . $tableName . '`'  ;
+				$q =  'DESCRIBE `' . $this->source['database'] . '`.`' . $tableName . '`'  ;
 				$this->_log[] = 'Query(__applyStructure): ' . $q ;
 				$fields = mysql_query ($q, $this->getConnection()) ;
 				$fields = $this->__fetchArr($fields) ;
@@ -1365,7 +1373,7 @@ class MySQLEngine extends AbstractDB {
 					}
 					if(!$found)
 					{
-						$q = 'ALTER TABLE `' . $this->database['database'] . '`.`' . $tableName . '` ADD ' . $this->__getCreateField($structFieldDesc,true);
+						$q = 'ALTER TABLE `' . $this->source['database'] . '`.`' . $tableName . '` ADD ' . $this->__getCreateField($structFieldDesc,true);
 						$this->_log[] = 'Query(__applyStructure): ' . $q ;
 						if ( !$this->query($q, $this->getConnection()) )
 						{
@@ -1387,7 +1395,7 @@ class MySQLEngine extends AbstractDB {
 					}
 					if(!$found)
 					{
-						$q = 'ALTER TABLE `' . $this->database['database'] . '`.`' . $tableName . '` DROP `' . $dbFieldDesc[0] . '`';
+						$q = 'ALTER TABLE `' . $this->source['database'] . '`.`' . $tableName . '` DROP `' . $dbFieldDesc[0] . '`';
 						$this->_log[] = 'Query(__applyStructure): ' . $q ;
 						if ( !$this->query($q, $this->getConnection()) )
 						{
@@ -1436,13 +1444,13 @@ class MySQLEngine extends AbstractDB {
 					{
 						$fieldDesc = $tableStruct[$fieldname] ;
 						
-						$pres[$k][$fieldname] = DBHelper::applyOutputBehaviors ( $fieldDesc , array_shift($line_array) ) ;
+						$pres[$k][$fieldname] = DBTableSchema::applyOutputBehaviors ( $fieldDesc , array_shift($line_array) ) ;
 					}
 				} else {
 				
 					foreach ( $tableStruct as $name => &$field )
 					{
-						$pres[$k][$name] = DBHelper::applyOutputBehaviors ( $field , array_shift($line_array)); 
+						$pres[$k][$name] = DBTableSchema::applyOutputBehaviors ( $field , array_shift($line_array)); 
 							
 					}
 				}
@@ -1457,7 +1465,7 @@ class MySQLEngine extends AbstractDB {
 	
 	private function __createTable ( $tableName , &$fields )
 	{
-		$q = 'CREATE TABLE `' . $this->database['database'] . '`.`' . $this->__getTableName ( $tableName ) . '` (' ;
+		$q = 'CREATE TABLE `' . $this->source['database'] . '`.`' . $this->__getTableName ( $tableName ) . '` (' ;
 				
 		foreach ( $fields as &$field )
 		{
@@ -1485,7 +1493,7 @@ class MySQLEngine extends AbstractDB {
 		
 		$q = '`' . $field['name'] . '` ' . $type ;
 		
-		if ( @$field['behavior'] & AbstractDB::BHR_INCREMENT )
+		if ( @$field['behavior'] & DBSchema::BHR_INCREMENT )
 		{
 			$q .= ' NOT NULL AUTO_INCREMENT' ;
 		}
@@ -1498,7 +1506,7 @@ class MySQLEngine extends AbstractDB {
 			} else {
 				$q .= ', PRIMARY KEY ( `id` )' ;
 			}
-		} else if ( @$field['behavior'] & AbstractDB::BHR_PRIMARY )
+		} else if ( @$field['behavior'] & DBSchema::BHR_PRIMARY )
 		{
 			if ( $onAlter )
 			{
@@ -1506,7 +1514,7 @@ class MySQLEngine extends AbstractDB {
 			} else {
 				$q .= ', PRIMARY KEY ( `'.$field['name'].'` )' ;
 			}
-		} else if ( @$field['behavior'] & AbstractDB::BHR_PRIMARY )
+		} else if ( @$field['behavior'] & DBSchema::BHR_PRIMARY )
 		{
 			if ( $onAlter )
 			{
@@ -1520,10 +1528,10 @@ class MySQLEngine extends AbstractDB {
 	
 	private function __getEngine ()
 	{
-		if ( array_key_exists('table_engine', $this->database )
-			&& in_array ( strtoupper($this->database['table_engine']) , array ( 'INNODB' , 'MYISAM', 'MEMORY' , 'MRG_MYISAM' ) ) )
+		if ( array_key_exists('table_engine', $this->source )
+			&& in_array ( strtoupper($this->source['table_engine']) , array ( 'INNODB' , 'MYISAM', 'MEMORY' , 'MRG_MYISAM' ) ) )
 		{
-			return strtoupper($this->database['table_engine']) ;
+			return strtoupper($this->source['table_engine']) ;
 		}
 		
 		return 'INNODB' ;
@@ -1536,9 +1544,9 @@ class MySQLEngine extends AbstractDB {
 	
 	private function __getTableName ( $tableName )
 	{
-		if ( array_key_exists('table_prefix', $this->database ) )
+		if ( array_key_exists('table_prefix', $this->source ) )
 		{
-			return $this->database['table_prefix'] . $tableName ;
+			return $this->source['table_prefix'] . $tableName ;
 		}
 		
 		return $tableName ;

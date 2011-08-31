@@ -8,14 +8,14 @@ $api = array (
 			'ae_api_keys' => array (
 				array (
 					'name' => 'id',
-					'type' => AbstractDB::TYPE_INT,
-					'behavior' => AbstractDB::BHR_INCREMENT,
+					'type' => DBSchema::TYPE_INT,
+					'behavior' => DBSchema::BHR_INCREMENT,
 					'hide-from-table' => true
 				),
 				array (
 					'name' => 'label',
 					'label' => _('Key label'),
-					'type' => AbstractDB::TYPE_STRING,
+					'type' => DBSchema::TYPE_STRING,
 					'validation' => array (
 						'rule' => DBValidator::NOT_EMPTY,
 						'message' => _('Give a name to the new API security key')
@@ -24,7 +24,7 @@ $api = array (
 				array (
 					'name' => 'public',
 					'label' => _('Public key'),
-					'type' => AbstractDB::TYPE_STRING,
+					'type' => DBSchema::TYPE_STRING,
 					'length' => 16,
 					'validation' => array (
 						'rule' => '[A-Za-z0-9]{8,16}',
@@ -36,7 +36,7 @@ $api = array (
 				array (
 					'name' => 'private',
 					'label' => _('Private key'),
-					'type' => AbstractDB::TYPE_STRING,
+					'type' => DBSchema::TYPE_STRING,
 					'hide-from-table' => true,
 					'length' => 16,
 					'validation' => array (

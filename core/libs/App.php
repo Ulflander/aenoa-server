@@ -914,7 +914,7 @@ class App {
 	 * Tests if a database exists
 	 * 
 	 * @param string $id
-	 * @return AbstractDB
+	 * @return AbstractDBEngine
 	 */
 	static public function hasDatabase ( $id = 'main' )
 	{
@@ -932,11 +932,11 @@ class App {
 	/**
 	 * A part of this process should be integrated into db engine classes  
 	 * 
-	 * @param unknown_type $id
-	 * @param unknown_type $engine
-	 * @param unknown_type $source
-	 * @param unknown_type $structureFile
-	 * @param unknown_type $connect
+	 * @param string $id
+	 * @param string $engine
+	 * @param mixed $source
+	 * @param string $structureFile
+	 * @param boolean $connect Do connect directly to database (default: true)
 	 */
 	static public function declareDatabase ( $id , $engine , $source, $structureFile= null, $connect = true ) 
 	{
@@ -966,18 +966,6 @@ class App {
 				self::do500 ( 'Structure file for DB ' . $id . ' is not valid.' ) ;
 			}
 		}
-	
-		$db = new $engine () ;
-		
-		if ( $db->sourceExists ( $source, true ) )
-		{
-			if ( !$db->setSource ( $source ) )
-			{
-				self::do500 ( 'Connection to DB ' . $id . ' failed.' ) ;
-			}
-		} else {
-			self::do500 ( 'Source for DB ' . $id . ' does not exist.' ) ;
-		}
 		
 		if ( $id == 'main' )
 		{
@@ -1004,6 +992,18 @@ class App {
 					$tables = $api ;
 				}
 			}
+		}
+		
+		$db = new $engine ( $id , $tables ) ;
+		
+		if ( $db->sourceExists ( $source, true ) )
+		{
+			if ( !$db->setSource ( $source ) )
+			{
+				self::do500 ( 'Connection to DB ' . $id . ' failed.' ) ;
+			}
+		} else {
+			self::do500 ( 'Source for DB ' . $id . ' does not exist.' ) ;
 		}
 		
 		if ( empty($tables) )
@@ -1056,7 +1056,7 @@ class App {
 	 * By default, will try to return 'main' database if no database structure ID given
 	 * 
 	 * @param string $id Structure ID of db to return
-	 * @return AbstractDB
+	 * @return AbstractDBEngine
 	 */
 	static public function getDatabase ( $id = 'main' )
 	{

@@ -1,51 +1,48 @@
 <?php
 
 /**
- * AbstractDB describe how all DB engines work.
+ * AbstractDBEngine describe how all DB engines work.
  * 
- * All DB engines must extend AbstractDB.
- * 
- * 
+ * All DB engines must extend AbstractDBEngine.
  * 
  * 
  * 
  * 
- * 
- * 
- * EXAMPLE OF STRUCTURE OF TABLES AND FIELDS
+ * Structures:
  * 
  * 
  * 
- * $field = array (
- * 		'name' => 'my_field_id',
- * 		'type' => AbstractDB::TYPE_INT,
- * 		'behavior' => AbstractDB::BHR_INCREMENT,
- * 		'default' => 'any value' 
- * ) ;
+ * > $field = array (
+ * >		'name' => 'my_field_id',
+ * >		'type' => DBSchema::TYPE_INT,
+ * >		'behavior' => DBSchema::BHR_INCREMENT,
+ * >		'default' => 'any value' 
+ * > ) ;
  * 
  * for enum type, a fifth property must be applied:
  * 
- * $enumField = array (
- * 		'name' => 'my_enum_field',
- * 		'type' => AbstractDB::TYPE_ENUM,
- * 		'behavior' => AbstractDB::BHR_DT_ON_EDIT,
- * 		'default' => 'any value' 
- * 		'values' => array ( 'any value' , 'another value' )
- * ) ;
+ * > $enumField = array (
+ * >		'name' => 'my_enum_field',
+ * >		'type' => DBSchema::TYPE_ENUM,
+ * >		'behavior' => DBSchema::BHR_DT_ON_EDIT,
+ * >		'default' => 'any value' 
+ * >		'values' => array ( 'any value' , 'another value' )
+ * > ) ;
  * 
  * 
  * So here what would be an entire table structure:
  * 
+ * (start code)
  * $usersTable = array (
  * 		array (
  * 			'name' => 'id',
- * 			'type' => AbstractDB::TYPE_INT,
- * 			'behavior' => AbstractDB::BHR_INCREMENT
+ * 			'type' => DBSchema::TYPE_INT,
+ * 			'behavior' => DBSchema::BHR_INCREMENT
  * 		),
  * 		array ( 
  * 			'name' => 'email',
  * 			'label' => 'Email address',
- * 			'type' => AbstractDB::TYPE_STRING,
+ * 			'type' => DBSchema::TYPE_STRING,
  * 			'validation' => array (
  * 				'rule' => DBValidator::EMAIL,
  * 				'message' => 'The email field must be a well-formatted email address'
@@ -54,8 +51,8 @@
  * 		array ( 
  * 			'name' => 'password',
  * 			'label' => 'Password',
- * 			'type' =>  AbstractDB::TYPE_STRING,
- * 			'behavior' => AbstractDB::BHR_SHA1,
+ * 			'type' =>  DBSchema::TYPE_STRING,
+ * 			'behavior' => DBSchema::BHR_SHA1,
  * 			'validation' => array (
  * 				'rule' => '/[A-Za-z0-9\-_]{6,10}/',
  * 				'message' => 'Your password must contain 6 to 10 chars "A" to "Z", "a" to "z", "0" to "9", "-" and "_". '
@@ -64,7 +61,7 @@
  * 		array ( 
  * 			'name' => 'profile_picture',
  * 			'label' => 'Profile picture',
- * 			'type' =>  AbstractDB::TYPE_FILE,
+ * 			'type' =>  DBSchema::TYPE_FILE,
  * 			'behavior' => array ( &CallBackObjectInstance , 'methodName' , array ( 'argument 2' , 'some other argument' ) ) ,
  * 			'validation' => array (
  * 				'rule' => array ( 'jpg' , 'png' ),
@@ -72,6 +69,7 @@
  * 			)
  * 		)
  * ) ;
+ * (end)
  * 
  * 
  * 
@@ -81,8 +79,7 @@
  * 
  * 
  * 
- * 
- * ABOUT TYPES
+ * Type:
  * 
  * 
  * 
@@ -95,6 +92,7 @@
  * - enum
  * - timestamp
  * - datetime
+ * - date
  * 
  * Concrete engine must reflect these types, for example: in MySQL concrete engine,
  * string will correspond to TEXT, int to INT, boolean will be an enum like this one: ( 'TRUE' , 'FALSE' ), ...
@@ -109,15 +107,13 @@
  * 
  * 
  * 
- * ABOUT BEHAVIORS
+ * Behaviors:
  * 
  * 
  * 
  * 
  * The behaviors that must be usable in concrete engine are:
  * - BHR_INCREMENT : Behavior Increment (only for int typed fields)
- * 		This will increment 
- * 
  * - BHR_TS_ON_EDIT : Behavior Timestamp on edit (only for timestamp type fields)
  * - BHR_DT_ON_EDIT : Behaviour Datetime on edit (only for datetime type fields)
  * - BHR_SHA1 : Behavior sha1 (only for string type fields)
@@ -127,18 +123,19 @@
  * Behavior for a field can be replaced by a callback method of yours. 
  * Regarding this field behavior:
  * 
+ * (start code)
  * $profilePictureField = array ( 
  * 			'name' => 'profile_picture',
  * 			'label' => 'Profile picture',
- * 			'type' =>  AbstractDB::TYPE_FILE,
+ * 			'type' =>  DBSchema::TYPE_FILE,
  * 			'behavior' => array ( &CallBackObjectInstance , 'methodName' , array ( 'argument 2' , 'some other argument' ) ) ,
  * 			'validation' => array (
  * 				'rule' => array ( 'jpg' , 'png' ),
  * 				'message' => 'Your profile picture must be a JPG or a PNG file.'
  * 			);
- * 
+ * (end)
  * we should have a class named CallBackObjectInstance, that implements the method methodName:
- * 
+ * (start code) 
  * class CallBackObjectInstance {
  * 		function methodName ( $fieldValue , $argument2 , $someOtherArgument ) 
  * 		{
@@ -151,9 +148,11 @@
  * 			return $fieldValue ;
  * 		}
  * }
+ * (end)
  * 
  * Here are some others valid callback behaviors and their corresponding functions:
  * 
+ * (start code)
  * $behaviorFunction = array ( 'function_name' ) ;
  * 
  * function function_name ( $fieldValue )
@@ -170,7 +169,7 @@
  * 		// Make something
  * 		return $fieldValue;
  * }
- * 
+ * (end)
  * and so on.
  * 
  * 
@@ -181,7 +180,7 @@
  * 
  * 
  * 
- * ABOUT SPECIAL BEHAVIOR: MAGIC FIELDS NAME
+ * Magic field names:
  * 
  * 
  * 
@@ -199,21 +198,13 @@
  * These fields must be typed as DATETIME or as TIMESTAMP.
  * 
  * This feature is considered as an auto behavior, because the implementation of magic fields resolution is done
- * in DBHelper::applyBehaviors method.
+ * in DBTableSchema::applyInputBehaviors method.
  * 
  * Using BHR_DT_ON_EDIT or BHR_TS_ON_EDIT on magic fields 'updated' and 'modified'  is obvious:
  * the time will be updated twice. 
  * 
  * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * ABOUT CONDITIONS IN NORMAL METHODS (findAll, findFirst, editAll, deleteAll and count)
+ * Writing conditions:
  * 
  * You can use a strict equality creating a simple associative array:
  * 
@@ -228,73 +219,12 @@
  * > // This will search for all entries which name is foo and password is different than bar
  * > $conditions = array ( 'datetime' => '< NOW()' , 'password' => '!= bar' );
  * 
- * 
- * 
+ * @see DBSchema
+ * @see DBTableSchema
+ * @see MySQLEngine
+ * @see DBValidator
  */
-class AbstractDB {
-	
-
-	
-	/////////////////////////////////////////////////////
-	// BEHAVIORS
-	
-	const BHR_INCREMENT = 1 ;
-	
-	const BHR_DT_ON_EDIT = 2 ;
-		
-	const BHR_TS_ON_EDIT = 4 ;
-	
-	const BHR_SHA1 = 8 ;
-	
-	const BHR_MD5 = 16 ;
-	
-	const BHR_URLIZE = 32 ;
-	
-	const BHR_AS_CHILD = 64 ;
-	
-	const BHR_AS_CODE = 128 ;
-	
-	const BHR_PICK_IN = 256 ;
-	
-	const BHR_PICK_ONE = 512 ;
-	
-	const BHR_UNIQUE = 1024 ;
-	
-	const BHR_UNEDITABLE = 2048 ;
-	
-	const BHR_PRIMARY = 4096 ;
-	
-	const BHR_LAT_LNG = 8192 ;
-	
-	const BHR_SERIALIZED = 16384 ;
-	
-
-	/////////////////////////////////////////////////////
-	// TYPES
-	
-	const TYPE_FLOAT = 'float' ;
-	
-	const TYPE_INT = 'int' ;
-	
-	const TYPE_STRING = 'string' ;
-	
-	const TYPE_TEXT = 'text' ;
-	
-	const TYPE_BOOL = 'bool' ;
-	
-	const TYPE_ENUM = 'enum' ;	
-	
-	const TYPE_TIMESTAMP = 'timestamp' ;
-	
-	const TYPE_DATETIME = 'datetime' ;
-	
-	const TYPE_FILE = 'file' ;
-	
-	const TYPE_PARENT = 'parent' ;
-	
-	const TYPE_CHILD = 'child' ;
-	
-	
+class AbstractDBEngine extends DBSchema {
 	
 	static function getPrimary ( &$tableStructure , &$fieldData = null )
 	{
@@ -364,16 +294,6 @@ class AbstractDB {
 	
 	
 	/**
-	 * An untyped reference to what is a database for a concrete engine
-	 * e.g. In concrete MySQL DB, $database will be an array containing db login data
-	 * if JSONDatabase, $database will be a string containing path to the JSON file
-	 * and so on...
-	 * 
-	 * @access protected
-	 */
-	protected $database ;  
-	
-	/**
 	 * Data stored in memory
 	 * 
 	 * Some engines does not need this 
@@ -381,6 +301,16 @@ class AbstractDB {
 	 * @var
 	 */
 	protected $data ;
+	
+	/**
+	 * Source infos
+	 * 
+	 * Check out concrete engines implementation to get doc about source formatting.
+	 * 
+	 * 
+	 * @var mixed
+	 */
+	protected $source ;
 	
 	/**
 	 * Structure of database
@@ -434,16 +364,6 @@ class AbstractDB {
 	// Magic methods
 	
 	
-	final function __construct ()
-	{
-		
-	}
-	
-	final function __destruct ()
-	{
-		
-	}
-	
 	
 	
 	
@@ -454,7 +374,9 @@ class AbstractDB {
 	/**
 	 * This method open the database
 	 * 
-	 * @return 
+	 * Concrete implementation returns true if database is connected, false otherwise
+	 * 
+	 * @return boolean True is database connected, false otherwise
 	 */
 	function open ()
 	{
@@ -507,7 +429,7 @@ class AbstractDB {
 	 * 
 	 * The create option may be unavailable in some engines.
 	 * 
-	 * @see AbstractDB::createSource
+	 * @see AbstractDBEngine::createSource
 	 * @param string $database
 	 * @param object $create [optional] Create DB if database does not exists
 	 * @return bool True if database exists and is usable, false otherwise
@@ -521,7 +443,7 @@ class AbstractDB {
 	 * New database will be set as current database.
 	 * 
 	 * This method can be unavailable depending on concrete database engine.
-	 * Refer to AbstractDB::hasCreationCapability to know if an engine can create new databases.
+	 * Refer to AbstractDBEngine::hasCreationCapability to know if an engine can create new databases.
 	 * 
 	 * @param string $database
 	 * @return bool True if database has been created, false otherwise
@@ -655,6 +577,66 @@ class AbstractDB {
 	function findFirst ( $table , $cond = array () , $fields = array ()  ) { return false; }
 	
 	/**
+	 * Find an entry in a table based on ID, and retrieve all parents and children until recursivity level is reached 
+	 * 
+	 * 
+	 * @param string $table
+	 * @param string $id
+	 * @param array $fields
+	 * @param array $subfields
+	 * @param int $recursivity
+	 * @return mixed False on failure, an array containing result if success
+	 */
+	function findAndRelatives ( $table , $id , $fields = array (), $subfields = array () , $recursivity = 1 ) { return false ; }
+	
+	/**
+	 * Find parents and children relative data given an array of data 
+	 * 
+	 * 
+	 * @param unknown_type $table
+	 * @param unknown_type $dbselection
+	 * @param unknown_type $subFields
+	 * @param unknown_type $recursivity
+	 * @param unknown_type $ordered
+	 */
+	function findRelatives ( $table , $dbselection , $subFields = array (), $recursivity = 1 , $ordered = true ) { return false ; }
+	
+	/**
+	 * Find all children of one or more entries, given the entries
+	 * 
+	 * 
+	 * @param unknown_type $table
+	 * @param unknown_type $dbselection
+	 * @param unknown_type $subFields
+	 * @param unknown_type $recursivity
+	 * @param unknown_type $ordered
+	 * @return boolean
+	 */
+	function findChildren ( $table , $dbselection , $subFields = array (), $recursivity = 1 , $ordered = true ) { return false ; }
+	
+	/**
+	 * Find all parents of one or more entries, given the entries
+	 * 
+	 * 
+	 * @param unknown_type $table
+	 * @param unknown_type $dbselection
+	 * @param unknown_type $subFields
+	 * @param unknown_type $recursivity
+	 * @param unknown_type $ordered
+	 */
+	function findAscendants ( $table , $dbselection , $subFields = array () , $recursivity = 1 , $ordered = true ) { return false ; }
+	
+	/**
+	 * Find random results
+	 * 
+	 * 
+	 * @param unknown_type $table
+	 * @param unknown_type $fields
+	 * @param unknown_type $conds
+	 */
+	function findRandom ( $table, $fields = array () , $conds = array () ) { return false ; } 
+	
+	/**
 	 * Edit an entry
 	 * 
 	 * @param object $table The table where to search
@@ -741,6 +723,22 @@ class AbstractDB {
 	
 	/////////////////////////////////////////////////////
 	// Help methods
+	
+	/**
+	 * Return a datetime string corresponding to given timestamp or current time() timestamp
+	 * 
+	 * 
+	 * @param unknown_type $timestamp
+	 */
+	function getDatetime ( $timestamp = null )
+	{
+		if ( is_null( $timestamp ) )
+		{
+			$timestamp = time () ;
+		}
+		return date("Y-m-d H:i:s", $timestamp) ;
+	}
+	
 	
 	/**
 	 * In a row array, this method will select only $fields entries

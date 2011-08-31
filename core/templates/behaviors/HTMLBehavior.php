@@ -290,7 +290,7 @@ class HTMLBehavior extends Behavior {
 				trigger_error('Table '.$table.'  does not exists', E_USER_ERROR);
 			}
 			
-			$primary = AbstractDB::getPrimary($struct[$table]);
+			$primary = AbstractDBEngine::getPrimary($struct[$table]);
 			
 			foreach ($struct[$table] as $f )
 			{
@@ -308,8 +308,8 @@ class HTMLBehavior extends Behavior {
 			$structure = array ( array (
 					'name' => 'from_' . $fieldname,
 					'label' => $field['label'],
-					'type' => AbstractDB::TYPE_TEXT,
-					'behavior' => $pickin ? AbstractDB::BHR_PICK_IN : AbstractDB::BHR_PICK_ONE,
+					'type' => DBSchema::TYPE_TEXT,
+					'behavior' => $pickin ? DBSchema::BHR_PICK_IN : DBSchema::BHR_PICK_ONE,
 					'source' => $table,
 					'source-main-field' => $fieldname,
 					'validation' => array (

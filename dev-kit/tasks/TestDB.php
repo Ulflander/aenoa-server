@@ -14,13 +14,13 @@ class TestDB extends Task {
 			
 				array (
 					'name' => 'id',
-					'type' => AbstractDB::TYPE_INT,
-					'behavior' => AbstractDB::BHR_INCREMENT
+					'type' => DBSchema::TYPE_INT,
+					'behavior' => DBSchema::BHR_INCREMENT
 				),
 				array ( 
 					'name' => 'email',
 					'label' => 'Email address',
-					'type' => AbstractDB::TYPE_STRING,
+					'type' => DBSchema::TYPE_STRING,
 					'validation' => array (
 						'rule' => DBValidator::EMAIL,
 						'message' => 'The email field must be a well-formatted email address'
@@ -29,8 +29,8 @@ class TestDB extends Task {
 				array ( 
 					'name' => 'password',
 					'label' => 'Password',
-					'type' =>  AbstractDB::TYPE_STRING,
-					'behavior' => AbstractDB::BHR_SHA1,
+					'type' =>  DBSchema::TYPE_STRING,
+					'behavior' => DBSchema::BHR_SHA1,
 					'validation' => array (
 						'rule' => '/[A-Za-z0-9\-_]{6,10}/im',
 						'message' => 'Your password must contain 6 to 10 chars "A" to "Z", "a" to "z", "0" to "9", "-" and "_". '
@@ -38,17 +38,17 @@ class TestDB extends Task {
 				),
 				array ( 
 					'name' => 'created',
-					'type' =>  AbstractDB::TYPE_DATETIME,
+					'type' =>  DBSchema::TYPE_DATETIME,
 				),
 				array ( 
 					'name' => 'updated',
-					'type' =>  AbstractDB::TYPE_DATETIME,
+					'type' =>  DBSchema::TYPE_DATETIME,
 				)
 				/*,
 				array ( 
 					'name' => 'profile_picture',
 					'label' => 'Profile picture',
-					'type' =>  AbstractDB::TYPE_FILE,
+					'type' =>  DBSchema::TYPE_FILE,
 					'behaviour' => array ( &$this , 'callbackTest' , array ( 32 ) ) ,
 					'validation' => array (
 						'rule' => array ( 'jpg' , 'png' ),
@@ -62,13 +62,13 @@ class TestDB extends Task {
 			
 				array (
 					'name' => 'id',
-					'type' => AbstractDB::TYPE_INT,
-					'behavior' => AbstractDB::BHR_INCREMENT
+					'type' => DBSchema::TYPE_INT,
+					'behavior' => DBSchema::BHR_INCREMENT
 				),
 				array ( 
 					'name' => 'name',
 					'label' => 'Group name',
-					'type' => AbstractDB::TYPE_STRING,
+					'type' => DBSchema::TYPE_STRING,
 					'validation' => array (
 						'rule' => DBValidator::NOT_EMPTY,
 						'message' => 'The name must not be empty'

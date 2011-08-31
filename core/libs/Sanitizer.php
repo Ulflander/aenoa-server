@@ -139,7 +139,7 @@ class Sanitizer {
 			case 'json':
 				if ( isset($data['data'] ) )
 				{
-					$data = DBHelper::dbToFormFields($structure, $table ,json_decode($data['data'], true)) ;
+					$data = keysToFormKeys($structure, $table ,json_decode($data['data'], true)) ;
 				}
 				break;
 				
@@ -156,7 +156,7 @@ class Sanitizer {
 			case 'json':
 				if ( isset($this->POST['data'] ) )
 				{
-					$data = DBHelper::dbToFormFields($structure, $table ,json_decode($this->POST['data'], true) ) ;
+					$data = keysToFormKeys($structure, $table ,json_decode($this->POST['data'], true) ) ;
 				}
 				break;
 				

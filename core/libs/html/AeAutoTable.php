@@ -92,7 +92,7 @@ class AeAutoTable {
 		
 			foreach ( $this->_struct as $field )
 			{
-				if ( $field['type'] == AbstractDB::TYPE_FILE )
+				if ( $field['type'] == DBSchema::TYPE_FILE )
 				{
 					$this->_hasFile = true ;
 					break;
@@ -128,7 +128,7 @@ class AeAutoTable {
 			$this->_result[] = '<div class="ajsf-table-container">' ;
 		}
 		
-		if ( ($field = AbstractDB::getFilterable($this->_struct) ) !== false )
+		if ( ($field = AbstractDBEngine::getFilterable($this->_struct) ) !== false )
 		{
 			$this->_result[] = '<form action="' . $this->getURL() . 'read-all-update/'. $page . (!is_null($order) ? '/' . $order . '/' . $dir : '' ) .'" method="post" id="'.$this->_table.'/search" data-odd="odd">' ;
 			
@@ -138,7 +138,7 @@ class AeAutoTable {
 			
 			$this->_hasSearch = true ;
 			
-		} else if ( ($field = AbstractDB::getSearchable($this->_struct) ) !== false )
+		} else if ( ($field = AbstractDBEngine::getSearchable($this->_struct) ) !== false )
 		{
 			
 			$this->_result[] = '<form action="' . $this->getURL() . 'edit/_selected" method="post" id="'.$this->_table.'/search" class="">' ;
@@ -147,7 +147,7 @@ class AeAutoTable {
 			$this->_result[] = '<div class="mid-left"><div id="'.$this->_dbID.'/'.$this->_table.'/field/display" name="'.$this->_dbID.'/'.$this->_table.'/field/display" data-behavior="as-input"  data-ac-multi="false" ></div></div>' ;
 			$this->_result[] = '<div class="mid-right"><label for="'.$this->_dbID.'/'.$this->_table.'/field/input"></label>' ;
 			$this->_result[] = '<input type="text" id="'.$this->_dbID.'/'.$this->_table.'/field/input" name="'.$this->_dbID.'/'.$this->_table.'/field/input" autocomplete="off" placeholder="'._('Type a few letters...').'"'  ;
-			$this->_result[] = ' data-ac-source="' . $this->_dbID . '/'.$this->_table.'/'.$field.'" data-ac-conditions="" data-ac-target="'.$this->_dbID.'/'.$this->_table.'/field/display" data-ac-primary-key="'.AbstractDB::getPrimary($this->_struct).'" data-ac-empty-message="'._('No suggestion').'"  data-ac-multi="false" /></div>' ;
+			$this->_result[] = ' data-ac-source="' . $this->_dbID . '/'.$this->_table.'/'.$field.'" data-ac-conditions="" data-ac-target="'.$this->_dbID.'/'.$this->_table.'/field/display" data-ac-primary-key="'.AbstractDBEngine::getPrimary($this->_struct).'" data-ac-empty-message="'._('No suggestion').'"  data-ac-multi="false" /></div>' ;
 			$this->_result[] = '</div>' ;
 			$this->_result[] = '<input type="submit" value="'._('Edit this element').'" />' ;
 			$this->_result[] = '<script type="text/javascript">if (ajsf && ajsf.forms) ajsf.ready (function(){new ajsf.forms.Form ( _(\'#'.$this->_table.'/search\')) ;} ) ;</script>' ;
@@ -269,8 +269,8 @@ class AeAutoTable {
 	{
 		if ( is_array($data) )
 		{
-			$primaryField = $this->_struct[AbstractDB::getPrimary($this->_struct)] ;
-			$primaryVal = $this->getVal( AbstractDB::getPrimary($this->_struct, $data) ,$primaryField) ;
+			$primaryField = $this->_struct[AbstractDBEngine::getPrimary($this->_struct)] ;
+			$primaryVal = $this->getVal( AbstractDBEngine::getPrimary($this->_struct, $data) ,$primaryField) ;
 		
 		} else {
 			foreach ($this->_struct as $field )
@@ -321,8 +321,8 @@ class AeAutoTable {
 			
 			switch ( $field['type'] )
 			{
-				case AbstractDB::TYPE_PARENT:
-				case AbstractDB::TYPE_CHILD:
+				case DBSchema::TYPE_PARENT:
+				case DBSchema::TYPE_CHILD:
 					$res = '<td class="bool '.$class.'" data-field="'.$field['name'].'">' ;
 					if ( intval($val) > 0 )
 					{
@@ -332,7 +332,7 @@ class AeAutoTable {
 					$res .= '</td>' ;
 					break;
 					
-				case AbstractDB::TYPE_BOOL:
+				case DBSchema::TYPE_BOOL:
 					$bool = $this->getVal($val,$field) ;
 					if ( $bool !== '1' && $bool !== '0' )
 					{
@@ -341,28 +341,28 @@ class AeAutoTable {
 					$res = '<td class="bool '.$class.'" data-field="'.$field['name'].'"><span class="icon16 bool_'.$bool.' unlabeled">' . $this->getVal($val,$field) . '</span></td>' ;
 					break;
 					
-				case AbstractDB::TYPE_DATETIME:
+				case DBSchema::TYPE_DATETIME:
 					$res = '<td class="datetime '.$class.'" data-field="'.$field['name'].'">' . $this->getVal($val,$field) . '</td>' ;
 					break;
 											
-				case AbstractDB::TYPE_ENUM:
+				case DBSchema::TYPE_ENUM:
 					$res = '<td class="enum '.$class.'" data-field="'.$field['name'].'">' . $this->getVal($val,$field) . '</td>' ;
 					break;
 										
-				case AbstractDB::TYPE_FILE:
+				case DBSchema::TYPE_FILE:
 					$res = '<td class="file '.$class.'" data-field="'.$field['name'].'">' . $this->getVal($val,$field) . '</td>' ;
 					break;
 										
-				case AbstractDB::TYPE_INT:
-				case AbstractDB::TYPE_FLOAT:
+				case DBSchema::TYPE_INT:
+				case DBSchema::TYPE_FLOAT:
 					$res = '<td class="'.( !is_array($val) ? 'numeric ' : '' ).$class.'" data-field="'.$field['name'].'">' . $this->getVal($val,$field) . '</td>' ;
 					break;
 										
-				case AbstractDB::TYPE_STRING:
+				case DBSchema::TYPE_STRING:
 					$res = '<td class="string '.$class.'" data-field="'.$field['name'].'">' . $this->getVal($val,$field) . '</td>' ;
 					break;
 										
-				case AbstractDB::TYPE_TEXT:
+				case DBSchema::TYPE_TEXT:
 					$res = '<td class="text '.$class.'" data-field="'.$field['name'].'">' . $this->getVal($val,$field) . '</td>' ;
 					break;
 					
@@ -449,11 +449,11 @@ class AeAutoTable {
 		}
 		if ( ake('behavior', $field) && ake('source-main-field', $field))
 		{
-			if ( $field['behavior'] & AbstractDB::BHR_PICK_ONE )
+			if ( $field['behavior'] & DBSchema::BHR_PICK_ONE )
 			{
 				if ( !is_array($val) ) return '' ;
 				return $val[$field['source-main-field']] ;
-			} else if ($field['behavior'] & AbstractDB::BHR_PICK_IN )
+			} else if ($field['behavior'] & DBSchema::BHR_PICK_IN )
 			{
 				if ( !is_array($val) ) return '' ;
 				$res = array () ;
@@ -464,7 +464,7 @@ class AeAutoTable {
 				return implode(', ',$res);
 			}
 		}
-		if ( $field['type'] == AbstractDB::TYPE_ENUM  )
+		if ( $field['type'] == DBSchema::TYPE_ENUM  )
 		{
 			foreach ( $field['values'] as $idx => $key )
 			{

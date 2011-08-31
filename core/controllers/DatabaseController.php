@@ -296,7 +296,7 @@ class DatabaseController extends Controller{
 	{
 		if(!is_null($id))
 		{
-			$primaryKey = AbstractDB::getPrimary($this->structure[$this->table]) ;
+			$primaryKey = AbstractDBEngine::getPrimary($this->structure[$this->table]) ;
 			$data = $this->appendPersistentData ( $this->db->find ( $this->table , $this->__getId ( $primaryKey, $id ) ), false ) ;
 			if ( !empty($data) && ake($primaryKey, $data) )
 			{
@@ -317,12 +317,12 @@ class DatabaseController extends Controller{
 					{
 						if ( ake('behavior',$field) )
 						{
-							if ( $field['behavior'] & AbstractDB::BHR_PICK_ONE )
+							if ( $field['behavior'] & DBSchema::BHR_PICK_ONE )
 							{
 								$dat[$this->databaseID.'/'.$this->table.'/'.$fieldName] = $this->db->find($field['source'],$value);
-							} else if ( $field['behavior'] & AbstractDB::BHR_PICK_IN )
+							} else if ( $field['behavior'] & DBSchema::BHR_PICK_IN )
 							{
-								$dat[$this->databaseID.'/'.$this->table.'/'.$fieldName] = $this->db->findAll($field['source'],array ( AbstractDB::getPrimary($this->structure[$this->table]) => $value));
+								$dat[$this->databaseID.'/'.$this->table.'/'.$fieldName] = $this->db->findAll($field['source'],array ( AbstractDBEngine::getPrimary($this->structure[$this->table]) => $value));
 							}
 						} else {
 							$dat[$this->databaseID.'/'.$this->table.'/'.$fieldName] = $value ;
@@ -440,7 +440,7 @@ class DatabaseController extends Controller{
 	 */
 	public function massImport ( $id=null )
 	{
-		$primaryKey = AbstractDB::getPrimary($this->structure[$this->table]) ;
+		$primaryKey = AbstractDBEngine::getPrimary($this->structure[$this->table]) ;
 		
 		$this->view->set ( 'mode' , 'add' );
 		
@@ -470,7 +470,7 @@ class DatabaseController extends Controller{
 				}
 			}
 			
-			if ( @$field['behavior'] & AbstractDB::BHR_PICK_IN )
+			if ( @$field['behavior'] & DBSchema::BHR_PICK_IN )
 			{
 				$pickins[] = $field['name'] ;
 			}
@@ -592,13 +592,13 @@ class DatabaseController extends Controller{
 		$this->view->set( 'structure' , array_merge( $struct , array ( 
 		
 			array (
-				'type' => AbstractDB::TYPE_TEXT,
+				'type' => DBSchema::TYPE_TEXT,
 				'name' => '__import',
 				'label' => _('Paste here your content'),
 				'description' => _('Each row must be separated by a new line, each line is considered as the main field. If an urlized version is required, it will automatically be generated.'),
 			),
 			array (
-				'type' => AbstractDB::TYPE_BOOL,
+				'type' => DBSchema::TYPE_BOOL,
 				'name' => '__import/overwrite',
 				'label' => _('Search for existing elements, and try to edit them'),
 				'description' => _('If you don\' check this box, system may create some duplicate rows in your table. If you check this box, system will try to merge some of your table rows with your new content, only if some multi pick-in fields are available in table.'),
@@ -631,7 +631,7 @@ class DatabaseController extends Controller{
 	 */
 	public function read($id=null)
 	{
-		$primaryKey = AbstractDB::getPrimary($this->structure[$this->table]) ;
+		$primaryKey = AbstractDBEngine::getPrimary($this->structure[$this->table]) ;
 		
 		$res = false ;
 		
@@ -710,7 +710,7 @@ class DatabaseController extends Controller{
 			$this->data = array () ;
 		}
 		
-		$primaryKey = AbstractDB::getPrimary($this->structure[$this->table]) ;
+		$primaryKey = AbstractDBEngine::getPrimary($this->structure[$this->table]) ;
 	
 		
 		$urls = array () ;
@@ -755,9 +755,9 @@ class DatabaseController extends Controller{
 		
 			foreach($this->structure[$this->table] as $field )
 			{
-				if ( ( $field['type'] == AbstractDB::TYPE_PARENT ) && $field['source'] == $child_table )
+				if ( ( $field['type'] == DBSchema::TYPE_PARENT ) && $field['source'] == $child_table )
 				{
-					$childPrimaryKey = AbstractDB::getPrimary($this->structure[$child_table]) ;
+					$childPrimaryKey = AbstractDBEngine::getPrimary($this->structure[$child_table]) ;
 					
 					if ( ake($field['name'], $dat) )
 					{
@@ -1036,7 +1036,7 @@ class DatabaseController extends Controller{
 		
 		if ( !empty($this->data) && ake($k,$this->data) && $this->data[$k] != '' )
 		{
-			$key = AbstractDB::getFilterable($this->structure[$this->table]);
+			$key = AbstractDBEngine::getFilterable($this->structure[$this->table]);
 			$this->conditions[$key.' LIKE'] = '%' . $this->data[$k] .'%' ;
 			App::getSession()->set('DB_CONDITIONS_KEY_'.$this->databaseID . '_' .$this->table,$this->data[$k]);
 		} else {
@@ -1132,7 +1132,7 @@ class DatabaseController extends Controller{
 	{
 		$ids = array () ;
 		
-		$primaryKey = AbstractDB::getPrimary($this->structure[$this->table]) ;
+		$primaryKey = AbstractDBEngine::getPrimary($this->structure[$this->table]) ;
 		
 		foreach ( $this->data as $k => $v )
 		{
@@ -1201,7 +1201,7 @@ class DatabaseController extends Controller{
 	
 	function __delete ( $id )
 	{
-		$primaryKey = AbstractDB::getPrimary($this->structure[$this->table]) ;
+		$primaryKey = AbstractDBEngine::getPrimary($this->structure[$this->table]) ;
 		
 		$id = $this->__getId ( $primaryKey, $id ) ;
 		
@@ -1231,7 +1231,7 @@ class DatabaseController extends Controller{
 		$res = null ;
 		foreach($this->structure[$this->table] as $field )
 		{
-			if ( ( $field['type'] == AbstractDB::TYPE_PARENT ) )
+			if ( ( $field['type'] == DBSchema::TYPE_PARENT ) )
 			{
 				$c = $this->db->count($field['source'] , array ( $field['source-link-field'] => $id ) );
 				$res = $this->db->deleteAll ( $field['source'] , array ( $field['source-link-field'] => $id ) ) ;
@@ -1246,13 +1246,13 @@ class DatabaseController extends Controller{
 		}
 		
 		// Check out PICK_IN and PICK_ONE in others tables and delete reference to current 
-		$referencesTables = DBHelper::extractReferences ( $this->structure, $this->table ) ;
+		$referencesTables = $this->db->getTableSchema($this->table)->getPickFields ();
 		foreach ( $referencesTables as $table => $fields )
 		{
 			$conds = array () ;
 			foreach ( $fields as $field )
 			{
-				if ( $field['behavior'] & AbstractDB::BHR_PICK_ONE && ake('delete-as-parent',$field) && $field['delete-as-parent'] === true )
+				if ( $field['behavior'] & DBSchema::BHR_PICK_ONE && ake('delete-as-parent',$field) && $field['delete-as-parent'] === true )
 				{
 				
 					$c = $this->db->count($field['source'] , array ( $field['name'] => $id ) );
@@ -1282,7 +1282,7 @@ class DatabaseController extends Controller{
 					unset($arr[$id]);
 					$els[$field] = implode(',',array_flip($arr));
 				}
-				if ( !$this->db->edit($table, AbstractDB::getPrimary($this->structure[$table], $element), $els ) )
+				if ( !$this->db->edit($table, AbstractDBEngine::getPrimary($this->structure[$table], $element), $els ) )
 				{
 					$res = false ;
 				}

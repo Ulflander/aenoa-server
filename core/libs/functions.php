@@ -20,6 +20,34 @@ if ( !defined ( 'EOL' ) && !defined ( 'SOL' ) )  {
 	}
 }
 
+/**
+ * Transforms keys an array of data from simple keys to HTML Form field keys
+ * 
+ * Accept an array of data like this one
+ * > array (
+ * > 	'fieldname' => 'value'
+ * > );
+ * 
+ * and convert it to 
+ * > array (
+ * > 	'database_id/table_name/fieldname' => 'value'
+ * > );
+ * 
+ * @param string $databaseId Id of database
+ * @param string $table Id of table
+ * @param array $data Array of data
+ * @return array An associative array with HTML Form field keys
+ */
+function keysToFormKeys ( $databaseId , $table , $data )
+{
+	$d = array () ;
+	foreach ( $data as $k => $v )
+	{
+		$d[$databaseId.'/'.$table.'/'.$k] = $v ;
+	}
+	return $d ;
+}
+
 
 function url ()
 {
@@ -786,20 +814,9 @@ function debuggin ()
 	return defined ('DEBUG') && DEBUG ;
 }
 
-
-function confg ( $key )
-{
-	$class = new ReflectionClass('Config');
-	return $class->getStaticPropertyValue($key);
-}
-
-function confs ( $key, $val )
-{
-	return Config::set($key, $val);
-}
-
 function mysql_date ( $time )
 {
 	return date ( 'Y-m-d H:i:s' , $time ) ;
 }
+
 ?>

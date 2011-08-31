@@ -221,7 +221,7 @@ final class User {
 
 			if ( !empty ( $user ) )
 			{
-				$db->edit ('ae_users', $user['id'], array ('last_connection' => DBHelper::getTimestamp(time())));
+				$db->edit ('ae_users', $user['id'], array ('last_connection' => $db->getDatetime() ));
 
 				$user = $db->findChildren('ae_users',$user) ;
 				$this->_logged = 1 ;

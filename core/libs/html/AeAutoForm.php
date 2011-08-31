@@ -54,7 +54,7 @@ class AeAutoForm {
 					$this->_struct = $this->_globalStructure[$this->_table] ;
 				}
 				
-				$this->_primaryKey = AbstractDB::getPrimary($this->_struct);
+				$this->_primaryKey = AbstractDBEngine::getPrimary($this->_struct);
 				
 				$this->_primaryFormKey = $this->_dbID . '/' . $this->_table . '/' . $this->_primaryKey ;
 				
@@ -106,7 +106,7 @@ class AeAutoForm {
 			}
 			if ( $haveToFormat )
 			{
-				$data = DBHelper::dbToFormFields($this->_dbID, $this->_table , $data) ;
+				$data = keysToFormKeys($this->_dbID, $this->_table , $data) ;
 			}
 		}
 		
@@ -116,7 +116,7 @@ class AeAutoForm {
 			
 		foreach ( $this->_fields as $field )
 		{
-			if ( $field['type'] == AbstractDB::TYPE_FILE )
+			if ( $field['type'] == DBSchema::TYPE_FILE )
 			{
 				$this->_hasFile = true ;
 				break;
@@ -232,19 +232,19 @@ class AeAutoForm {
 				$this->_hasRequired=true ;
 			}
 			
-			if ( !is_null ( $data ) && $field['type'] != AbstractDB::TYPE_TEXT && !( @$field['behavior'] & AbstractDB::BHR_PICK_ONE || @$field['behavior'] & AbstractDB::BHR_PICK_IN ) )
+			if ( !is_null ( $data ) && $field['type'] != DBSchema::TYPE_TEXT && !( @$field['behavior'] & DBSchema::BHR_PICK_ONE || @$field['behavior'] & DBSchema::BHR_PICK_IN ) )
 			{
 				if ( is_array ( $data ) )
 				{
-					$d = ' value="' . $data[AbstractDB::getPrimary($this->_globalStructure[@$field['source']])] . '"' ;
+					$d = ' value="' . $data[AbstractDBEngine::getPrimary($this->_globalStructure[@$field['source']])] . '"' ;
 				}else {
 					$d = ' value="' . $data . '"' ;
 				}
 			}
 			
-			if ( $field['type'] == AbstractDB::TYPE_TEXT && ( @$field['behavior'] & AbstractDB::BHR_PICK_ONE || @$field['behavior'] & AbstractDB::BHR_PICK_IN ) )
+			if ( $field['type'] == DBSchema::TYPE_TEXT && ( @$field['behavior'] & DBSchema::BHR_PICK_ONE || @$field['behavior'] & DBSchema::BHR_PICK_IN ) )
 			{
-				$field['type'] = AbstractDB::TYPE_STRING ;
+				$field['type'] = DBSchema::TYPE_STRING ;
 			}
 			
 			if ( ake('js_plugin_edit',$field) )
@@ -259,11 +259,11 @@ class AeAutoForm {
 			
 			switch ( $field['type'] )
 			{
-				case AbstractDB::TYPE_BOOL:
+				case DBSchema::TYPE_BOOL:
 					$res = '<input type="checkbox" id="'.$id.'" name="'.$id.'"'.$r.' '.($data == 1 ? 'checked="checked"' :'').' />';
 					break;
 					
-				case AbstractDB::TYPE_DATETIME:
+				case DBSchema::TYPE_DATETIME:
 						if ($field['name'] == 'created' || $field['name'] == 'updated' || $field['name'] == 'modified' )
 						{
 							$res = '<input id="'.$id.'" name="'.$id.'" type="text" '.$r.$d.' readonly="readonly" class="date" />';
@@ -273,7 +273,7 @@ class AeAutoForm {
 					break;
 					
 											
-				case AbstractDB::TYPE_ENUM:
+				case DBSchema::TYPE_ENUM:
 					$res = '<select id="'.$id.'" name="'.$id.'"'.$r.'>' . "\n";
 					foreach ( $field['values'] as $idx => $key )
 					{
@@ -287,17 +287,17 @@ class AeAutoForm {
 					$res .= '</select>' . "\n" ;
 					break;
 										
-				case AbstractDB::TYPE_PARENT:
-				case AbstractDB::TYPE_CHILD:
-					if ( !(@$field['behavior'] & AbstractDB::BHR_PICK_ONE || @$field['behavior'] & AbstractDB::BHR_PICK_IN ) )
+				case DBSchema::TYPE_PARENT:
+				case DBSchema::TYPE_CHILD:
+					if ( !(@$field['behavior'] & DBSchema::BHR_PICK_ONE || @$field['behavior'] & DBSchema::BHR_PICK_IN ) )
 					{
 						$res = '' ;
 						$res .= '<div class="hidden" id="'.$id.'" name="'.$id.'"'.$r.'data-behavior="as-input" data-read-only="read-only" data-source-main="'.$field['source-main-field'].'">';
 						if ( !empty ( $data ) )
 						{
-							$linked_primary = AbstractDB::getPrimary($this->_globalStructure[$field['source']]) ;
+							$linked_primary = AbstractDBEngine::getPrimary($this->_globalStructure[$field['source']]) ;
 							
-							if ( @$field['behavior'] & AbstractDB::BHR_PICK_ONE || ake(0,$data) == false )
+							if ( @$field['behavior'] & DBSchema::BHR_PICK_ONE || ake(0,$data) == false )
 							{
 								$linked_id = $data[$linked_primary] ;
 								$data = array($data);
@@ -312,7 +312,7 @@ class AeAutoForm {
 						$res .= '</div>' ;
 						if ( !is_null($this->_primaryVal) )
 						{
-							if ( AbstractDB::TYPE_PARENT == $field['type'] )
+							if ( DBSchema::TYPE_PARENT == $field['type'] )
 							{
 								$res .= '<a href="' . url() . 'database/' . $this->_dbID . '/' . $this->_table . '/edit/' . $this->_primaryVal .'/'.$field['source'].'" class="icon16 edit">'._('Edit').'</a>' ;
 							} else {
@@ -321,14 +321,14 @@ class AeAutoForm {
 						}
 						break;
 					}
-				case AbstractDB::TYPE_FILE:
-				case AbstractDB::TYPE_INT:
-				case AbstractDB::TYPE_FLOAT:	
-				case AbstractDB::TYPE_STRING:
-					if ( @$field['behavior'] & AbstractDB::BHR_PICK_ONE || @$field['behavior'] & AbstractDB::BHR_PICK_IN )
+				case DBSchema::TYPE_FILE:
+				case DBSchema::TYPE_INT:
+				case DBSchema::TYPE_FLOAT:	
+				case DBSchema::TYPE_STRING:
+					if ( @$field['behavior'] & DBSchema::BHR_PICK_ONE || @$field['behavior'] & DBSchema::BHR_PICK_IN )
 					{
-						$primaryKey = @AbstractDB::getPrimary($this->_globalStructure[@$field['source']]) ;
-						$m = ' data-ac-multi="'.(@$field['behavior'] & AbstractDB::BHR_PICK_ONE?'false':'true').'"' ;
+						$primaryKey = @AbstractDBEngine::getPrimary($this->_globalStructure[@$field['source']]) ;
+						$m = ' data-ac-multi="'.(@$field['behavior'] & DBSchema::BHR_PICK_ONE?'false':'true').'"' ;
 						$res = '<input type="hidden" id="'.$id.'" name="'.$id.'"'.$r.' />';
 						$d = ' value="' . @$data[@$field['source-main-field']] . '" ' ;
 						$res .= '<div class="mid-left"><div id="'.$id.'/display" name="'.$id.'/display" data-behavior="as-input" '.$m.' >' ;
@@ -340,7 +340,7 @@ class AeAutoForm {
 					
 						if ( !empty ( $data ) )
 						{
-							if ( @$field['behavior'] & AbstractDB::BHR_PICK_ONE || array_key_exists(0,$data) == false )
+							if ( @$field['behavior'] & DBSchema::BHR_PICK_ONE || array_key_exists(0,$data) == false )
 							{
 								$data = array($data);
 							}
@@ -356,7 +356,7 @@ class AeAutoForm {
 							$r .= ' maxlength="'.$field['length'].'"' ;
 						}
 						
-						if ( @$field['behavior'] & AbstractDB::BHR_LAT_LNG )
+						if ( @$field['behavior'] & DBSchema::BHR_LAT_LNG )
 						{
 							$r .= ' data-behavior="latlng"' ;
 							$r .= ' data-behavior-title="'._('Get the coordinates').'"' ;
@@ -380,7 +380,7 @@ class AeAutoForm {
 							$r .= ' data-behavior-urlize-to="'.$this->_dbID.'/'.$this->_table.'/' . $field['urlize-to'] . '"' ;
 						}
 						
-						if ( $field['type'] == AbstractDB::TYPE_FILE )
+						if ( $field['type'] == DBSchema::TYPE_FILE )
 						{
 							$type = 'hidden' ;
 							$r .= ' data-upload="unique" data-base-url="' . url() . '" data-upload-url="common/upload/' .$this->_dbID.'/'. $this->_table . '/' . $field['name'] .'"' ;
@@ -393,7 +393,7 @@ class AeAutoForm {
 					}
 					break;
 										
-				case AbstractDB::TYPE_TEXT:
+				case DBSchema::TYPE_TEXT:
 					$r .= ' placeholder="' . ucfirst($field['label']) .'"' ;
 					$res = '<textarea id="'.$id.'" name="'.$id.'"'.$r.'>'.$data.'</textarea>';
 					break;

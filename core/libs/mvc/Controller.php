@@ -51,7 +51,7 @@ class Controller {
 	protected $model ;
 	
 	/**
-	 * @var AbstractDB
+	 * @var AbstractDBEngine
 	 */
 	public $db ;
 	
