@@ -5,42 +5,38 @@
 
 /**
  * Concrete implementation of AbstractDBEngine for MySQL
- * 
+ *
  * @see AbstractDBEngine
  */
 class MySQLEngine extends AbstractDBEngine {
-	
-	
+
+
 	private $__connection = false ;
-	
+
 	private $__sqlOps = array('like', 'ilike', 'or', 'not', 'in', 'between', 'regexp', 'similar to');
-	
+
 	protected $__lastId ;
-	
+
 	/////////////////////////////////////////////////////
 	// AbstractDBEngine implementation
-	
-	
-	function isUsable () 
+
+
+	function isUsable ()
 	{
 		return ( $this->__connection != false ) ;
 	}
-	
-	private $_doTemp = false ;
-	
+
 	/**
-	 * Enable sql TRANSACTION mode : no query is sended until endTransaction is called
+	 * Enable TRANSACTION mode : no query is sended until endTransaction is called
 	 */
 	function startTransaction ()
 	{
-		$this->_doTemp = true ;
+		$this->_inTransaction = true ;
 	}
 	
-	
-	
 	/**
-	 * Disable sql TRANSACTION mode : all queries since call of startTransaction are sended
-	 * @return boolean True if transaction did not return any error, false otherwise 
+	 * Disable TRANSACTION mode : all queries since call of startTransaction are sended
+	 * @return boolean True if transaction did not return any error, false otherwise
 	 */
 	function endTransaction ()
 	{
@@ -53,20 +49,20 @@ class MySQLEngine extends AbstractDBEngine {
 				if ( debuggin () )
 				{
 					trigger_error('SQL TRANSACTION MODE ERROR: ' . mysql_error ( $this->__connection ) , E_USER_WARNING ) ;
-				} 
-				
+				}
+
 				$res = false ;
 			}
 		}
 		mysql_query('COMMIT',$this->__connection) ;
-		
+
 		$this->_queries = array () ;
-		
-		$this->_doTemp = false ;
+
+		$this->_inTransaction = false ;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * For MySQLEngine, $database must be an array containing:
 	 * ['host'] => 'your.mysql.host.com'
@@ -75,71 +71,82 @@ class MySQLEngine extends AbstractDBEngine {
 	 * ['database'] => 'mysql_database'
 	 *
 	 * You can eventually add these keys and values:
-	 * 
-	 * ['persistent'] => bool true/false 
+	 *
+	 * ['persistent'] => bool true/false
 	 * ['table_prefix'] => 'aenoa_'
-	 * ['no_drop'] => bool true/false // Default is false, if you set no_drop to true, 
+	 * ['no_drop'] => bool true/false // Default is false, if you set no_drop to true,
 	 * 					// then tables that does not exist in structure are not dropped from database
 	 * 					// Otherwise, tables that does not exist in structure will be dropped by default
 	 * ['table_engine'] => 'MYISAM' // Default is INNODB, this will be applied to every table
-	 * 
+	 *
 	 * If you need to use a particular port, add it to the host:
-	 * ['host'] => 'your.mysql.host.com:3306' 
-	 * 
+	 * ['host'] => 'your.mysql.host.com:3306'
+	 *
+	 * @see AbstractDBEngine::setSource
 	 * @param object $database
 	 * @param bool $create Could be not available depending on your MySQL rights
-	 * @return 
+	 * @return
 	 */
-	function setSource ( $database , $create = false ) 
+	function setSource ( $database , $create = false )
 	{
-		if ( $this->isSameDatabase ( $database ) )
+		if ( $this->compareSource ( $database ) )
 		{
 			return true ;
 		}
-		
 		$this->source = $database ;
-		
 		$this->close () ;
-		
+
 		return $this->open () ;
 	}
-	
-	
+
 	/**
-	 * MySQLEngine method to compare a database with the current engine database.
-	 * 
-	 * @param object $database
+	 *
+	 *
+	 * @see AbstractDBEngine::getIdentifiers()
+	 */
+	function getIdentifiers () {
+		return $this->database ;
+	}
+
+	/**
+	 * Method to compare a database source with the current engine database source.
+	 *
+	 * @param array $database
 	 * @return True is $database array and current database are the same, false otherwise.
 	 */
-	function isSameDatabase ( $database )
+	function compareSource ( $database )
 	{
-		return ( $this->isValidDatabaseArr ( $this->source )
-			&& $this->isValidDatabaseArr ( $database ) 
-			&& $this->source['host'] == $database['host'] 
-			&& $this->source['login'] == $database['login'] 
-			&& $this->source['password'] == $database['password'] 
+		return ( $this->isValidSource ( $this->source )
+			&& $this->isValidSource ( $database )
+			&& $this->source['host'] == $database['host']
+			&& $this->source['login'] == $database['login']
+			&& $this->source['password'] == $database['password']
 			&& $this->source['database'] == $database['database'] ) ;
 	}
-	
-	
+
+
 	/**
 	 * MySQLEngine method to check $database array.
 	 * Will return true if all these array keys exist: host, login, password, database
 	 * Will return false otherwise
-	 * 
+	 *
 	 * @param object $database
-	 * @return True if $database array contains valid keys, false otherwise 
+	 * @return True if $database array contains valid keys, false otherwise
 	 */
-	function isValidDatabaseArr ( $database )
+	function isValidSource ( $database )
 	{
-		return ( !empty ( $database ) 
-			&& array_key_exists('host', $database ) 
-			&& array_key_exists('login', $database ) 
-			&& array_key_exists('password', $database ) 
+		return ( !empty ( $database )
+			&& array_key_exists('host', $database )
+			&& array_key_exists('login', $database )
+			&& array_key_exists('password', $database )
 			&& array_key_exists('database', $database ) ) ;
 	}
-	
-	
+
+	/**
+	 * Open MySQL connection
+	 *
+	 * @see AbstractDBEngine::open()
+	 */
 	function open ()
 	{
 		if( !is_resource($this->__connection) && !empty($this->source) )
@@ -150,70 +157,80 @@ class MySQLEngine extends AbstractDBEngine {
 			} else {
 				$this->__connection = mysql_connect ( $this->source['host'] , $this->source['login'] , $this->source['password'] ) ;
 			}
-			
-			if ( is_resource($this->__connection) && mysql_select_db ( $this->source['database'], $this->__connection) === true ) 
+			if ( is_resource($this->__connection) && mysql_select_db ( $this->source['database'], $this->__connection) === true )
 			{
-				mysql_query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'", $this->__connection);
-				
-				$this->_log[] = "SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'" ;
+				$q = "SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'";
+
+				$this->log($q);
+
+				mysql_query($q, $this->__connection);
+
 			} else {
-				$this->_log[] = 'Connection attempt failed' ;
+				$this->log( 'Connection attempt failed' ) ;
 			}
 		}
 		
 		return is_resource($this->__connection)  ;
 	}
-	
-	
-	
-	
-	function getConnection ()
-	{		
-		return $this->__connection ;
-	}
-	
+
+	/**
+	 * Closes MySQL connection
+	 * 
+	 * @see AbstractDBEngine::close()
+	 */
 	function close ()
 	{
 		if ( is_resource($this->__connection) )
 		{
 			mysql_close( $this->__connection ) ;
 		}
-		
+
 		return true ;
 	}
 
+
+
+	/**
+	 *
+	 *
+	 *
+	 */
+	function getConnection ()
+	{
+		return $this->__connection ;
+	}
 	function test ( $host , $login , $password )
 	{
 		return ( mysql_connect ( $host , $login , $password ) !== false ) ;
 	}
-	
-	
-	
+
+
+
 	function sourceExists ( $database , $create = false )
 	{
 		if( $this->__connection == false )
 		{
 			$this->__connection = @mysql_connect ( $database['host'] , $database['login'] , $database['password'] )  ;
 		}
-		
-		if ( is_resource( $this->__connection ) && mysql_select_db ( $database['database'] , $this->__connection ) === true ) 
+
+		if ( is_resource( $this->__connection ) && mysql_select_db ( $database['database'] , $this->__connection ) === true )
 		{
 			mysql_query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'", $this->__connection);
-				
+
 			$result = true ;
 		} else {
 			$result = false ;
-			
+
 			if ( $create)
 			{
 				return $this->createSource($database);
 			}
 		}
-	
+
 		return $result ;
 	}
 
-	function createSource ( $database ) 
+	function createSource ( $database )
 	{
 		if ( !debuggin () || Config::get(App::DBS_AUTO_EXPAND) !== true )
 		{
@@ -226,47 +243,46 @@ class MySQLEngine extends AbstractDBEngine {
 			{
 				$this->__connection = mysql_connect ( $database['host'] , $database['login'] , $database['password'] ) ;
 			}
-			
+
 			if ( $this->__connection !== false )
 			{
-				
+
 				mysql_query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'", $this->__connection);
-				
-				
+
+
 				$result = mysql_query( 'CREATE DATABASE `'.$database['database'].'` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;' , $this->__connection ) && mysql_select_db ( $database['database'] , $this->__connection );
-				
+
 			}
-			
-		
+
+
 		}
 		return $result ;
 	}
-	
-	function setStructure ( $structure = array (), $create = false ) 
+
+	function setStructure ( $structure = array (), $create = false )
 	{
 		if ( $this->isUsable( ) == false )
 		{
 			return;
 		}
-		
+
 		$res = true ;
 		$res2 = true ;
 		$tstruct = array () ;
 		$tstruct2 = array () ;
-		
+
 		foreach ( $structure as $table => &$struct )
 		{
 			$tstruct[$table] = array () ;
 			$tstruct2[$table] = array () ;
-			
+
 			if ( array_key_exists($table, $this->tables) == false )
 			{
 				$this->tables[$table] = 0 ;
 			}
-			
-			foreach ( $struct as &$field ) 
+
+			foreach ( $struct as &$field )
 			{
-				
 				if ( DBTableSchema::validateField ( $field ) )
 				{
 					$tstruct2[$table][$field['name']] = $field;
@@ -276,133 +292,94 @@ class MySQLEngine extends AbstractDBEngine {
 				}
 			}
 		}
-		
-		$this->__edited = true ;
-		
+
 		$this->structure = &$tstruct ;
-		
+
 		$this->struct = $tstruct2 ;
-		
+
 		if ( ( (!empty ( $tstruct ) && $create) || ($this->hasAnyTable () == true && debuggin () ) ) && Config::get(App::DBS_AUTO_EXPAND) == true )
 		{
-			$res2 = $this->__applyStructure () ;
+			$res2 = $this->__applyStructure ( $tstruct2 ) ;
 		} else if ( $this->hasAnyTable () == false ) {
 			$res2 = false ;
 		}
-		
+
 		return $res && $res2 ;
 	}
-	
-	function hasStructureCapability () 
+
+	function hasStructureCapability ()
 	{
 		return true ;
 	}
-	
-	function query ( $query ) 
+
+	function query ( $query )
 	{
-		$this->_log[] = 'Query(query): ' . $query ;
+		$this->log($query) ;
+
 		return @mysql_query($query, $this->getConnection()) ;
 	}
-	
+
 	function hasQueryCapability ()
 	{
 		return true ;
 	}
-	
-	function tableExists ( $tableName ) 
-	{
-		return array_key_exists( $tableName, $this->struct ) ;
-	}
-	
-	function tableExistsOr403 ( $tableName ) 
-	{
-		if( !$this->tableExists( $tableName ) )
-		{
-			App::do403( sprintf( _('Table %s does not exists' ), $tableName ) ) ;
-		}
-	}
-	
-	function checkFields ( $tableName , $fields = array () )
-	{
-		if ( empty($fields) )
-		{
-			return $fields ;
-		}
-		$ffields = array () ;
-		foreach ( $fields as &$f )
-		{
-			if ( ake($f, $this->struct[$tableName] ) )
-			{
-				$ffields[] = $f ;
-			}
-		}
-		
-		return $ffields ;
-	}	
-	
+
 	function find ( $table , $id , $fields = array () )
 	{
-		$this->tableExistsOr403($table);
-		
-		$fields = $this->checkFields( $table , $fields ) ;
-		
-		$res = $this->findAll ( $table , array ( $primaryKey = AbstractDBEngine::getPrimary($this->struct[$table]) => $id ) , 1 , $fields );
-		if ( !empty($res) ) 
+		$schema = $this->tableExistsOr403($table);
+
+		$res = $this->findAll ( $table , array ( $schema->getPrimary() => $id ) , 1 , $fields );
+
+		if ( !empty($res) )
 		{
 			return $res[0] ;
 		}
+
 		return array() ;
 	}
-	
+
 	function findAndRelatives ( $table , $id , $fields = array (), $subfields = array () , $recursivity = 1 )
 	{
-		$this->tableExistsOr403($table);
-		
-		
-		$res = $this->findRelatives($table, $this->findAll ( $table , array ( $primaryKey = AbstractDBEngine::getPrimary($this->struct[$table]) => $id ) , 1 , $fields ) , $subfields, $recursivity ) ;
-		if ( !empty($res) ) 
+		$schema = $this->tableExistsOr403($table);
+
+
+		$res = $this->findRelatives($table, $this->findAll ( $table , array ( $schema->getPrimary() => $id ) , 1 , $fields ) , $subfields, $recursivity ) ;
+		if ( !empty($res) )
 		{
 			return $res[0] ;
 		}
 		return array() ;
 	}
-	
+
 	function findAll ( $table , $cond = array () , $limit = 0 , $fields = array () )
 	{
-		$this->tableExistsOr403($table);
-		
+		$schema = $this->tableExistsOr403($table);
 		$q = 'SELECT ' . $this->__selectFields($fields,$table) . ' FROM `' . $this->source['database'] . '`.`' . $table . '` ' ;
 		$q .= $this->__getCond ( $cond , $table) ;
 		$q .= $this->__getLimit ( $table , $limit ) ;
 		$q .= ';';
-		$this->_log[] = 'Query(findAll): ' . $q ;
+		$this->log($q);
 		$res = mysql_query($q, $this->getConnection()) ;
 		if ( $res === false )
 		{
 			return $res ;
 		}
-		$result =  $this->__fetchArr($res,$this->struct[$table],$fields,array(),false);
+		$result =  $this->__fetchArr($res,$schema->getInitial (),$fields,array(),false);
 		@mysql_free_result ( $res ) ;
 		return $result ;
 	}
-	
+
 	private $__childCache = array () ;
-	
+
 	function findAscendants ( $table , $dbselection , $subFields = array () , $recursivity = 1 , $ordered = true )
 	{
-		$this->tableExistsOr403($table);
-		
-		if ( array_key_exists($table , $this->struct ) == false )
-		{
-			trigger_error('Table ' . $table . ' does not exists in structure ' . $this->source['host'] ) ;
-			return $dbselection ;
-		}
-		
-		if(count($this->struct[$table]) < 2 )
+		$schema = $this->tableExistsOr403($table);
+
+		if($schema->getLength () < 2 )
 		{
 			return $dbselection;
 		}
-		
+
 		$unique = false ;
 		foreach ( $dbselection as $k => &$res )
 		{
@@ -413,14 +390,16 @@ class MySQLEngine extends AbstractDBEngine {
 				break;
 			}
 		}
-		
+
 		$cond = array () ;
-		
+
 		$childTables = array () ;
 		$result = array () ;
 		$q = '' ;
-	
-		foreach( $this->struct[$table] as $fieldName => &$field )
+
+		$initial = $schema->getInitial() ;
+
+		foreach( $initial as $fieldName => &$field )
 		{
 			if ( @$field['behavior'] & DBSchema::BHR_PICK_IN || @$field['behavior'] & DBSchema::BHR_PICK_ONE || $field['type'] == DBSchema::TYPE_PARENT || $field['type'] == DBSchema::TYPE_CHILD )
 			{
@@ -429,8 +408,8 @@ class MySQLEngine extends AbstractDBEngine {
 					continue;
 				}
 				$n = $fieldName ;
-				$n2 = AbstractDBEngine::getPrimary($this->struct[$field['source']]) ;
-				
+				$n2 = $this->getTableSchema($field['source'])->getPrimary () ;
+
 				$childTable = array () ;
 				$childTable['fieldName'] = $n2;
 				$childTable['isSameTable'] = ($field['source'] == $table);
@@ -440,7 +419,7 @@ class MySQLEngine extends AbstractDBEngine {
 				$childTable['multi'] = @$field['behavior'] & DBSchema::BHR_PICK_IN ;
 				foreach ( $dbselection as $k => &$res )
 				{
-					if ( !is_array($res) ) 
+					if ( !is_array($res) )
 					{
 						$res = array( $res ) ;
 					}
@@ -454,22 +433,22 @@ class MySQLEngine extends AbstractDBEngine {
 						}
 					}
 				}
-				
+
 				$childTable['ids'] = array_unique($childTable['ids']) ;
-				
+
 				$childTables[] = $childTable ;
 			}
 		}
-		
+
 		foreach( $childTables as &$inf )
 		{
 			if ( !empty ($inf['ids']) )
 			{
 				$primaryKey = $inf['fieldName'] ;
-				
+
 				$__ids = $inf['ids'] ;
 				$__res2 = array () ;
-				
+
 				if ( ake($inf['source'] , $this->__childCache ) )
 				{
 					$cache = $this->__childCache[$inf['source']] ;
@@ -484,7 +463,7 @@ class MySQLEngine extends AbstractDBEngine {
 				} else {
 					$this->__childCache[$inf['source']] = array () ;
 				}
-				
+
 				if ( !empty ( $__ids ) )
 				{
 					// Subfields
@@ -492,15 +471,15 @@ class MySQLEngine extends AbstractDBEngine {
 					if ( array_key_exists($inf['source'],$subFields) && is_array ( $subFields[$inf['source']] ) )
 					{
 						$__f = $subFields[$inf['source']] ;
-						
+
 						if ( !in_array($primaryKey, $__f) )
 						{
 							array_unshift($__f, $primaryKey );
 						}
 					}
-					
+
 					$result = $this->findAll($inf['source'], array($primaryKey => $__ids), 0, $__f);
-					
+
 					foreach ( $result as &$res )
 					{
 						$this->__childCache[$inf['source']][$res[$primaryKey]] = $res;
@@ -508,18 +487,18 @@ class MySQLEngine extends AbstractDBEngine {
 				} else {
 					$result = array () ;
 				}
-				
-				
+
+
 				$result = array_merge( $result, $__res2 );
-				
+
 				if ( $inf['multi'] == true && array_key_exists(0, $result) == false )
 				{
 					$result = array ($result) ;
-				}		
+				}
 				if ( $recursivity > 1 )
 				{
 					$result = $this->findAscendants($inf['source'] ,$result, $subFields, $recursivity - 1 );
-				}				
+				}
 				foreach ( $dbselection as &$res )
 				{
 					if ( array_key_exists( $inf['resName'] , $res ) && $res[$inf['resName']] != '' )
@@ -530,13 +509,13 @@ class MySQLEngine extends AbstractDBEngine {
 							{
 								continue;
 							}
-							
+
 							if ( $res2[$inf['fieldName']] == $res[$inf['resName']] )
 							{
 								if( $inf['multi'] == false )
-									$res[$inf['resName']] = $res2 ;
+								$res[$inf['resName']] = $res2 ;
 								else
-									$res[$inf['resName']] = array($res2);
+								$res[$inf['resName']] = array($res2);
 								break;
 							} else if (is_string($res[$inf['resName']]) && strpos($res[$inf['resName']],',') !== false)
 							{
@@ -547,13 +526,13 @@ class MySQLEngine extends AbstractDBEngine {
 									$res['___table'] = $inf['source'] ;
 								}
 							}
-								
+
 						}
 					}
 				}
 			}
 		}
-	
+
 		foreach( $dbselection as &$res )
 		{
 			foreach ( $res as $name => &$val )
@@ -568,7 +547,7 @@ class MySQLEngine extends AbstractDBEngine {
 						{
 							$ids = explode(',',$res[$n]);
 							$arr = array () ;
-							$primary = AbstractDBEngine::getPrimary($this->getTableStructure($table)) ;
+							$primary = $this->getTableSchema($table)->getPrimary() ;
 							foreach($ids as $_id)
 							{
 								foreach($res[$name] as $k=>$r)
@@ -578,15 +557,15 @@ class MySQLEngine extends AbstractDBEngine {
 										$arr[] = $r ;
 										unset($res[$k]);
 										break;
-									}	
+									}
 								}
 							}
 							$res[$n] = $arr;
 						} else {
 							$res[$n] = $res[$name];
 						}
-						
-						
+
+
 					} else {
 						$res[$n] = $res[$name];
 					}
@@ -595,32 +574,26 @@ class MySQLEngine extends AbstractDBEngine {
 				}
 			}
 		}
-		
-				
+
+
 		return ( $unique ? $dbselection[0] : $dbselection ) ;
-		
+
 	}
-	
+
 	function findRelatives ( $table , $dbselection , $subFields = array (), $recursivity = 1 , $ordered = true )
 	{
 		return $this->findAscendants($table , $this->findChildren($table , $dbselection , $subFields, $recursivity, $ordered) , $subFields, $recursivity, $ordered);
 	}
-	
+
 	function findChildren ( $table , $dbselection , $subFields = array (), $recursivity = 1 , $ordered = true )
 	{
-		$this->tableExistsOr403($table);
-		
-		if ( array_key_exists($table , $this->struct ) == false )
-		{
-			trigger_error('Table ' . $table . ' does not exists in structure ' . $this->source['host'] ) ;
-			return $dbselection ;
-		}
-		
-		if(count($this->struct[$table]) < 2 )
+		$schema = $this->tableExistsOr403($table);
+
+		if($schema->getLength () < 2 )
 		{
 			return $dbselection;
 		}
-		
+
 		$unique = false ;
 		foreach ( $dbselection as $k => &$res )
 		{
@@ -631,14 +604,16 @@ class MySQLEngine extends AbstractDBEngine {
 				break;
 			}
 		}
-		
+
 		$cond = array () ;
-		
+
 		$childTables = array () ;
 		$result = array () ;
 		$q = '' ;
-	
-		foreach( $this->struct[$table] as $fieldName => &$field )
+
+		$initial = $schema->getInitial() ;
+
+		foreach( $initial as $fieldName => &$field )
 		{
 			if ( @$field['behavior'] & DBSchema::BHR_PICK_IN || @$field['behavior'] & DBSchema::BHR_PICK_ONE || $field['type'] == DBSchema::TYPE_PARENT || $field['type'] == DBSchema::TYPE_CHILD )
 			{
@@ -646,16 +621,16 @@ class MySQLEngine extends AbstractDBEngine {
 				{
 					continue;
 				}
-				
+
 				if ( $field['source'] == $table )
 				{
-					$n = AbstractDBEngine::getPrimary($this->struct[$table]) ;
+					$n = $schema->getPrimary () ;
 					$n2 = $field['name'] ;
 				} else {
 					$n = $field['name'] ;
-					$n2 = AbstractDBEngine::getPrimary($this->struct[$field['source']]) ;
+					$n2 = $this->getTableSchema($field['source'])->getPrimary() ;
 				}
-				
+
 				$childTable = array () ;
 				$childTable['fieldName'] = $n2;
 				$childTable['isSameTable'] = ($field['source'] == $table);
@@ -663,7 +638,6 @@ class MySQLEngine extends AbstractDBEngine {
 				$childTable['source'] = $field['source'];
 				$childTable['ids'] = array () ;
 				$childTable['multi'] = @$field['behavior'] & DBSchema::BHR_PICK_IN ;
-				
 				foreach ( $dbselection as $k => &$res )
 				{
 					if ( is_array($res) )
@@ -680,7 +654,7 @@ class MySQLEngine extends AbstractDBEngine {
 					}
 				}
 				$childTable['ids'] = array_unique($childTable['ids']) ;
-				
+
 				$childTables[] = $childTable ;
 			}
 		}
@@ -689,10 +663,10 @@ class MySQLEngine extends AbstractDBEngine {
 			if ( !empty ($inf['ids']) )
 			{
 				$primaryKey = $inf['fieldName'] ;
-				
+
 				$__ids = $inf['ids'] ;
 				$__res2 = array () ;
-				
+
 				if ( ake($inf['source'] , $this->__childCache ) )
 				{
 					$cache = $this->__childCache[$inf['source']] ;
@@ -707,8 +681,8 @@ class MySQLEngine extends AbstractDBEngine {
 				} else {
 					$this->__childCache[$inf['source']] = array () ;
 				}
-				
-				
+
+
 				if ( !empty ( $__ids ) )
 				{
 					// Subfields
@@ -717,12 +691,12 @@ class MySQLEngine extends AbstractDBEngine {
 					{
 						$__f = $subFields[$inf['source']] ;
 					}
-					
+
 					$result = $this->findAll($inf['source'], array($primaryKey => $__ids), 0, $__f);
-				
+
 					if ( array_key_exists($inf['source'],$subFields) && is_array ( $subFields[$inf['source']] ) )
 					{
-					
+							
 						$__f = $subFields[$inf['source']] ;
 					}
 					foreach ( $result as &$res )
@@ -735,20 +709,20 @@ class MySQLEngine extends AbstractDBEngine {
 				} else {
 					$result = array () ;
 				}
-				
-			
-				
+
+					
+
 				$result = array_merge( $result, $__res2 );
-				
-				
+
+
 				if ( $inf['multi'] == true && array_key_exists(0, $result) == false )
 				{
 					$result = array ($result) ;
-				}		
+				}
 				if ( $recursivity > 1 )
 				{
 					$result = $this->findChildren($inf['source'] ,$result, $subFields, $recursivity - 1 );
-				}				
+				}
 				foreach ( $dbselection as &$res )
 				{
 					if ( $inf['isSameTable'] )
@@ -763,28 +737,28 @@ class MySQLEngine extends AbstractDBEngine {
 							{
 								continue;
 							}
-							
+
 							if ($inf['isSameTable'] == false )
 							{
 								if ( $res2[$inf['fieldName']] == $res[$inf['resName']] )
 								{
 									if( $inf['multi'] == false )
-										$res[$inf['resName']] = $res2 ;
+									$res[$inf['resName']] = $res2 ;
 									else
-										$res[$inf['resName']] = array($res2);
+									$res[$inf['resName']] = array($res2);
 									break;
 								} else if ( strpos($res[$inf['resName']],',') !== false)
 								{
 									$ids = explode(',',$res[$inf['resName']]);
 									if ( in_array($res2[$inf['fieldName']], $ids ) )
 									{
-							
+											
 										$res['___' . $inf['resName']][] = $res2 ;
 										$res['___table'] = $inf['source'] ;
 									}
 								}
 							} else {
-								
+
 								if ( $res2[$inf['fieldName']] == $res[$inf['resName']] )
 								{
 									$res[$table][] = $res2;
@@ -802,7 +776,7 @@ class MySQLEngine extends AbstractDBEngine {
 				}
 			}
 		}
-		
+
 		foreach( $dbselection as &$res )
 		{
 			if ( !is_array($res) )
@@ -821,7 +795,7 @@ class MySQLEngine extends AbstractDBEngine {
 						{
 							$ids = explode(',',$res[$n]);
 							$arr = array () ;
-							$primary = AbstractDBEngine::getPrimary($this->getTableStructure($table)) ;
+							$primary = $schema->getPrimary () ;
 							foreach($ids as $_id)
 							{
 								foreach($res[$name] as $k=>$r)
@@ -831,15 +805,15 @@ class MySQLEngine extends AbstractDBEngine {
 										$arr[] = $r ;
 										unset($res[$k]);
 										break;
-									}	
+									}
 								}
 							}
 							$res[$n] = $arr;
 						} else {
 							$res[$n] = $res[$name];
 						}
-						
-						
+
+
 					} else {
 						$res[$n] = $res[$name];
 					}
@@ -848,16 +822,16 @@ class MySQLEngine extends AbstractDBEngine {
 				}
 			}
 		}
-		
+
 		return ( $unique ? $dbselection[0] : $dbselection ) ;
 	}
-	
-	
+
+
 	function keysToLabel ( $table , $dbselection )
 	{
-		
-		$this->tableExistsOr403($table);
-		
+
+		$schema = $this->tableExistsOr403($table);
+
 		$unique = false ;
 		foreach ( $dbselection as $k => &$res )
 		{
@@ -868,77 +842,82 @@ class MySQLEngine extends AbstractDBEngine {
 				break;
 			}
 		}
-		
+
 		foreach ( $dbselection as $k => &$res )
 		{
 			$nres = array () ;
-			
+
 			foreach ( $res as $key => &$field )
 			{
 				// This is a child
 				if ( is_array($field) )
 				{
-					if(ake($key,$this->struct[$table]) )
+					if( $schema->fieldExists($key) )
 					{
 						$nres[$this->struct[$table][$key]['label']] = $this->keysToLabel($this->struct[$table][$key]['source'],$field) ;
 					}
-				// This is not a child
+					// This is not a child
 				} else {
-						if(ake($key,$this->struct[$table]) )
+					if( $schema->fieldExists($key) )
+					{
+						if( ake('label',$this->struct[$table][$key]) )
 						{
-							if( ake('label',$this->struct[$table][$key]) )
-								$nres[_($this->struct[$table][$key]['label'])] = $field ;
-							else
-								$nres[_(ucfirst($key))] = $field ;
+							$nres[_($this->struct[$table][$key]['label'])] = $field ;
+						} else {
+							$nres[_(ucfirst($key))] = $field ;
 						}
+					}
 				}
 			}
-			
+
 			$res = $nres ;
 		}
-		
+
 		return ( $unique ? $dbselection[0] : $dbselection ) ;
 	}
-	
+
 	function findFirst ( $table , $cond = array () , $fields = array () , $childsRecursivity = 0 )
 	{
-		$this->tableExistsOr403($table);
-		
 		$res = $this->findAll ( $table , $cond , 1 , $fields , $childsRecursivity ) ;
-		if ( !empty($res) ) 
+		if ( !empty($res) )
 		{
 			return $res[0] ;
 		}
 		return array() ;
 	}
-	
+
 	function findRandom ( $table, $fields = array () , $conds = array () )
 	{
-		$this->tableExistsOr403($table);
+		$schema = $this->tableExistsOr403($table);
+
+		$q = 'SELECT ' . $this->__selectFields($fields,$table) .
+				' FROM `' . $this->source['database'] . '`.`' . $table . '` '.
+				$this->__getCond($conds, $table).
+				' ORDER BY RAND() LIMIT 1 ' ;
+
+
+
+		$this->log($q);
 		
-		$q = '' ;
-		
-		$q = 'SELECT ' . $this->__selectFields($fields,$table) . ' FROM `' . $this->source['database'] . '`.`' . $table . '` '.$this->__getCond($conds, $table).' ORDER BY RAND() LIMIT 1 ' ;
-		$this->_log[] = 'Query(add): ' . $q ;
 		$res =  mysql_query( $q , $this->getConnection()) ;
-		$result =  $this->__fetchArr($res,$this->struct[$table],$fields);
-		@mysql_free_result ( $res ) ;
-		if ( !empty($result) ) 
+		$result =  $this->__fetchArr($res,$schema->getInitial(),$fields);
+
+		if ( !empty($result) )
 		{
 			return $result[0] ;
 		}
 		return $result ;
-		
+
 	}
-	
+
 	private function __selectFields ( $fields, $table )
 	{
 		return ( empty ( $fields ) ?
 			'`' . implode('`,`',$this->__getStructureFields($table)) . '`' :
-			'`' . implode('`,`',$this->checkFields( $table , $fields )) . '`'
-			);
+			'`' . implode('`,`',$this->getTableSchema($table)->filterFields($fields)) . '`'
+		);
 	}
-	
+
 	private function __getCond ( $cond, $table = '' )
 	{
 		if ( empty ( $cond ) )
@@ -946,43 +925,43 @@ class MySQLEngine extends AbstractDBEngine {
 			return ' WHERE 1' ;
 		} else {
 			$c = '' ;
-			
-			
+
+
 			foreach ( $cond as $fieldname => $val )
 			{
 				$operator = '=' ;
-				
+
 				if ( strlen($c)>0)
 				{
 					$c.=' AND ' ;
 				}
-				
+
 				$fieldname = trim($fieldname) ;
-				
+
 				$escapeVal = true ;
-				if ( ake($fieldname, $this->struct[$table]) && @$this->struct[$table][$fieldname]['behavior'] & DBSchema::BHR_PICK_IN )
+				if ( @$this->struct[$table][$fieldname]['behavior'] & DBSchema::BHR_PICK_IN )
 				{
 					$val = '\'(^' . $val . '\,)|(\,' . $val . '$)|(\,' . $val . '\,)|(^' . $val . '$)\'';
 					$escapeVal = false ;
 					$operator = 'REGEXP' ;
 				}
-				
+
 				// $operatorMatch = '/^(\\x20(' . join(')|(', $this->__sqlOps) .')|\\x20<[>=]?(?![^>]+>)|\\x20[>=!]{1,3}(?!<))/is';
-				
+
 				if ( is_string($val) )
 				{
 					if ( $val === 'IS NULL' )
 					{
 						$c.= '`' . $fieldname . '` IS NULL' ;
-						continue; 
-					} else 
+						continue;
+					} else
 					if ( $val === 'IS NOT NULL' )
 					{
 						$c.= '`' . $fieldname . '` IS NOT NULL' ;
-						continue; 
+						continue;
 					}
 				}
-				
+
 				if ( substr_count($fieldname,' ') == 1 )
 				{
 					list($fieldname , $operator) = explode( ' ' , $fieldname ) ;
@@ -990,7 +969,7 @@ class MySQLEngine extends AbstractDBEngine {
 				if ( !is_array( $val ) )
 				{
 					$c .= '`' . $fieldname . '` '. trim($operator) ;
-					
+
 					if ( $escapeVal )
 					{
 						$c .= ' \'' . $val . '\'' ;
@@ -1006,14 +985,14 @@ class MySQLEngine extends AbstractDBEngine {
 		}
 		return $c . ' ' ;
 	}
-	
+
 	private function __getLimit ( $table , $limit )
 	{
 		if ( $limit == 0 )
 		{
 			return '' ;
 		}
-		
+
 		if ( is_int ( $limit ) )
 		{
 			return ' LIMIT 0,' . $limit ;
@@ -1029,61 +1008,66 @@ class MySQLEngine extends AbstractDBEngine {
 			} else if ( $c == 4 )
 			{
 				return ' ORDER BY `' . $this->source['database'] . '`.`' . $table . '`.`' .$limit[2] .'` ' . (strtoupper($limit[3]) == 'ASC' ? 'ASC' : 'DESC' ) . ' LIMIT ' . $limit[1] . ', ' . $limit[0] ;
-			} 
+			}
 		}
 	}
-	
+
 	private function __getStructureFields ( $table )
 	{
 		$a = array () ;
-		foreach( $this->struct[$table] as $name => $field )
+
+		$structure = $this->getTableSchema($table)->getInitial() ;
+
+		foreach( $structure as $name => $field )
 		{
 			$a[] = $name;
 		}
 		return $a ;
 	}
-	
+
 	function edit ( $table , $id , $content = array () )
 	{
-		$this->tableExistsOr403($table);
-		
+		$schema = $this->tableExistsOr403($table);
+
 		$q = '' ;
-		
+
 		if ( !empty ( $content ) )
 		{
 			$entries = array () ;
-			
-			foreach ( $this->struct[$table] as $name => &$field )
+
+			$initial = $schema->getInitial () ;
+
+			foreach ( $initial as $name => &$field )
 			{
 				if ( $name == 'created' )
 				{
 					continue;
 				}
-				
+
 				if ( array_key_exists($name, $content) )
 				{
 					$val = $content[$name] ;
-				} else if ( $name != 'updated' && $name != 'modified' ) 
+				} else if ( $name != 'updated' && $name != 'modified' )
 				{
 					continue;
 				}
-				
 				$val &= DBTableSchema::applyInputBehaviors ( $field , $val , true, $this->getConnection() ) ;
-				
 				if ( $val != '' )
 				{
 					$row[$name] = &$val ;
 				}
-				
+
 				$entries[] = '`' . $name  . '` = \'' .$val. '\'' ;
-				
+
 			}
 			
 			$q = 'UPDATE `' . $this->source['database'] . '`.`' . $table . '` SET ' ;
 			$q .= implode ( ', ' , $entries ) ;
-			$q .= ' WHERE `' . $this->source['database'] . '`.`' . $table . '`.`'.AbstractDBEngine::getPrimary($this->struct[$table]).'` = ' . (is_numeric($id) ? $id : '\'' .$id . '\'')  . ' LIMIT 1';
-			$this->_log[] = 'Query(edit): ' . $q ;
-			if ( !$this->_doTemp )
+			$q .= ' WHERE `' . $this->source['database'] . '`.`' . $table . '`.`'.$schema->getPrimary ().'` = ' . (is_numeric($id) ? $id : '\'' .$id . '\'')  . ' LIMIT 1';
+
+			$this->log( $q ) ;
+
+			if ( !$this->_inTransaction )
 			{
 				$res =  mysql_query($q, $this->getConnection()) ;
 			} else {
@@ -1092,55 +1076,57 @@ class MySQLEngine extends AbstractDBEngine {
 			}
 			return $res ;
 		}
-		
+
 		return false ;
 	}
-	
+
 	function editAll ( $table , $content = array () , $cond = array () )
 	{
-		$this->tableExistsOr403($table);
-		
+		$schema =$this->tableExistsOr403($table);
+
 		$q = '' ;
-		
+
 		if ( !empty ( $content ) )
 		{
 			$entries = array () ;
-			
-			foreach ( $this->struct[$table] as $name => &$field )
+
+			$initial = $schema->getInitial () ;
+
+			foreach ( $initial as $name => &$field )
 			{
 				if ( $name == 'created' )
 				{
 					continue;
 				}
-				
+
 				if ( array_key_exists($name, $content) )
 				{
 					$val = $content[$name] ;
 				} else {
 					continue;
 				}
-				
 				$val &= DBTableSchema::applyInputBehaviors ( $field , $val , true , $this->getConnection() ) ;
-				
 				if ( $val != '' )
 				{
 					$row[$name] = &$val ;
 				}
-				
+
 				if( substr($val,0,1) == '(' )
 				{
 					$entries[] = '`' . $name . '` = ' . $val ;
 				} else {
 					$entries[] = '`' . $name . '` = \'' . $val. '\'' ;
 				}
-				
+
 			}
 			
 			$q = 'UPDATE `' . $this->source['database'] . '`.`' . $table . '` SET ' ;
 			$q .= implode ( ', ' , $entries ) ;
 			$q .= $this->__getCond ( $cond , $table) ;
-			$this->_log[] = 'Query(edit): ' . $q ;
-			if ( !$this->_doTemp )
+
+			$this->log( $q ) ;
+
+			if ( !$this->_inTransaction )
 			{
 				$res =  mysql_query($q, $this->getConnection()) ;
 			} else {
@@ -1149,21 +1135,23 @@ class MySQLEngine extends AbstractDBEngine {
 			}
 			return $res ;
 		}
-		
+
 		return false ;
 	}
-	
-	function add ( $table , $content = array () ) 
+
+	function add ( $table , $content = array () )
 	{
-		$this->tableExistsOr403($table);
-		
+		$schema =$this->tableExistsOr403($table);
+
 		$q = '' ;
-		
+
 		if ( !empty ( $content ) )
 		{
 			$q = $this->__getAddQuery($table , $content) ;
-			$this->_log[] = 'Query(add): ' . $q ;
-			if ( !$this->_doTemp )
+
+			$this->log( $q ) ;
+
+			if ( !$this->_inTransaction )
 			{
 				$res =  mysql_query($q, $this->getConnection()) ;
 				$this->__lastId = mysql_insert_id ($this->getConnection() ) ;
@@ -1171,70 +1159,71 @@ class MySQLEngine extends AbstractDBEngine {
 				$this->_queries[] = $q ;
 				$res = true ;
 			}
-			
+
 			return $res ;
 		}
 		$this->__lastId = -1 ;
 		return false ;
 	}
-	
-	function addAll ( $table , $rows = array () ) 
+
+	function addAll ( $table , $rows = array () )
 	{
 		$this->tableExistsOr403($table);
-		
+
 		$q = '' ;
+
 		foreach ( $rows as &$row )
 		{
 			$q .= $this->__getAddQuery($table , $row , ($q!='')) ;
 		}
-		
-		$this->_log[] = 'Query(addAll): ' . $q ;
-	
-		if ( !$this->_doTemp )
+
+		$this->log( $q ) ;
+
+		if ( !$this->_inTransaction )
 		{
 			$res =  mysql_query($q, $this->getConnection()) ;
-			$this->__lastId = ( $res ? mysql_insert_id ($this->getConnection() ) : -1 ); 
-			if ( !$res)
-			{
-				pr( $this->getLog() ) ;
-			}
+
+			$this->__lastId = ( $res ? mysql_insert_id ($this->getConnection() ) : -1 );
+
 		} else {
 			$this->_queries[] = $q ;
-				$res = true ;
+
+			$res = true ;
 		}
-		
+
 			
 			
 		return $res ;
 	}
-	
+
 	function __getAddQuery ( $table , $content , $onlyValues = false )
 	{
 		$q = '' ;
-		
+
 		$keys = array () ;
+
 		$values = array () ;
 
-		foreach ( $this->struct[$table] as $name => &$field )
+		$initial = $this->getTableSchema($table)->getInitial ();
+
+		foreach ( $initial as $name => &$field )
 		{
 			if ( array_key_exists($name, $content) )
 			{
 				$val = $content[$name] ;
 			} else {
-				$val = '' ;	
+				$val = '' ;
 			}
-			
 			$val &= DBTableSchema::applyInputBehaviors ( $field , $val , false , $this->getConnection()) ;
-			
 			$row[$name] = &$val ;
-			
+
 			$keys[] = $name ;
-			
+
 			$values[] = $val ;
 		}
-		
+
 		$vals = '\'' .  implode ( '\',\'' , $values ) . '\'' ;
-		
+
 		if ( $onlyValues == false )
 		{
 			$q = 'INSERT INTO `' . $this->source['database'] . '`.`' . $table . '` (`' ;
@@ -1243,68 +1232,76 @@ class MySQLEngine extends AbstractDBEngine {
 		} else {
 			$q = ',' ;
 		}
-		
-		$q .= ' (' . str_replace ( array ( "\n" ) , array ( '' ) , $vals ) ;
-		$q .= ') ' . "\n";
-		
+
+		$q .= ' (' . str_replace ( array ( "\n" ) , array ( '' ) , $vals ) . ') ' . "\n";
+
 		return $q ;
 	}
-	
-	function count ( $table , $cond = array () ) 
+
+	function count ( $table , $cond = array () )
 	{
-		$this->tableExistsOr403($table);
-		
+		$schema = $this->tableExistsOr403($table);
+
 		$q = 'SELECT COUNT(*) FROM `' . $this->source['database'] . '`.`' . $table . '` ' . ( !empty ( $cond ) ? $this->__getCond($cond, $table) : '' ) . ' ;' ;
-		$this->_log[] = 'Query(count): ' . $q ;
+
+		$this->log( $q ) ;
 		$res =  mysql_fetch_array ( mysql_query($q, $this->getConnection()) ) ;
+
 		return $res[0] ;
 	}
-	
-	
-	
+
+
+
 	function lastId ()
 	{
 		return $this->__lastId ;
 	}
-	
+
 	function delete ( $table , $id )
 	{
-		$this->tableExistsOr403($table);
-		
-		$q = 'DELETE FROM `' . $this->source['database'] . '`.`' . $table . '` WHERE `' . $table . '`.`' . AbstractDBEngine::getPrimary($this->struct[$table]) . '` = ' .(is_numeric($id) ? $id : '\'' .$id . '\'')  . ' ;';
-		
-		$this->_log[] = 'Query(delete): ' . $q ;
+		$schema = $this->tableExistsOr403($table);
+
+		$q = 'DELETE FROM `' .
+		$this->source['database'] . '`.`' .
+		$table .
+				'` WHERE `' . $table . '`.`' . $schema->getPrimary () . 
+				'` = ' .(is_numeric($id) ? $id : '\'' .$id . '\'')  . ' ;';
+
+		$this->log( $q ) ;
 		$res =  mysql_query( $q, $this->getConnection() ) ;
+
 		return $res ;
 	}
-	
-	function deleteAll ( $table , $cond = array () ) 
+
+	function deleteAll ( $table , $cond = array () )
 	{
-		$this->tableExistsOr403($table);
-		
+		$schema = $this->tableExistsOr403($table);
+
 		$q = 'DELETE FROM `' . $this->source['database'] . '`.`' . $table . '` ' . $this->__getCond($cond, $table). ' ;';
-		
-		$this->_log[] = 'Query(delete): ' . $q ;
+
+		$this->log( $q ) ;
 		$res =  mysql_query( $q, $this->__connection ) ;
+
 		return $res ;
 	}
-	
-	function hasAnyTable ()
+
+	protected function hasAnyTable ()
 	{
 		$tables = $this->__fetchArr(mysql_query ( 'SHOW TABLES FROM `' . $this->source['database'] . '`' , $this->__connection)) ;
+		
 		return !empty($tables);
 	}
-	
+
 	// OK, let's apply Aenoa DB Structure to MySQL Database
-	private function __applyStructure ()
+	private function __applyStructure ( $structure )
 	{
 		// There is no table: we create tables
 		if ( $this->hasAnyTable () == false )
 		{
 			$res = true ;
-			
+
 			// For each table in structure
-			foreach ( $this->struct as $tableName => &$fields )
+			foreach ( $structure as $tableName => &$fields )
 			{
 				// We create the table
 				if ( !$this->__createTable($tableName, $fields) )
@@ -1312,54 +1309,51 @@ class MySQLEngine extends AbstractDBEngine {
 					$res = false ;
 				}
 			}
-			
+
 			return $res ;
-		// That's OK ! There are some tables in database
+			// That's OK ! There are some tables in database
 		} else {
-			
+
 			$res = true ;
-			
 			$q =  'SHOW TABLES FROM `' . $this->source['database'] . '`' ;
-			
-			$this->_log[] = 'Query(__applyStructure): ' . $q ;
-			
+
+			$this->log( $q ) ;
 			$r = mysql_query ( $q , $this->getConnection() ) ;
 			if ( !$r )
 			{
 				return false ;
 			}
-			
+
 			$tables = $this->__fetchArr($r) ;
-			
+
 			// Let's check in DB tables if there is any table that should be droppable
-			foreach ( $tables as $k => $tableName ) 
+			foreach ( $tables as $k => $tableName )
 			{
 				// If the table does not exist in the structure we DROP it
-				if ( array_key_exists( $tableName , $this->struct ) == false 
-					&& (array_key_exists ( 'no_drop' , $this->source ) == false 
-					|| $this->source['no_drop'] === true) )
+				if ( array_key_exists( $tableName , $structure ) == false
+				&& (array_key_exists ( 'no_drop' , $this->source ) == false
+				|| $this->source['no_drop'] === true) )
 				{
 					$q = 'DROP TABLE `' . $this->source['database'] . '`.`' . $tableName . '`' ;
-					$this->_log[] = 'Query(__applyStructure): ' . $q ;
+					$this->log( $q ) ;
 					$res = mysql_query ($q, $this->getConnection()) ;
 					unset ( $tables[$k] ) ;
 				}
 			}
-			
-			// Any 
-			foreach ( $this->struct as $tableName => &$structfields ) 
+
+			// Any
+			foreach ( $structure as $tableName => &$structfields )
 			{
 				if ( in_array($tableName, $tables ) == false && $this->__createTable($tableName, $structfields ) == false )
 				{
 					$res = false ;
 					continue;
 				}
-				
 				$q =  'DESCRIBE `' . $this->source['database'] . '`.`' . $tableName . '`'  ;
-				$this->_log[] = 'Query(__applyStructure): ' . $q ;
+				$this->log( $q ) ;
 				$fields = mysql_query ($q, $this->getConnection()) ;
 				$fields = $this->__fetchArr($fields) ;
-				
+
 				foreach ( $structfields as &$structFieldDesc )
 				{
 					$found = false ;
@@ -1374,14 +1368,14 @@ class MySQLEngine extends AbstractDBEngine {
 					if(!$found)
 					{
 						$q = 'ALTER TABLE `' . $this->source['database'] . '`.`' . $tableName . '` ADD ' . $this->__getCreateField($structFieldDesc,true);
-						$this->_log[] = 'Query(__applyStructure): ' . $q ;
+						$this->log( $q ) ;
 						if ( !$this->query($q, $this->getConnection()) )
 						{
 							$res = false ;
 						}
 					}
 				}
-				
+
 				foreach( $fields as &$dbFieldDesc )
 				{
 					$found = false ;
@@ -1396,31 +1390,32 @@ class MySQLEngine extends AbstractDBEngine {
 					if(!$found)
 					{
 						$q = 'ALTER TABLE `' . $this->source['database'] . '`.`' . $tableName . '` DROP `' . $dbFieldDesc[0] . '`';
-						$this->_log[] = 'Query(__applyStructure): ' . $q ;
+						$this->log( $q ) ;
 						if ( !$this->query($q, $this->getConnection()) )
 						{
 							$res = false ;
 						}
 					}
 				}
-				
+
 			}
 			return $res ;
 		}
 	}
-	
-	
+
+
 	private function __fetchArr ( $ressource , $tableStruct=null, $selectFields=array(), $simpleArray = true )
 	{
 		if ( $ressource === false )
 		{
 			return array () ;
 		}
-		
+
 		$res = array () ;
+
 		while ( true )
 		{
-			if ( ($v=@mysql_fetch_row ( $ressource )) !== false )
+			if ( ($v = @mysql_fetch_row ( $ressource )) !== false )
 			{
 				if ( count ( $v ) == 1 )
 				{
@@ -1443,30 +1438,29 @@ class MySQLEngine extends AbstractDBEngine {
 					foreach ( $selectFields as $fieldname )
 					{
 						$fieldDesc = $tableStruct[$fieldname] ;
-						
 						$pres[$k][$fieldname] = DBTableSchema::applyOutputBehaviors ( $fieldDesc , array_shift($line_array) ) ;
 					}
 				} else {
-				
+
 					foreach ( $tableStruct as $name => &$field )
 					{
-						$pres[$k][$name] = DBTableSchema::applyOutputBehaviors ( $field , array_shift($line_array)); 
+						$pres[$k][$name] = DBTableSchema::applyOutputBehaviors ( $field , array_shift($line_array));
 							
 					}
 				}
-			}	
+			}
 		} else {
 			$pres = &$res ;
 		}
+
 		@mysql_free_result( $ressource ) ;
-		
+
 		return $pres ;
 	}
-	
+
 	private function __createTable ( $tableName , &$fields )
 	{
 		$q = 'CREATE TABLE `' . $this->source['database'] . '`.`' . $this->__getTableName ( $tableName ) . '` (' ;
-				
 		foreach ( $fields as &$field )
 		{
 			$f = $this->__getCreateField($field, false) ;
@@ -1475,14 +1469,14 @@ class MySQLEngine extends AbstractDBEngine {
 				$q .= $f . ' , ';
 			}
 		}
-		
+
 		$q = substr($q, 0, strlen( $q ) - 3 ) . ') ENGINE = ' . $this->__getEngine() . $this->__getCharacterSet() . ' ; ' ;
-		
-		$this->_log[] = 'Query(__createTable): ' . $q ;
-		
+
+		$this->log( $q ) ;
+
 		return mysql_query ( $q, $this->getConnection() ) ;
 	}
-	
+
 	private function __getCreateField(&$field, $onAlter)
 	{
 		$type =  $this->aenoaTypeToMySQLType ( $field['type'] , @$field['values'] , @$field['default'] , @$field['length'], @$field['validation'] ) ;
@@ -1490,14 +1484,13 @@ class MySQLEngine extends AbstractDBEngine {
 		{
 			return false;
 		}
-		
+
 		$q = '`' . $field['name'] . '` ' . $type ;
-		
 		if ( @$field['behavior'] & DBSchema::BHR_INCREMENT )
 		{
 			$q .= ' NOT NULL AUTO_INCREMENT' ;
 		}
-		
+
 		if ( $field['name'] == 'id' )
 		{
 			if ( $onAlter )
@@ -1525,7 +1518,7 @@ class MySQLEngine extends AbstractDBEngine {
 		}
 		return $q ;
 	}
-	
+
 	private function __getEngine ()
 	{
 		if ( array_key_exists('table_engine', $this->source )
@@ -1533,25 +1526,25 @@ class MySQLEngine extends AbstractDBEngine {
 		{
 			return strtoupper($this->source['table_engine']) ;
 		}
-		
+
 		return 'INNODB' ;
 	}
-	
+
 	private function __getCharacterSet ()
 	{
 		return ' CHARACTER SET utf8 COLLATE utf8_unicode_ci' ;
 	}
-	
+
 	private function __getTableName ( $tableName )
 	{
 		if ( array_key_exists('table_prefix', $this->source ) )
 		{
 			return $this->source['table_prefix'] . $tableName ;
 		}
-		
+
 		return $tableName ;
 	}
-	
+
 	public function aenoaTypeToMySQLType ( $type , $values = null , $default = null, $length = null, $validation = null )
 	{
 		if ( array_key_exists($type, $this->_types) )
@@ -1559,17 +1552,17 @@ class MySQLEngine extends AbstractDBEngine {
 			if ( $type == 'enum' )
 			{
 				$_type = 'ENUM(\'' . implode ( '\' , \'' , $values ) . '\') NOT NULL DEFAULT \'' . $default . '\'' ;
-				
+
 			} else {
 				$_type = '' ;
-				
+
 				if ( !is_null($validation) && $validation && in_array($type,array('string','text','int','c','float','datetime')) )
 				{
 					$_type = ' NOT NULL' ;
 				}
-				
+
 				$_type = $this->_types[$type] . $_type;
-				
+
 				if ( is_int($length) && $length > 0 )
 				{
 					switch ( true )
@@ -1581,14 +1574,14 @@ class MySQLEngine extends AbstractDBEngine {
 							$_type = str_replace ( '(11)' , '('.$length.')', $_type ) ;
 							break;
 					}
-				} 
+				}
 			}
 			return $_type ;
 		}
-		
+
 		return $type ;
 	}
-	
+
 	private $_types = array(
 			'file' => 'VARCHAR(255)',
 			'string' => 'VARCHAR(255)',
@@ -1602,6 +1595,6 @@ class MySQLEngine extends AbstractDBEngine {
 			'boolean' => 'ENUM( \'true\', \'false\' ) NOT NULL DEFAULT \'false\'',
 			'child' => 'INT(11)',
 			'parent' => 'INT(11)'
-		);
+	);
 }
 ?>

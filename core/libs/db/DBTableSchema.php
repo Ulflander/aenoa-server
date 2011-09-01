@@ -10,6 +10,12 @@ class DBTableSchema extends AeObject {
 
 	protected $_fields = array () ;
 
+	protected $_len  = 0 ;
+
+	protected $_primary ;
+	
+	protected $_initialStructure = array () ;
+	
 	/**
 	 * Create a new table schema
 	 *
@@ -19,25 +25,88 @@ class DBTableSchema extends AeObject {
 	function __construct ( $name , $fields )
 	{
 		$this->_name = $name ;
+		
+		$primary = null ;
+		$defPrimary = null ;
 
 		foreach ( $fields as $f )
 		{
 			if ( ake ( 'name', $f ) && ($r = $this->validateField($f)) === true )
 			{
 				$this->_fields[$f['name']] = $f ;
+				
+				if ( @$f['behavior'] & DBSchema::BHR_PRIMARY )
+				{
+					$primary = $f['name'];
+				} else if ( @$f['name'] == 'id' )
+				{
+					$defPrimary = 'id' ;
+				}
+				
+				$this->_initialStructure[$f['name']] = $f ;
 			} else {
 				$this->debug($r) ;
 			}
 		}
+		
+		
+		if ( !is_null($primary) )
+		{
+			$this->_primary = $primary ;
+		} else {
+			$this->_primary = $defPrimary ;
+		}
 
-		$this->_fields = $fields ;
+		$this->_len = count($this->_fields);
 	}
 
 	function get ()
 	{
 		return $this->_fields ;
 	}
-
+	
+	/**
+	 * Returns number of fields in the table
+	 * 
+	 * 
+	 * @return int Number of fields in the table
+	 */
+	function getLength ()
+	{
+		return $this->_len ; 
+	}
+	
+	/**
+	 * Get primary field name for this table, or primary field value if a row of data is given 
+	 * 
+	 * @param string $data Optional, if given will return the primary field value in this row of data, or null if not found
+	 * @return string 
+	 */
+	function getPrimary ( &$data = null )
+	{
+		if ( !is_null( $data ) )
+		{
+			if ( ake ( $this->_primary , $data ) )
+			{
+				return $data[$this->_primary] ;
+			}
+			
+			return null ;
+		}
+		
+		return $this->_primary ;
+	}
+	
+	/**
+	 * Returns initial structure as an array of $fieldname => $field
+	 * 
+	 * @return array An associative array of fields description
+	 */
+	function getInitial ()
+	{
+		return $this->_initialStructure ;
+	}
+	
 	/**
 	 * Get schema of a field
 	 *
@@ -53,7 +122,19 @@ class DBTableSchema extends AeObject {
 		}
 		return null ;
 	}
-
+	
+	/**
+	 * Returns true if a field exists in the table, false otherwise
+	 * 
+	 * 
+	 * @param string $name The field name to test
+	 * @return boolean True if field exists, false otherwise
+	 */
+	function fieldExists ( $name )
+	{
+		return ake ( $name , $this->_fields ) ;
+	}
+	
 	/**
 	 * Get link fields
 	 *
@@ -71,7 +152,7 @@ class DBTableSchema extends AeObject {
 			&& $field['source'] == $this->_name
 			&& ake('behavior', $field)
 			&& ( $field['behavior'] & DBSchema::BHR_PICK_IN
-				|| $field['behavior'] & DBSchema::BHR_PICK_ONE)
+			|| $field['behavior'] & DBSchema::BHR_PICK_ONE)
 			)
 			{
 				if ( !ake ($this->_name, $result ) )
@@ -82,6 +163,28 @@ class DBTableSchema extends AeObject {
 			}
 		}
 		return $result ;
+	}
+
+
+	/**
+	 * Filter an array to keep only table fiels
+	 */
+	function filterFields ( $fields )
+	{
+
+		if ( empty($fields) )
+		{
+			return $fields ;
+		}
+		$ffields = array () ;
+		foreach ( $fields as &$f )
+		{
+			if (  ake ( $f , $this->_fields ) )
+			{
+				$ffields[] = $f ;
+			}
+		}
+		return $ffields ;
 	}
 
 	/**

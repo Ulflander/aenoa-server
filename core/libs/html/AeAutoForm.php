@@ -30,6 +30,8 @@ class AeAutoForm {
 
 	private $_currentFieldset = null;
 	
+	private $db ;
+	
 	public $fieldsOnly = false ;
 	
 	
@@ -39,11 +41,11 @@ class AeAutoForm {
 		$this->_dbID = $dbID ;
 		$this->_table = $table ;
 		
-		$db = App::getDatabase( $this->_dbID ) ;
+		$this->db = App::getDatabase( $this->_dbID ) ;
 		
-		if ( $db )
+		if ( $this->db )
 		{
-			$this->_globalStructure = &$db->getStructure() ;
+			$this->_globalStructure = &$this->db->getStructure() ;
 			if ( $this->_globalStructure && ake($this->_table,$this->_globalStructure))
 			{
 			
@@ -54,7 +56,7 @@ class AeAutoForm {
 					$this->_struct = $this->_globalStructure[$this->_table] ;
 				}
 				
-				$this->_primaryKey = AbstractDBEngine::getPrimary($this->_struct);
+				$this->_primaryKey = $this->db->getTableSchema($this->_table)->getPrimary() ;
 				
 				$this->_primaryFormKey = $this->_dbID . '/' . $this->_table . '/' . $this->_primaryKey ;
 				
@@ -236,7 +238,7 @@ class AeAutoForm {
 			{
 				if ( is_array ( $data ) )
 				{
-					$d = ' value="' . $data[AbstractDBEngine::getPrimary($this->_globalStructure[@$field['source']])] . '"' ;
+					$d = ' value="' . @$data[$this->db->getTableSchema($field['source'])->getPrimary()] . '"' ;
 				}else {
 					$d = ' value="' . $data . '"' ;
 				}
@@ -295,7 +297,7 @@ class AeAutoForm {
 						$res .= '<div class="hidden" id="'.$id.'" name="'.$id.'"'.$r.'data-behavior="as-input" data-read-only="read-only" data-source-main="'.$field['source-main-field'].'">';
 						if ( !empty ( $data ) )
 						{
-							$linked_primary = AbstractDBEngine::getPrimary($this->_globalStructure[$field['source']]) ;
+							$linked_primary = $this->db->getTableSchema($field['source'])->getPrimary();
 							
 							if ( @$field['behavior'] & DBSchema::BHR_PICK_ONE || ake(0,$data) == false )
 							{
@@ -327,7 +329,7 @@ class AeAutoForm {
 				case DBSchema::TYPE_STRING:
 					if ( @$field['behavior'] & DBSchema::BHR_PICK_ONE || @$field['behavior'] & DBSchema::BHR_PICK_IN )
 					{
-						$primaryKey = @AbstractDBEngine::getPrimary($this->_globalStructure[@$field['source']]) ;
+						$primaryKey = @$this->db->getTableSchema($field['source'])->getPrimary() ;
 						$m = ' data-ac-multi="'.(@$field['behavior'] & DBSchema::BHR_PICK_ONE?'false':'true').'"' ;
 						$res = '<input type="hidden" id="'.$id.'" name="'.$id.'"'.$r.' />';
 						$d = ' value="' . @$data[@$field['source-main-field']] . '" ' ;

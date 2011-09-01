@@ -1,7 +1,7 @@
 <?php
 
 
-class Model {
+class Model extends AeObject {
 	
 	/**
 	 * 

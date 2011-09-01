@@ -18,9 +18,12 @@ class AeAutoTable {
 	
 	protected $_odd = false ;
 	
+	protected $_schema ;
+	
 	
 	protected $_hasSearch = false ;
 	
+	private $db ;
 	
 	public $isUpdate = false ;
 	
@@ -58,16 +61,20 @@ class AeAutoTable {
 		$this->_dbID = $dbID ;
 		$this->_table = $table ;
 		
-		$db = App::getDatabase( $this->_dbID ) ;
+		$this->db = App::getDatabase( $this->_dbID ) ;
 		
-		if ( $db )
+		if ( $this->db )
 		{
-			$this->_struct = $db->getStructure() ;
+			$this->_struct = $this->db->getStructure() ;
+			
+			$this->_schema = $this->db->getTableSchema($this->_table) ;
+			
 			if ( $this->_struct && ake($this->_table,$this->_struct))
 			{
 				$this->_struct = $this->_struct[$this->_table] ;
 				return true ;
 			}
+			
 		}
 		
 		return false ;
@@ -147,7 +154,7 @@ class AeAutoTable {
 			$this->_result[] = '<div class="mid-left"><div id="'.$this->_dbID.'/'.$this->_table.'/field/display" name="'.$this->_dbID.'/'.$this->_table.'/field/display" data-behavior="as-input"  data-ac-multi="false" ></div></div>' ;
 			$this->_result[] = '<div class="mid-right"><label for="'.$this->_dbID.'/'.$this->_table.'/field/input"></label>' ;
 			$this->_result[] = '<input type="text" id="'.$this->_dbID.'/'.$this->_table.'/field/input" name="'.$this->_dbID.'/'.$this->_table.'/field/input" autocomplete="off" placeholder="'._('Type a few letters...').'"'  ;
-			$this->_result[] = ' data-ac-source="' . $this->_dbID . '/'.$this->_table.'/'.$field.'" data-ac-conditions="" data-ac-target="'.$this->_dbID.'/'.$this->_table.'/field/display" data-ac-primary-key="'.AbstractDBEngine::getPrimary($this->_struct).'" data-ac-empty-message="'._('No suggestion').'"  data-ac-multi="false" /></div>' ;
+			$this->_result[] = ' data-ac-source="' . $this->_dbID . '/'.$this->_table.'/'.$field.'" data-ac-conditions="" data-ac-target="'.$this->_dbID.'/'.$this->_table.'/field/display" data-ac-primary-key="'.$this->_schema->getPrimary () .'" data-ac-empty-message="'._('No suggestion').'"  data-ac-multi="false" /></div>' ;
 			$this->_result[] = '</div>' ;
 			$this->_result[] = '<input type="submit" value="'._('Edit this element').'" />' ;
 			$this->_result[] = '<script type="text/javascript">if (ajsf && ajsf.forms) ajsf.ready (function(){new ajsf.forms.Form ( _(\'#'.$this->_table.'/search\')) ;} ) ;</script>' ;
@@ -269,8 +276,8 @@ class AeAutoTable {
 	{
 		if ( is_array($data) )
 		{
-			$primaryField = $this->_struct[AbstractDBEngine::getPrimary($this->_struct)] ;
-			$primaryVal = $this->getVal( AbstractDBEngine::getPrimary($this->_struct, $data) ,$primaryField) ;
+			$primaryField = $this->_struct[$this->_schema->getPrimary()] ;
+			$primaryVal = $this->getVal( $this->_schema->getPrimary($data) ,$primaryField) ;
 		
 		} else {
 			foreach ($this->_struct as $field )

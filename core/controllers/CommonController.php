@@ -142,11 +142,11 @@ class CommonController extends Controller{
 	
 	
 	
-	function upload ( $structure, $table, $field , $id = null )
+	function upload ( $dbid, $table, $field , $id = null )
 	{
-		if ( $structure != 'main' )
+		if ( $dbid != 'main' )
 		{
-			$this->db = App::getDatabase($structure); 
+			$this->db = App::getDatabase($dbid); 
 		}
 		
 		if ( is_null($this->db) )
@@ -175,7 +175,7 @@ class CommonController extends Controller{
 			App::do500('Field does not exists');
 		}
 		
-		$id = $structure.'/'.$table.'/'.$field ;
+		$id = $dbid.'/'.$table.'/'.$field ;
 		
 		if(!empty($_FILES))
 		{
@@ -214,7 +214,7 @@ class CommonController extends Controller{
 			
 			if ( ake('auto_rename',$fieldStruct) && $fieldStruct['auto_rename'] === true )
 			{
-				$upload->renameTo( sha1 ( $structure . '_' . $table . '_' . time () ) ) ;
+				$upload->renameTo( sha1 ( $dbid . '_' . $table . '_' . time () ) ) ;
 			}
 			
 			

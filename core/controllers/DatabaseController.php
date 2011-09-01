@@ -127,6 +127,7 @@ class DatabaseController extends Controller{
 		
 		$this->structure = $this->db->getStructure () ;
 		
+		
 		if ( is_null( $this->structure ) || empty ( $this->structure ) || array_key_exists($this->table, $this->structure ) == false ) 
 		{
 			if ( debuggin() )
@@ -136,6 +137,8 @@ class DatabaseController extends Controller{
 				App::do500 ('Required structure does not exists') ;
 			}
 		}
+		
+		$this->schema = $this->db->getTableSchema($this->table) ;
 		
 		if (!is_null( App::getSession()->get('DB_PREV_PAGE') ) )
 		{
@@ -296,7 +299,7 @@ class DatabaseController extends Controller{
 	{
 		if(!is_null($id))
 		{
-			$primaryKey = AbstractDBEngine::getPrimary($this->structure[$this->table]) ;
+			$primaryKey = $this->schema->getPrimary() ;
 			$data = $this->appendPersistentData ( $this->db->find ( $this->table , $this->__getId ( $primaryKey, $id ) ), false ) ;
 			if ( !empty($data) && ake($primaryKey, $data) )
 			{
@@ -322,7 +325,7 @@ class DatabaseController extends Controller{
 								$dat[$this->databaseID.'/'.$this->table.'/'.$fieldName] = $this->db->find($field['source'],$value);
 							} else if ( $field['behavior'] & DBSchema::BHR_PICK_IN )
 							{
-								$dat[$this->databaseID.'/'.$this->table.'/'.$fieldName] = $this->db->findAll($field['source'],array ( AbstractDBEngine::getPrimary($this->structure[$this->table]) => $value));
+								$dat[$this->databaseID.'/'.$this->table.'/'.$fieldName] = $this->db->findAll($field['source'],array ( $this->schema->getPrimary() => $value));
 							}
 						} else {
 							$dat[$this->databaseID.'/'.$this->table.'/'.$fieldName] = $value ;
@@ -440,7 +443,7 @@ class DatabaseController extends Controller{
 	 */
 	public function massImport ( $id=null )
 	{
-		$primaryKey = AbstractDBEngine::getPrimary($this->structure[$this->table]) ;
+		$primaryKey = $this->schema->getPrimary() ;
 		
 		$this->view->set ( 'mode' , 'add' );
 		
@@ -631,7 +634,7 @@ class DatabaseController extends Controller{
 	 */
 	public function read($id=null)
 	{
-		$primaryKey = AbstractDBEngine::getPrimary($this->structure[$this->table]) ;
+		$primaryKey = $this->schema->getPrimary() ;
 		
 		$res = false ;
 		
@@ -710,7 +713,7 @@ class DatabaseController extends Controller{
 			$this->data = array () ;
 		}
 		
-		$primaryKey = AbstractDBEngine::getPrimary($this->structure[$this->table]) ;
+		$primaryKey = $this->schema->getPrimary() ;
 	
 		
 		$urls = array () ;
@@ -757,7 +760,7 @@ class DatabaseController extends Controller{
 			{
 				if ( ( $field['type'] == DBSchema::TYPE_PARENT ) && $field['source'] == $child_table )
 				{
-					$childPrimaryKey = AbstractDBEngine::getPrimary($this->structure[$child_table]) ;
+					$childPrimaryKey = $this->db->getTableSchema($child_table)->getPrimary() ;
 					
 					if ( ake($field['name'], $dat) )
 					{
@@ -1132,7 +1135,7 @@ class DatabaseController extends Controller{
 	{
 		$ids = array () ;
 		
-		$primaryKey = AbstractDBEngine::getPrimary($this->structure[$this->table]) ;
+		$primaryKey = $this->schema->getPrimary() ;
 		
 		foreach ( $this->data as $k => $v )
 		{
@@ -1201,7 +1204,7 @@ class DatabaseController extends Controller{
 	
 	function __delete ( $id )
 	{
-		$primaryKey = AbstractDBEngine::getPrimary($this->structure[$this->table]) ;
+		$primaryKey = $this->schema->getPrimary() ;
 		
 		$id = $this->__getId ( $primaryKey, $id ) ;
 		
@@ -1282,7 +1285,7 @@ class DatabaseController extends Controller{
 					unset($arr[$id]);
 					$els[$field] = implode(',',array_flip($arr));
 				}
-				if ( !$this->db->edit($table, AbstractDBEngine::getPrimary($this->structure[$table], $element), $els ) )
+				if ( !$this->db->edit($table, $this->schema->getPrimary($element), $els ) )
 				{
 					$res = false ;
 				}

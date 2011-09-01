@@ -290,8 +290,7 @@ class HTMLBehavior extends Behavior {
 				trigger_error('Table '.$table.'  does not exists', E_USER_ERROR);
 			}
 			
-			$primary = AbstractDBEngine::getPrimary($struct[$table]);
-			
+			$primary = $_db->getTableSchema($table)->getPrimary() ;
 			foreach ($struct[$table] as $f )
 			{
 				if ( $f['name'] == $fieldname )

@@ -1,7 +1,7 @@
 <?php
 
 
-class BehaviorableObject {
+class BehaviorableObject extends AeObject {
 	
 	private $_behaviors = array () ;
 	
@@ -32,6 +32,7 @@ class BehaviorableObject {
 	}
 	
 	function __call($name, $arguments) {
+		
 		foreach ( $this->_behaviors as $b )
 		{
 			if ( method_exists($b, $name) )
@@ -40,7 +41,7 @@ class BehaviorableObject {
 			}
 		}
 		
-		trigger_error('Function ' . $name . ' does not exists in BehaviorableObject.' ) ;
+		$this->debug('Function ' . $name . ' does not exists in BehaviorableObject.' ) ;
     }
 	
 }

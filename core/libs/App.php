@@ -1,17 +1,18 @@
 <?php
 
 /**
- * That's the main class of the Aenoa Server.
+ * <p>That's the main class of the Aenoa Server.</p>
  * 
- * It initializes everything required to run a webapp.
+ * <p>It initializes everything required to run a webapp.</p>
  * 
- * It stores Session, Databases and main tools.
+ * <p>It stores Session, Databases and main tools.</p>
  * 
  * @see Database
  * @see Session
  * 
  */
-class App {
+class App extends AeObject
+{
 	
 	
 	
@@ -503,10 +504,10 @@ class App {
 	
 		// Init sanitizer		
 		self::$sanitizer = new Sanitizer () ;
-	
+		
+		// Check if HTTP authentication needed
 		HTTPAuth::check () ;
 		
-	
 		// Init session
 		self::$session = new Session () ;
 		

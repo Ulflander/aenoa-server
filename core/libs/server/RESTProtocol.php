@@ -311,8 +311,9 @@ class RESTProtocol extends AbstractProtocol {
 				$struct = $db->getStructure() ;
 				
 				App::sendHeaderCode(201) ;
-				
-				App::redirect( url() . 'rest/'.$this->_service['structure'] . '/' . $this->_service['table'] . '/' . AbstractDBEngine::getPrimary($struct[$this->_service['table']] ,$controller->output) .'.' . $this->format );
+
+				App::redirect( url() . 'rest/'.$this->_service['structure'] . '/' . $this->_service['table'] . '/' . $db->getTableSchema($this->_service['table'])->getPrimary($controller->output) .'.' . $this->format );
+
 				break;
 				
 			case 'PUT':
