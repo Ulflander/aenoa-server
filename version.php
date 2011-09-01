@@ -1,1 +1,1 @@
-<?php $data['version']='1-0-4';  ?>
+<?php $data['version']='1-0-5';  ?>
