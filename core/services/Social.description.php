@@ -1,6 +1,40 @@
 <?php 
- class SocialServiceDescription { 
-	public $generated = 'November 1, 2010, 10:54 am' ;
+/**
+ * <h2>Aenoa Social service documentation</h2>
+ * 
+ * <p>Provides an access to some Social medias APIs</p>
+ * 
+ * 
+ * 
+ * 
+ * @see AenoaServerProtocol
+ * @see Service
+ * @see ServiceDescription
+ * @see RemoteService
+ * @see Gateway
+ * 
+ * 
+ * <h2>Service method: getShareService</h2>
+ * 
+ * 
+ * <p>Provides a list of sharing services.</p>
+ * 
+ * 
+ * Parameters:
+ * 
+ * <h4>pageTitle</h4><p>Optional: *no*</p><p>Title of the page to share</p>
+ * <h4>pageURI</h4><p>Optional: *no*</p><p>URI of the page to share</p>
+ * <h4>pageExcerpt</h4><p>Optional: yes, default value is *null* </p><p>An excerpt of the content of the page</p>
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
+class SocialServiceDescription { 
+	public $generated = 'September 2, 2011, 7:14 am' ;
 	public $methods = array (
 	'description' => 'Provides an access to some Social medias APIs',
 	'methods' => array (

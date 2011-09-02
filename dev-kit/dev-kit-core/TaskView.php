@@ -16,8 +16,6 @@ class TaskView {
 		$this->template->set ( 'status_message' , '' ) ;
 		$this->template->set ( 'menu' , array() ) ;
 		
-		$this->template->addJS ( 'dev-kit/assets/js/functions.js') ;
-		
 		$this->setTitle ( $title ) ;
 		
 		if ( $isHome == false )
@@ -28,7 +26,6 @@ class TaskView {
 		$this->template->set ( 'project_class' , 'light-block' ) ;
 		
 		$this->template->set ( 'is_home' , $isHome ) ;
-		$this->template->addCSS ( 'dev-kit/assets/css/dev-kit.css' ) ;
 	}
 	
 	function setTask ( $task )

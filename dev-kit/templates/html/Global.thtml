@@ -1,9 +1,14 @@
 
 <?php
 	// HEADER
-	$this->renderElement ( 'dev-kit-header' ) ;
+	$this->renderElement ( 'header' ) ;
 ?>
-		
+    <title><?php echo Config::get(App::APP_NAME) ?> | Dev Kit</title>
+<?php
+	// HEADER
+	$this->renderElement ( 'header-end' ) ;
+	$this->renderElement ( 'top' ) ;
+?>	
 <?php
 	$this->renderElement ( 'tasks' ) ;
 ?>

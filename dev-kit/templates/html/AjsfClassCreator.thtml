@@ -1,0 +1,194 @@
+<script type="text/javascript">
+		
+    var getterIndex = 0,
+    methodIndex = 0 ;
+	
+    ajsf.load('aetemplate') ;
+		
+    ajsf.ready(function(){
+	_('#ajsf/signature').on('submit', function(e){
+	    ajsf.prevent(e);
+	    var body = '' ,
+	    classTpl = new ajsf.Template ()
+	    .setTemplate( _('#ajsf/templates/class').value ),
+	    methodTpl = new ajsf.Template ()
+	    .setTemplate( _('#ajsf/templates/class').value ) ;
+				
+				
+				
+				
+	    classTpl.set('classname',_('#ajsf/classname').value ) ;
+	    classTpl.set('parent',_('#ajsf/parent').value ) ;
+	    classTpl.set('classcomment',_('#ajsf/classcomment').value ) ;
+	    classTpl.set('body',body) ;
+				
+	    _('#ajsf/result').value = classTpl.render() ;
+	    _('#ajsf/result/container').show () ;
+	});
+			
+	_('#ajsf/addgetter').on('click',function (e){
+				
+	    var label1 = ajsf.create(null,'label')
+	    .setAt('for','ajsf/getter/name/'+getterIndex)
+	    .html('Variable name (lowercased first, then camelized)'),
+	    label2 = ajsf.create(null,'label')
+	    .setAt('for','ajsf/getter/type/'+getterIndex)
+	    .html('Variable type'),
+	    label4 = ajsf.create(null,'label')
+	    .setAt('for','ajsf/getter/customtype/'+getterIndex)
+	    .html('Or custom variable type'),
+	    label3 = ajsf.create(null,'label')
+	    .setAt('for','ajsf/getter/comment/'+getterIndex)
+	    .html('Variable comment'),
+	    input1 = ajsf.create('ajsf/getter/name/'+getterIndex,'input')
+	    .setAt('type','text') ,
+	    input2 = ajsf.create('ajsf/getter/type/'+getterIndex,'select')
+	    .append(
+	    ajsf.create(null,'option').setAt('value','int').html('int'),
+	    ajsf.create(null,'option').setAt('value','float').html('float'),
+	    ajsf.create(null,'option').setAt('value','string').html('string'),
+	    ajsf.create(null,'option').setAt('value','boolean').html('boolean'),
+	    ajsf.create(null,'option').setAt('value','Array').html('Array'),
+	    ajsf.create(null,'option').setAt('value','Object').html('Object'),
+	    ajsf.create(null,'option').setAt('value','DOMElement').html('DOMElement')
+	) ,
+	    input3 = ajsf.create('ajsf/getter/comment/'+getterIndex,'input')
+	    .setAt('type','text') ,
+	    input4 = ajsf.create('ajsf/getter/customtype/'+getterIndex,'input')
+	    .setAt('type','text') ;
+				
+	    input2;
+				
+	    _('#ajsf/getters').append(
+	    ajsf.create(null,'div','control').append(
+	    label1,
+	    input1,
+	    label3,
+	    input3,
+	    ajsf.create(null,'hr','hidden thin'),
+	    label2,
+	    input2,
+	    label4,
+	    input4
+						
+	)
+	) ;
+				
+	    getterIndex ++ ;
+	});
+    });
+	
+	
+</script>
+<div class="expanded">
+
+	<h1>Create a new AJSF class</h1>
+
+
+
+	    <form id="ajsf/signature" method="post" action="#">
+
+		<fieldset class="hidden">
+		    <legend>Templates</legend>
+
+		    <label for="ajsf/templates/class">Class template</label>
+		    <textarea id="ajsf/templates/class" name="ajsf/templates/class">
+(function(){
+	/*
+		Class: ajsf.<%= classname %>
+		
+		<%= classcomment %>
+	*/
+	ajsf.<%= classname %> = <%= parent %>.extend({
+		<%= body %>
+	}) ;
+})();
+		    </textarea>
+
+		    <label for="ajsf/templates/method">Getter template</label>
+		    <textarea id="ajsf/templates/method" name="ajsf/templates/method">
+	/*
+		<%= methodtype %>: <%= method %>
+		
+		<%= methodcomment %>
+		
+		Returns:
+		<%= returncomment %>
+	*/
+	<%= method %>: function ( <%= params %> )
+	{
+		<%= body %>
+	}</textarea>
+
+		    <label for="ajsf/templates/method">Getter template</label>
+		    <textarea id="ajsf/templates/htmlprop" name="ajsf/templates/htmlprop">
+						<hr />
+						<div class="control">
+							<label for="ajsf/prop/<%= index %>/name">Property name</label>
+							<input type="text" id="ajsf/prop/<%= index %>/name" name="ajsf/prop/<%= index %>/name" />
+							<label for="ajsf/prop/<%= index %>/type">Property type</label>
+							<input type="text" id="ajsf/prop/<%= index %>/type" name="ajsf/prop/<%= index %>/type" />
+							<label for="ajsf/prop/<%= index %>/comment">Property comment</label>
+							<input type="text" id="ajsf/prop/<%= index %>/comment" name="ajsf/prop/<%= index %>/comment" />
+						</div>
+		    </textarea>
+
+		</fieldset>
+		<fieldset class="hidden" id="ajsf/result/container">
+		    <legend>Result</legend>
+		    <textarea id="ajsf/result"></textarea>
+		    <input type="submit" value="Update" class="margedtop icon16 reload" />
+		</fieldset>
+
+		<fieldset>
+		    <legend>Class main signature</legend>
+		    <div class="control">
+			<label for="ajsf/classname">Class name</label>
+			<input type="text" id="ajsf/classname" name="ajsf/classname" />
+		    </div>
+
+		    <div class="control">
+			<label for="ajsf/parent">Class name</label>
+			<select id="ajsf/parent" name="ajsf/parent">
+			    <option value="ajsf.Class">ajsf.Class</option>
+			    <option value="ajsf.AbstractEvtDispatcher">ajsf.AbstractEvtDispatcher</option>
+			</select>
+		    </div>
+
+		    <div class="control">
+			<label for="ajsf/classcomment">Class comment</label>
+			<textarea id="ajsf/classcomment" name="ajsf/classcomment"></textarea>
+		    </div>
+
+		</fieldset>
+		<fieldset>
+		    <legend>Class getters/setters</legend>
+		    <div id="ajsf/getters">
+		    </div>
+		    <div class="expanded alignright margedtop">
+			<input type="button" value="Add getter/setter" class="icon16 add" id="ajsf/addgetter" />
+		    </div>
+		</fieldset>
+
+
+		<fieldset>
+		    <legend>Class methods</legend>
+
+		    <div class="expanded alignright">
+			<input type="button" value="Add method" class="icon16 add" />
+
+		    </div>
+
+		    <div class="control">
+			<label for="ajsf/method/0/name">Method name</label>
+			<input type="text" id="ajsf/method/0/name" name="ajsf/method/0/name" />
+			<label for="ajsf/method/0/type">Method return type</label>
+			<input type="text" id="ajsf/method/0/type" name="ajsf/method/0/type" />
+			<label for="ajsf/method/0/comment">Method comment</label>
+			<input type="text" id="ajsf/method/0/comment" name="ajsf/method/0/comment" />
+		    </div>
+		</fieldset>
+		<input type="submit" value="Submit" />
+	    </form>
+
+</div>

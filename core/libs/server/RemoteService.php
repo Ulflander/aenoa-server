@@ -1,5 +1,9 @@
 <?php
 
+
+/*
+ * RemoteService connects to a remote Aenoa application, using <AenoaServerProtocol>
+ */
 class RemoteService {
 	
 	private $_gatewayURL ;
@@ -29,11 +33,24 @@ class RemoteService {
 		$this->_useSessID = $useSessIDParam ;
 	}
 	
+	/**
+	 * <p>Get the used protocol</p>
+	 * 
+	 * <p>Use it to </p>
+	 *
+	 * @return AbstractProtocol 
+	 */
 	public function getProtocol ()
 	{
 		return $this->_protocol ;
 	}
 	
+	/**
+	 * <p>Connects to remote service and get response</p>
+	 * 
+	 * @param bool $returnHeaders
+	 * @return string Response body 
+	 */
 	public function connect ( $returnHeaders = true )
 	{
 		$ch = curl_init($this->_gatewayURL);

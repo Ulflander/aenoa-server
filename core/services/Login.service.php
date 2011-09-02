@@ -60,6 +60,7 @@ class LoginService extends Service {
 				'firstname' => $user->getFirstname(),
 				'lastname' => $user->getFirstname(),
 				'properties' => $user->getProperties(),
+				'infos' => $user->getData(),
 				'level' => $user->getLevel()
 			) ) ;
 		} else {
