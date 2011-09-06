@@ -261,9 +261,12 @@ Config::set ( App::MAILER_RETURN_TO , 'xlaumonier@gmail.com') ;
 Config::set ( App::MAILER_ABUSE , 'abuse@aenoa-systems.com') ;
 Config::set ( Maintenance::DUMP_CMD , '/usr/bin/mysqldump' ) ;
 
-if ( strpos( url(), 'localhost' ) !== false || strpos( url(), '192.168.0.42' ) !== false )
+if ( strpos( url(), '192.168.0.42' ) !== false )
 {
 	Config::set ( App::STATIC_SERVER , 'http://192.168.0.42/aenoa-desk/' ) ;
+} if ( strpos( url(), 'localhost:8888' ) !== false ) 
+{
+	Config::set ( App::STATIC_SERVER , 'http://localhost:8888/aenoa-desk/' ) ;
 } else {
 	Config::set ( App::STATIC_SERVER , 'http://static.aenoa-systems.com/' ) ;
 }

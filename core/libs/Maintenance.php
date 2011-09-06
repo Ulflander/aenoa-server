@@ -14,7 +14,6 @@ class Maintenance {
 			
 			if ( $FILE_UTIL->fileExists(ROOT.'templates'.DS.'maintenance.html') )
 			{
-				pr(AE_TEMPLATES.'maintenance.html');
 				include(ROOT.'templates'.DS.'maintenance.html');
 			} else {
 				include(AE_TEMPLATES.'maintenance.html');

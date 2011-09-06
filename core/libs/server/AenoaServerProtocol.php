@@ -1,7 +1,9 @@
 <?php
 
 /**
- * AenoaServerProtocol is used to control Aenoa services
+ * AenoaServerProtocol is used to acces to Aenoa services.
+ * 
+ * This protocol is based on a service identifier and an array of data encoded in json.
  * 
  * @see Gateway
  * @see Service
