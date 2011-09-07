@@ -52,7 +52,7 @@ class AeI18n {
 	    self::$mainInstance = &$this;
 
 	    if ($dir == '') {
-		App::do403('Localization initialization failed');
+		//App::do403('Localization initialization failed');
 	    }
 	}
 
