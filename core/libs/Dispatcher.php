@@ -1,7 +1,7 @@
 <?php
 
 /**
- * <p>The dispatcher class will automatically try to dispatch the good url to the good action.</p>
+ * <p>The dispatcher class will automatically try to dispatch the good url to the good action. It's fully automatic. However you can reroute some URLs to others URLs</p>
  * 
  * <p>For the following examples, we will assume a query coming to our application located at "http://www.example.com/".</p> 
  * 
@@ -116,8 +116,6 @@ class Dispatcher {
 	static private $_done = false ;
 	
 	static private $_activated = true ;
-	
-	static private $_urls = array () ;
 	
 	/**
 	 * First token aliases
@@ -331,25 +329,11 @@ class Dispatcher {
 		App::end () ;
 	}
 	
-	/**
-	 * 
-	 * TODO: merger $mainParameter, $controllerParams, $othersParams into one or two arrays max... This is a mess !!
-	 * 
-	 * @param string $controller
-	 * @param string $action
-	 * @param string $mainParameter
-	 * @param array() $controllerParams
-	 * @param array() $othersParams
-	 */
 	static private function _launchController ( $controller, $action, $mainParameter = null , $controllerParams = array() , $othersParams = array () )
 	{
 		Controller::launchController($controller, $action, $mainParameter, $controllerParams, $othersParams) ;
 	}
 
-	/**
-	 * 
-	 * @param $parameters
-	 */
 	static private function _applyWebpage ( $parameters )
 	{
 		$page = new Webpage ( $parameters[0] , @$parameters[1] , false );

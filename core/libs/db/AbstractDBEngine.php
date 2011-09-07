@@ -362,7 +362,7 @@ class AbstractDBEngine extends DBSchema {
 
 	/**
 	 * This method open the database
-	 *
+	 * 
 	 * Concrete implementation returns true if database is connected, false otherwise
 	 *
 	 * @return boolean True is database connected, false otherwise
@@ -802,6 +802,26 @@ class AbstractDBEngine extends DBSchema {
 	function deleteAll ( $table , $cond = array () ) {
 		return false;
 	}
+	
+	
+	
+	
+	function createDocument ( $id )
+	{
+	    
+	}
+	
+	function getDocument ( $id )
+	{
+	    
+	}
+	
+	function setDocument ( $id , $data )
+	{
+	    
+	}
+	
+	
 
 }
 

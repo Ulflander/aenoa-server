@@ -264,9 +264,12 @@ Config::set ( Maintenance::DUMP_CMD , '/usr/bin/mysqldump' ) ;
 if ( strpos( url(), '192.168.0.42' ) !== false )
 {
 	Config::set ( App::STATIC_SERVER , 'http://192.168.0.42/aenoa-desk/' ) ;
-} if ( strpos( url(), 'localhost:8888' ) !== false ) 
+} else if ( strpos( url(), 'localhost:8888' ) !== false ) 
 {
 	Config::set ( App::STATIC_SERVER , 'http://localhost:8888/aenoa-desk/' ) ;
+} else if ( strpos( url(), 'localhost' ) !== false ) 
+{
+	Config::set ( App::STATIC_SERVER , 'http://localhost/' ) ;
 } else {
 	Config::set ( App::STATIC_SERVER , 'http://static.aenoa-systems.com/' ) ;
 }

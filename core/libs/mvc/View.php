@@ -1,7 +1,7 @@
 <?php
 
 
-abstract class View extends BehaviorableObject {
+abstract class View extends Behaviorable {
 	
 	
 	

@@ -135,6 +135,18 @@ class DBSchema extends AeObject {
 	 */
 	const TYPE_CHILD = 'child' ;
 
+	/**
+	 * Document type definition
+	 * 
+	 * Document is a JSON file stored in a protected location. Format of the JSON is free.
+	 * 
+	 * Fields that have this type are never really created in Database.
+	 * 
+	 *
+	 * @var string
+	 */
+	const TYPE_DOCUMENT = 'document' ;
+
 
 	/////////////////////////////////////////////////////
 	// BEHAVIORS

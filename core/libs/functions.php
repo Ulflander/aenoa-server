@@ -308,6 +308,16 @@ if ( !function_exists('version_comp') )
 	} 
 }
 
+
+/**
+ * Replaces core php function json_decode for parsing using Javascript
+ */
+function json_encode_js ( $data )
+{
+    return json_encode ( str_replace ( array ( '“','”' ) , array ( '"','"' ) , $data ) ) ;
+}
+
+
 /**
  * Convenient function for php cor ucfirst function
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Here is detailed the protocol used by the REST service
  * 
@@ -119,6 +118,10 @@
  * <pre>orderby=field</pre>
  * <p>orders results using given field.</p>
  * 
+ * <p><b>jsonp</b></p>
+ * <pre>jsonp=callback_name</pre>
+ * <p>encapsulate result with callback function name given (GET requests only)</p>
+ * 
  * <p><b>dir</b></p>
  * <pre>dir=[asc|desc]</pre>
  * <p>set the direction of order (asc for ascending, desc for descending). Use this parameter with <b>orderby</b> parameter.</p>
@@ -126,215 +129,199 @@
  * @see RESTGateway
  *
  */
-
 class RESTProtocol extends AbstractProtocol {
+
+    private $_preformatted = null;
+    private $format = 'json';
+    private $mode = 'GET';
+    
+    
+    private $jsonp = null ;
+
+    /**
+     * HTTP request type (GET, POST, PUT or DELETE)
+     * 
+     * 
+     * @param string $mode
+     */
+    function setMode($mode) {
+	$this->mode = $mode;
+    }
+
+    function addPreformattedData($value) {
+	$this->_preformatted = $value;
+    }
+
+    function encode($data) {
 	
+	$result = null;
 	
-	
-	private $_preformatted = null ;
-	
-	private $format = 'json' ;
-	
-	private $mode = 'GET' ;
-	
-	/**
-	 * HTTP request type (GET, POST, PUT or DELETE)
-	 * 
-	 * 
-	 * @param string $mode
-	 */
-	function setMode ( $mode )
-	{
-		$this->mode = $mode ;
-	}
-	
-	function addPreformattedData ( $value )
-	{
-		$this->_preformatted = $value ;
-	}
-	
-	
-	function encode ( $data )
-	{
-		switch($this->format)
-		{
-			case 'json':
-				if ( @$this->_service['beautify'] === 'true' )
-				{
-					return beautify_json(json_encode($data));
-				}
-				return json_encode ( $data ) ;
-		}
-		
-		return null ;
-	}
-	
-	function decode ( $data )
-	{
-		switch($this->format)
-		{
-			case 'json':
-				return json_decode ( $data ) ;
-		}
-		
-		return null ;
-	}
-	
-	function getToSendData ()
-	{
-		if ( !is_string($this->_preformatted) )
-		{
-			return $this->encode($this->_data);
+	switch ($this->format) {
+	    case 'json':
+		if (@$this->_service['beautify'] === 'true') {
+		    $result = beautify_json(json_encode_js($data));
 		} else {
-			return $this->_preformatted ;
+		    $result = json_encode($data);
 		}
-	}
-	
-	function validateData ( $data )
-	{
-		switch ( $this->mode )
+		if ( !is_null($this->jsonp) )
 		{
-			
+		    $result = $this->jsonp .'('.$result.');';
 		}
-		return true ;
+		break;
 	}
-	
-	
-	function getQuery ()
-	{
-		if ( !empty($this->_service))
-		{
-			return $this->_service ;
-		}
-		return null ;
-	}
-	
-	function getFormattedResponse ()
-	{
-		switch($this->format)
-		{
-			case 'json':
-				if ( @$this->_service['echo'] === 'true' )
-				{
-					header ('Content-Type: text/plain; charset=utf-8');
-					break;
-				}
-				header ('Content-Type: text/x-json');
-				break;
-		}
-		
-		return $this->getToSendData () ;
-	}
-	
-	
-	function callService ()
-	{
-		// Common parameters for DatabaseController	
-		$params = array (
-			'databaseID' => $this->_service['structure'],
-			'table' => $this->_service['table'],
-			'avoidRender' => true
-		);
-		
-		
-		switch ( $this->mode )
-		{
-			case 'GET':
-				
-				
-				$params['tableLength'] = ( ake('length',$this->_service) ? intval($this->_service['length']) : 10 ) ;
-				$params['recursivity'] = ( ake('recursivity', $this->_service) ? intval($this->_service['recursivity']) : 1 ) ;
-				
-				
-				if ( ake ( 'subfields', $this->_service ) )
-				{
-					$fields = explode(';',$this->_service['subfields']);
-					$final_fields = array () ;
-					foreach ( $fields as &$f )
-					{
-						$f = explode(':', $f) ;
-						if ( count($f) > 1 )
-						{
-							$final_fields[@$f[0]] = explode(',',@$f[1]);
-						}
-					}
-					$params['subFields'] = $final_fields ;
-				}
-				
-				if ( ake ( 'fields', $this->_service ) )
-				{
-					$params['fields'] = explode(',',$this->_service['fields']);
-				}
-				
-				$actionParams = array(
-										( is_int(intval(@$this->_service['page'])) && intval(@$this->_service['page']) > 0 ? intval($this->_service['page']) : 1 ),
-										( is_string(@$this->_service['orderby']) ? $this->_service['orderby'] : null ),
-										( is_string(@$this->_service['dir']) ? $this->_service['dir'] : null ),
-									) ;
-					
-				
-				
-				if ( $this->_service['element'] === '_count_' )
-				{
-					if ( ake('length',$this->_service) )
-					{
-						array_unshift($actionParams, intval($this->_service['length']));
-					}
-					$action = '__count' ;
-				} else 
-				if ( $this->_service['element'] === '_enumerate_' )
-				{
-					$action = '__enumerate' ;
-				} else if ( $this->_service['element'] != '' )
-				{
-					$action = 'read' ;
-					array_unshift($actionParams, $this->_service['element']) ;
-				} else {
-					$action = 'readAll' ;
-				}
-				
-				$controller = Controller::launchController ( 'Database' , $action , array_shift($actionParams) , $params, $actionParams , false );
-				
-				App::sendHeaderCode(200) ;
-				
-				break;
-				
-			case 'POST':
-				if(empty($_POST))
-				{
-					App::$sanitizer->setPUTasPOST($this->_service['structure'], $this->_service['table'] , $this->format) ;
-				}
-				$controller = Controller::launchController ( 'Database' , 'add' , null , $params );
-				
-				$db = App::getDatabase($this->_service['structure']) ;
-				
-				$struct = $db->getStructure() ;
-				
-				App::sendHeaderCode(201) ;
 
-				App::redirect( url() . 'rest/'.$this->_service['structure'] . '/' . $this->_service['table'] . '/' . $db->getTableSchema($this->_service['table'])->getPrimary($controller->output) .'.' . $this->format );
+	return $result;
+    }
 
-				break;
-				
-			case 'PUT':
-				App::$sanitizer->setPUTasPOST($this->_service['structure'], $this->_service['table'] , $this->format) ;
-				
-				$controller = Controller::launchController ( 'Database' , 'edit' , $this->_service['element'] , $params );
-				
-				App::sendHeaderCode(202) ;
-				break;
-				
-			case 'DELETE':
-				$controller = Controller::launchController ( 'Database' , 'delete' , $this->_service['element'] , $params );
-				App::sendHeaderCode(200) ;
-				break;
-		}
-		
-		$this->_data = $controller->output ;
-		
-		// And we're done
-		$this->respond () ;
-		
+    function decode($data) {
+	switch ($this->format) {
+	    case 'json':
+		return json_decode($data);
 	}
+
+	return null;
+    }
+
+    function getToSendData() {
+	if (!is_string($this->_preformatted)) {
+	    return $this->encode($this->_data);
+	} else {
+	    return $this->_preformatted;
+	}
+    }
+
+    function validateData($data) {
+	switch ($this->mode) {
+	    
+	}
+	return true;
+    }
+
+    function getQuery() {
+	if (!empty($this->_service)) {
+	    return $this->_service;
+	}
+	return null;
+    }
+
+    function getFormattedResponse() {
+	switch ($this->format) {
+	    case 'json':
+		if (@$this->_service['echo'] === 'true') {
+		    header('Content-Type: text/plain; charset=utf-8');
+		    break;
+		}
+		header('Content-Type: text/x-json');
+		break;
+	}
+
+	return $this->getToSendData();
+    }
+
+    function callService() {
+	// Common parameters for DatabaseController	
+	$params = array(
+	    'databaseID' => $this->_service['structure'],
+	    'table' => $this->_service['table'],
+	    'avoidRender' => true
+	);
+	
+	
+
+
+	switch ($this->mode) {
+	    case 'GET':
+		
+		if ( ake('jsonp', $this->_service) )
+		{
+		    $this->jsonp = $this->_service['jsonp'] ;
+		}
+
+		$params['tableLength'] = ( ake('length', $this->_service) ? intval($this->_service['length']) : 10 );
+		$params['recursivity'] = ( ake('recursivity', $this->_service) ? intval($this->_service['recursivity']) : 1 );
+
+
+		if (ake('subfields', $this->_service)) {
+		    $fields = explode(';', $this->_service['subfields']);
+		    $final_fields = array();
+		    foreach ($fields as &$f) {
+			$f = explode(':', $f);
+			if (count($f) > 1) {
+			    $final_fields[@$f[0]] = explode(',', @$f[1]);
+			}
+		    }
+		    $params['subFields'] = $final_fields;
+		}
+
+		if (ake('fields', $this->_service)) {
+		    $params['fields'] = explode(',', $this->_service['fields']);
+		}
+
+		$actionParams = array(
+		    ( is_int(intval(@$this->_service['page'])) && intval(@$this->_service['page']) > 0 ? intval($this->_service['page']) : 1 ),
+		    ( is_string(@$this->_service['orderby']) ? $this->_service['orderby'] : null ),
+		    ( is_string(@$this->_service['dir']) ? $this->_service['dir'] : null ),
+			);
+
+
+
+		if ($this->_service['element'] === '_count_') {
+		    if (ake('length', $this->_service)) {
+			array_unshift($actionParams, intval($this->_service['length']));
+		    }
+		    $action = '__count';
+		} else
+		if ($this->_service['element'] === '_enumerate_') {
+		    $action = '__enumerate';
+		} else if ($this->_service['element'] != '') {
+		    $action = 'read';
+		    array_unshift($actionParams, $this->_service['element']);
+		} else {
+		    $action = 'readAll';
+		}
+
+		$controller = Controller::launchController('Database', $action, array_shift($actionParams), $params, $actionParams, false);
+
+		App::sendHeaderCode(200);
+
+		break;
+
+	    case 'POST':
+		if (empty($_POST)) {
+		    App::$sanitizer->setPUTasPOST($this->_service['structure'], $this->_service['table'], $this->format);
+		}
+		$controller = Controller::launchController('Database', 'add', null, $params);
+
+		$db = App::getDatabase($this->_service['structure']);
+
+		$struct = $db->getStructure();
+
+		App::sendHeaderCode(201);
+
+		App::redirect(url() . 'rest/' . $this->_service['structure'] . '/' . $this->_service['table'] . '/' . $db->getTableSchema($this->_service['table'])->getPrimary($controller->output) . '.' . $this->format);
+
+		break;
+
+	    case 'PUT':
+		App::$sanitizer->setPUTasPOST($this->_service['structure'], $this->_service['table'], $this->format);
+
+		$controller = Controller::launchController('Database', 'edit', $this->_service['element'], $params);
+
+		App::sendHeaderCode(202);
+		break;
+
+	    case 'DELETE':
+		$controller = Controller::launchController('Database', 'delete', $this->_service['element'], $params);
+		App::sendHeaderCode(200);
+		break;
+	}
+
+	$this->_data = $controller->output;
+
+	// And we're done
+	$this->respond();
+    }
+
 }
+
 ?>
