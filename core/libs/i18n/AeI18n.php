@@ -41,11 +41,6 @@ class AeI18n {
 	} else {
 	    $this->_localePath = $path;
 	}
-	
-	if ( !function_exists('bindtextdomain') )
-	{
-	    return;
-	}
 
 	$dir = $this->_getLocale($lang);
 
