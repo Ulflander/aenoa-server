@@ -31,6 +31,8 @@ class AeI18n {
 		$lang = Config::get(App::APP_LANG);
 	    }
 	}
+	
+	$dir = '' ;
 
 	$this->_currentLanguage = $lang;
 
@@ -41,19 +43,43 @@ class AeI18n {
 	} else {
 	    $this->_localePath = $path;
 	}
+	
+	if (function_exists('bindtextdomain') )
+	{
+	    $dir = $this->_getLocale($lang);
 
-	$dir = $this->_getLocale($lang);
-
-	if ($dir == '') {
-	    $dir = $this->_getLocale($lang . '.' . $codeset);
+	    if ($dir == '') {
+		$dir = $this->_getLocale($lang . '.' . $codeset);
+	    }
 	}
 
 	if (is_null(self::$mainInstance)) {
 	    self::$mainInstance = &$this;
 
-	    if ($dir == '') {
-		//App::do403('Localization initialization failed');
+	    if ($dir == '' ) {
+		if ( !debuggin() )
+		{
+		    App::do500('Localization initialization failed');
+		} else {
+		    if ( !function_exists('_') )
+		    {
+			function _ ( $str )
+			{
+			    return $str ;
+			}
+			function ngettext ( $str1, $str2, $c )
+			{
+			    if ( $c == 1 )
+			    {
+				return $str1 ;
+			    }
+			    return $str2 ;
+			}
+		    }
+		    return;
+		}
 	    }
+	    
 	}
 
 
