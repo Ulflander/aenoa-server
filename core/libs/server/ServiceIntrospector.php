@@ -82,8 +82,9 @@ class ServiceIntrospector {
 		$description = array () ;
 		$errors = array () ;
 		$content = str_replace ( array("\t","\n","\r","\r\n") , array('','','','') , file_get_contents($serviceFile) ) ;
-		$bodyFirstLevelMethodPattern = '/[^\{].*\$this->protocol->addData\s{0,50}\((.*?),([^\;]*)\)/ims' ;
-		$bodySecondLevelMethodPattern = '/[\{].*\$this->protocol->addData\s{0,50}\((.*?),([^\;]*)\).*[\}]/ims' ;
+		
+		$bodyFirstLevelMethodPattern = '/\$this->protocol->addData\s{0,50}\((.*?),(.*?)\)\s{0,50};/ims' ;
+		$bodySecondLevelMethodPattern = '/\$this->protocol->setFailure{0,50}\((.*?)\)\s{0,50};/ims' ;
 		
 		foreach ( $methods as $k => $method )
 		{
@@ -118,6 +119,8 @@ class ServiceIntrospector {
 					
 					$mDesc['firstLevelReturns'] = array () ;
 					preg_match_all ( $bodyFirstLevelMethodPattern ,$methodBody , $res2 ) ;
+					pr($methodBody);
+					pr($res2);
 					if ( !empty ( $res2[1] ) )
 					{
 						$c = count($res2[1]) ;
@@ -134,7 +137,7 @@ class ServiceIntrospector {
 						$c = count($res2[1]) ;
 						for ( $i=0 ; $i<$c ; $i++ )
 						{
-							$mDesc['secondLevelReturns'][] = array ( 'name' => trim($res2[1][$i],'\' ') , 'value' => str_replace('\'','"',trim($res2[2][$i])) ) ;
+							$mDesc['secondLevelReturns'][] = array ( 'name' => trim($res2[1][$i],'\' ') ) ;
 						}
 					}
 					

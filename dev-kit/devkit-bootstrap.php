@@ -6,6 +6,8 @@ define ( 'DK_DEV_KIT' , $dkRoot ) ;
 define ( 'DK_TASKS' , $dkRoot . 'tasks' . DS ) ;
 define ( 'DK_PLUGINS' , $dkRoot . 'plugins' . DS ) ;
 define ( 'DK_TEMPLATES' , $dkRoot . 'templates' . DS ) ;
+define ( 'DK_ASSETS' , $dkRoot . 'assets' . DS ) ;
+define ( 'DK_NDF' , $dkRoot . 'ndf' . DS ) ;
 
 Config::set ( App::APP_PUBLIC_REPOSITORY , DK_DEV_KIT . 'public' ) ;
 

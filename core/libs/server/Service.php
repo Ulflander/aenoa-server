@@ -2,12 +2,6 @@
 
 abstract class Service {
 
-    /**
-     * Protocol to use to respond queries in services
-     * 
-     * 
-     * @var AenoaServerProtocol Protocol
-     */
     public $protocol;
     protected $authRequired = false;
 

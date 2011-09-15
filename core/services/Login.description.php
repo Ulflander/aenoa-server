@@ -2,40 +2,76 @@
 /**
  * <h2>Aenoa Login service documentation</h2>
  * 
+ * 
  * <p>The Aenoa core Login service authorize remote applications to login and logout users based on Aenoa application users list.</p>
  * 
  * 
- * <h3>Service method: login</h3>
+ * 
+ * 
+ * 
+ * <h2>Service method: login</h2>
  * 
  * 
  * <p>The login method returns user info, group and create a cookie if given identifiers are valid in application.</p>
  * 
+ * <h3>Parameters</h3>
  * 
- * Parameters:
  * 
- * <h4>email</h4><p>Optional: no) </p><p>The main user identifier, his email.</p>
- * <h4>pwdHash</h4><p>Optional: no) </p><p>A hash that is a combination of an API clear private key and a sha1 hash of a user password.</p>
- * <h4>publicKey</h4><p>Optional: no) </p><p>The public API key corresponding to the private API key used to create the pwdPrivKeyHash parameter</p>
+ * <p><b>email</b> (Optional: no) The main user identifier, his email.</p>
+ * <p><b>pwdHash</b> (Optional: no) A hash that is a combination of an API clear private key and a sha1 hash of a user password.</p>
+ * <p><b>publicKey</b> (Optional: no) The public API key corresponding to the private API key used to create the pwdPrivKeyHash parameter</p>
  * 
- * <h3>Service method: logout</h3>
+ * 
+ * 
+ * 
+ * <h3>Returns in case of success</h3>
+ * 
+ * <p><b>user</b> In case of success, an array containing user informations  <pre>array ("dbid" => $user->getDatabaseId(),"user" => $user->getIdentifier(),"firstname" => $user->getFirstname(),"lastname" => $user->getFirstname(),"properties" => $user->getProperties(),"infos" => $user->getData(),"level" => $user->getLevel())</pre></p>
+ * 
+ * 
+ * 
+ * 
+ * <h3>Returns in case of failure</h3>
+ * 
+ * <p><b>Public API key not valid</b> Failure message sent if public key is not valid</p>
+ * 
+ * 
+ * <p><b>Invalid email</b> Failure message sent if email is not registered in users database</p>
+ * 
+ * 
+ * <p><b>Private API authentication failed</b> Sent if password/hash combination is not valid</p>
+ * 
+ * 
+ * <p><b>Authentication failed</b> Sent if login failed despite of valid login data</p>
+ * 
+ * 
+ * <h2>Service method: logout</h2>
  * 
  * 
  * <p>The logout method destroys cookie created by Login method.</p>
  * 
  * 
  * 
+ * <h3>Returns in case of success</h3>
  * 
- * @see AenoaServerProtocol
- * @see Service
- * @see ServiceDescription
- * @see RemoteService
- * @see Gateway
+ * <p>Nothing is returned in case of success</p>
  * 
+ * 
+ * <h3>Returns in case of failure</h3>
+ * 
+ * <p><b>User was not connected</b> Sent if user was not connected</p>
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * @see LoginService
  * 
  */
 
 class LoginServiceDescription { 
-	public $generated = 'September 2, 2011, 7:07 am' ;
+	public $generated = 'September 12, 2011, 10:10 am' ;
 	public $methods = array (
 	'description' => 'The Aenoa core Login service authorize remote applications to login and logout users based on Aenoa application users list.',
 	'methods' => array (
@@ -61,15 +97,26 @@ class LoginServiceDescription {
 			'firstLevelReturns' => array (
 				0 => array (
 					'name' => 'user',
-					'value' => 'array ("dbid" => $user->getDatabaseId(),"user" => $user->getIdentifier(),"firstname" => $user->getFirstname(),"lastname" => $user->getFirstname(),"properties" => $user->getProperties(),"level" => $user->getLevel())',
+					'value' => 'array ("dbid" => $user->getDatabaseId(),"user" => $user->getIdentifier(),"firstname" => $user->getFirstname(),"lastname" => $user->getFirstname(),"properties" => $user->getProperties(),"infos" => $user->getData(),"level" => $user->getLevel())',
 					'description' => 'In case of success, an array containing user informations',
 					),
 				),
 			'secondLevelReturns' => array (
 				0 => array (
-					'name' => 'user',
-					'value' => 'array ("dbid" => $user->getDatabaseId(),"user" => $user->getIdentifier(),"firstname" => $user->getFirstname(),"lastname" => $user->getFirstname(),"properties" => $user->getProperties(),"level" => $user->getLevel())',
-					'description' => 'In case of error, an empty array.',
+					'name' => 'Public API key not valid',
+					'description' => 'Failure message sent if public key is not valid',
+					),
+				1 => array (
+					'name' => 'Invalid email',
+					'description' => 'Failure message sent if email is not registered in users database',
+					),
+				2 => array (
+					'name' => 'Private API authentication failed',
+					'description' => 'Sent if password/hash combination is not valid',
+					),
+				3 => array (
+					'name' => 'Authentication failed',
+					'description' => 'Sent if login failed despite of valid login data',
 					),
 				),
 			'description' => 'The login method returns user info, group and create a cookie if given identifiers are valid in application.',
@@ -81,6 +128,10 @@ class LoginServiceDescription {
 			'firstLevelReturns' => array (
 				),
 			'secondLevelReturns' => array (
+				0 => array (
+					'name' => 'User was not connected',
+					'description' => 'Sent if user was not connected',
+					),
 				),
 			'description' => 'The logout method destroys cookie created by Login method.',
 			),

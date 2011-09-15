@@ -2,16 +2,11 @@
 /**
  * <h2>Aenoa Data service documentation</h2>
  * 
+ * 
  * <p>This service authorize read-only access to data. It provides methods for field autocompletion and more further...</p>
  * 
  * 
  * 
- * 
- * @see AenoaServerProtocol
- * @see Service
- * @see ServiceDescription
- * @see RemoteService
- * @see Gateway
  * 
  * 
  * <h2>Service method: autoComplete</h2>
@@ -19,48 +14,76 @@
  * 
  * <p>Returns a list of pairs id / value that match the query</p>
  * 
+ * <h3>Parameters</h3>
  * 
- * Parameters:
  * 
- * <h4>query</h4><p>Optional: *no*</p><p>The search query</p>
- * <h4>source</h4><p>Optional: *no*</p><p>The databaseID / table / field in which to search</p>
- * <h4>conditions</h4><p>Optional: yes, default value is *""* </p><p>Conditions to fit</p>
- * <h4>results</h4><p>Optional: yes, default value is *10* </p><p>Number of results to return</p>
+ * <b>query</b> (Optional: no) The search query 
+ * <b>source</b> (Optional: no) The databaseID / table / field in which to search 
+ * <b>conditions</b> (Optional: yes, default value is """" ) Conditions to fit 
+ * <b>results</b> (Optional: yes, default value is "10" ) Number of results to return 
+ * 
+ * 
+ * 
+ * <h3>Returns in case of success</h3>
+ * 
+ * This service does not return any data or failure message.
+ * 
+ * 
+ * <h3>Returns in case of failure</h3>
  * 
  * <h2>Service method: getAllAndChilds</h2>
  * 
  * 
  * <p>Returns all data af a table (if table count &lt; 300) and the childs based on PICK_ONE and PICK_IN behaviors</p>
  * 
+ * <h3>Parameters</h3>
  * 
- * Parameters:
  * 
- * <h4>source</h4><p>Optional: *no*</p><p>The databaseID / table in which to search</p>
- * <h4>conditions</h4><p>Optional: yes, default value is *""* </p><p>Conditions to fit</p>
- * <h4>keysAsLabel</h4><p>Optional: yes, default value is *false* </p><p>Returns labels in results despite of db field name</p>
- * <h4>max</h4><p>Optional: yes, default value is *300* </p><p>Max number of results to return</p>
+ * <b>source</b> (Optional: no) The databaseID / table in which to search 
+ * <b>conditions</b> (Optional: yes, default value is """" ) Conditions to fit 
+ * <b>keysAsLabel</b> (Optional: yes, default value is "false" ) Returns labels in results despite of db field name 
+ * <b>max</b> (Optional: yes, default value is "300" ) Max number of results to return 
+ * 
+ * 
+ * 
+ * <h3>Returns in case of success</h3>
+ * 
+ * This service does not return any data or failure message.
+ * 
+ * 
+ * <h3>Returns in case of failure</h3>
  * 
  * <h2>Service method: getOneAndChilds</h2>
  * 
  * 
  * <p>Re</p>
  * 
- * 
- * Parameters:
- * 
- * <h4>source</h4><p>Optional: *no*</p><p>The databaseID / table / elementPrimaryKey to retrieve</p>
- * <h4>conditions</h4><p>Optional: yes, default value is *""* </p><p>Conditions to fit</p>
- * <h4>keysAsLabel</h4><p>Optional: yes, default value is *false* </p><p>Returns labels in results despite of db field name</p>
+ * <h3>Parameters</h3>
  * 
  * 
+ * <b>source</b> (Optional: no) The databaseID / table / elementPrimaryKey to retrieve 
+ * <b>conditions</b> (Optional: yes, default value is """" ) Conditions to fit 
+ * <b>keysAsLabel</b> (Optional: yes, default value is "false" ) Returns labels in results despite of db field name 
  * 
  * 
  * 
+ * <h3>Returns in case of success</h3>
+ * 
+ * This service does not return any data or failure message.
+ * 
+ * 
+ * <h3>Returns in case of failure</h3>
+ * 
+ * 
+ * 
+ * 
+ * 
+ * @see DataService
  * 
  */
 
 class DataServiceDescription { 
-	public $generated = 'September 2, 2011, 7:12 am' ;
+	public $generated = 'September 12, 2011, 9:56 am' ;
 	public $methods = array (
 	'description' => 'This service authorize read-only access to data. It provides methods for field autocompletion and more further...',
 	'methods' => array (

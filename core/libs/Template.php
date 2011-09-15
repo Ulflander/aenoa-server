@@ -526,7 +526,12 @@ class Template extends View {
 			
 			if ( $this->useLayout && $echo == true)
 			{
-				$file = $this->getFile ( $this->_mode . DS . $this->layoutName . '.' . $this->getExtension () ) ;
+				$file = $this->getFile ( $this->_mode . DS . 'layouts' . DS . $this->layoutName . '.' . $this->getExtension () ) ;
+				
+				if ( is_null ( $file ) )
+				{
+				    $file = $this->getFile ( $this->_mode . DS . $this->layoutName . '.' . $this->getExtension () ) ;
+				}
 				
 				if ( !is_null ( $file ) )
 				{

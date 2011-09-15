@@ -2,16 +2,11 @@
 /**
  * <h2>Aenoa Social service documentation</h2>
  * 
+ * 
  * <p>Provides an access to some Social medias APIs</p>
  * 
  * 
  * 
- * 
- * @see AenoaServerProtocol
- * @see Service
- * @see ServiceDescription
- * @see RemoteService
- * @see Gateway
  * 
  * 
  * <h2>Service method: getShareService</h2>
@@ -19,22 +14,34 @@
  * 
  * <p>Provides a list of sharing services.</p>
  * 
- * 
- * Parameters:
- * 
- * <h4>pageTitle</h4><p>Optional: *no*</p><p>Title of the page to share</p>
- * <h4>pageURI</h4><p>Optional: *no*</p><p>URI of the page to share</p>
- * <h4>pageExcerpt</h4><p>Optional: yes, default value is *null* </p><p>An excerpt of the content of the page</p>
+ * <h3>Parameters</h3>
  * 
  * 
+ * <b>pageTitle</b> (Optional: no) Title of the page to share 
+ * <b>pageURI</b> (Optional: no) URI of the page to share 
+ * <b>pageExcerpt</b> (Optional: yes, default value is "null" ) An excerpt of the content of the page 
  * 
  * 
  * 
+ * <h3>Returns in case of success</h3>
+ * 
+ * <b>share_services</b> An array of URLs to share the page on social networks  <pre>AeSocialShare::mapShares( $pageTitle , $pageURI, $pageExcerpt )</pre>
+ * 
+ * 
+ * 
+ * 
+ * <h3>Returns in case of failure</h3>
+ * 
+ * 
+ * 
+ * 
+ * 
+ * @see SocialService
  * 
  */
 
 class SocialServiceDescription { 
-	public $generated = 'September 2, 2011, 7:14 am' ;
+	public $generated = 'September 12, 2011, 10:04 am' ;
 	public $methods = array (
 	'description' => 'Provides an access to some Social medias APIs',
 	'methods' => array (
@@ -59,6 +66,11 @@ class SocialServiceDescription {
 					),
 				),
 			'firstLevelReturns' => array (
+				0 => array (
+					'name' => 'share_services',
+					'value' => 'AeSocialShare::mapShares( $pageTitle , $pageURI, $pageExcerpt )',
+					'description' => 'An array of URLs to share the page on social networks',
+					),
 				),
 			'secondLevelReturns' => array (
 				),

@@ -17,7 +17,7 @@ class CreateServiceDescription extends Task {
 	if ($this->hasParam('service') || $this->hasParam('secondStep')) {
 	    $service = ( $this->hasParam('service') ? $this->params['service'] : $this->params['secondStep'] );
 
-	    
+
 	    if (strpos($service, 'core/') === false && is_file(ROOT . 'app' . DS . 'services' . DS . $service . '.service.php')) {
 		$this->_methods = ServiceIntrospector::introspect(ROOT . 'app' . DS . 'services' . DS . $service . '.service.php', $service);
 
@@ -256,29 +256,24 @@ class CreateServiceDescription extends Task {
 	$methods = array(
 	    'description' => $this->params['description'],
 	    'methods' => $this->_methods[0]
-		);
+	);
 
 	$methods = printArray($methods, "\t");
 
 	$doc = array(
 	    '<h2>' . sprintf(_('%s %s service documentation'), $this->_isCore ? 'Aenoa' : Config::get(App::APP_NAME), camelize($service)) . '</h2>',
 	    '',
+	    '',
 	    '<p>' . $this->params['description'] . '</p>',
 	    '',
 	    ''
-		);
+	);
 
 	$doc[] = '';
 	$doc[] = '';
-	$doc[] = '@see AenoaServerProtocol';
-	$doc[] = '@see Service';
-	$doc[] = '@see ServiceDescription';
-	$doc[] = '@see RemoteService';
-	$doc[] = '@see Gateway';
 	$doc[] = '';
-	$doc[] = '';
-	
-	
+
+
 	foreach ($this->_methods[0] as $m => $dsc) {
 	    $doc[] = '<h2>Service method: ' . $m . '</h2>';
 	    $doc[] = '';
@@ -286,20 +281,51 @@ class CreateServiceDescription extends Task {
 	    $doc[] = '<p>' . $dsc['description'] . '</p>';
 	    $doc[] = '';
 
-	    if (!empty($dsc['firstLevelReturns'])) {
-		
-	    }
-
 	    if (!empty($dsc['arguments'])) {
+		$doc[] = '<h3>Parameters</h3>';
 		$doc[] = '';
-		$doc[] = 'Parameters:';
 		$doc[] = '';
 		foreach ($dsc['arguments'] as $arg) {
-		    $doc[] = "<h4>" . $arg['name'] .'</h4>'
-			    . '<p>Optional: ' . ($arg['optional'] == true ? 'yes, default value is *' . $arg['default'] . '* ' : '*no*' ) . '</p>'
-			    . '<p>'.$arg['description'].'</p>';
+		    $doc[] = "<p><b>" . $arg['name'] . '</b> (Optional: ' . ($arg['optional'] == true ? 'yes, default value is "' . $arg['default'] . '" ' : 'no' ) . ')'
+			    . ' ' . $this->formatStrForDoc($arg['description']) . '</p>';
 		}
 		$doc[] = '';
+		$doc[] = '';
+	    }
+
+	    $doc[] = '';
+	    $doc[] = '';
+	    $doc[] = '<h3>Returns in case of success</h3>';
+	    $doc[] = '';
+
+	    if (empty($dsc['firstLevelReturns']) && empty($dsc['secondLevelReturns'])) {
+		$doc[] = 'This service does not return any data or failure message.';
+	    } else {
+
+		if (!empty($dsc['firstLevelReturns'])) {
+		    foreach ($dsc['firstLevelReturns'] as $ret) {
+			$doc[] = "<p><b>" . $ret['name'] . '</b> ' . $this->formatStrForDoc($ret ['description']) . '  <pre>' . $ret['value'] . '</pre></p>';
+			$doc[] = '';
+			$doc[] = '';
+		    }
+		} else {
+		    $doc[] = '<p>Nothing is returned in case of success</p>';
+		}
+
+		$doc[] = '';
+		$doc[] = '';
+		$doc[] = '<h3>Returns in case of failure</h3>';
+		$doc[] = '';
+
+		if (!empty($dsc['secondLevelReturns'])) {
+		    foreach ($dsc['secondLevelReturns'] as $ret) {
+			$doc[] = "<p><b>" . $ret['name'] . '</b> ' . $this->formatStrForDoc($ret ['description']) . '</p>';
+			$doc[] = '';
+			$doc[] = '';
+		    }
+		} else {
+		    $doc[] = '<p>Nothing is returned in case of failure</p>';
+		}
 	    }
 	}
 
@@ -307,6 +333,7 @@ class CreateServiceDescription extends Task {
 	$doc[] = '';
 	$doc[] = '';
 	$doc[] = '';
+	$doc[] = '@see ' . camelize($service) . 'Service';
 
 
 
@@ -324,6 +351,11 @@ class CreateServiceDescription extends Task {
 	}
 
 	$this->view->setMenuItem('New service description', url() . 'CreateServiceDescription');
+    }
+
+    private function formatStrForDoc($str) {
+	$str = str_replace('<br />', "\n * ", $str);
+	return $str;
     }
 
     private function getDescription($methodName = null, $type = null, $key = null) {
