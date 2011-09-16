@@ -20,7 +20,7 @@ class AeRoute {
 	foreach ( $routes as $route )
 	{
 	    $r = explode ('>',$route) ;
-	    $this->_routes[trim($r)] = trim($r) ;
+	    $this->_routes[trim($r[0])] = trim($r[1]) ;
 	}
     }
     
