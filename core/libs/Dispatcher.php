@@ -215,6 +215,10 @@ class Dispatcher {
 			return false ;
 		}
 		
+		$route = new AeRoute () ;
+		$query = $route->get($query) ;
+		
+		
 		$c = 0 ;
 		if ( strlen($query) == 0 )
 		{
@@ -230,6 +234,7 @@ class Dispatcher {
 		// For now, no controller neither action
 		$controller = null ;
 		$action = null ;
+		
 		
 		// No query, then try to check home
 		if ( $c == 0 || $query == 'index.html' )
