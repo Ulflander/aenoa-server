@@ -26,10 +26,10 @@
 		<div class="expanded margedtop ">
 			<input type="submit" value="<?php echo _('Login') ?>" class="right" />
 		</div>
-		<ul class="expanded margedtop no-list-style inline">
+		<div class="expanded margedtop inline" id="user-forgot-link">
 			<a href="<?php echo url() ?>user-core/register" title="<?php echo _('Register') ?>" class="right p"><?php echo _('Register') ?></a>
 			<a href="<?php echo url() ?>user-core/password-reset" title="<?php echo _('Forgot your password ?') ?>" class="right p"><?php echo _('Forgot your password ?') ?></a>
-		</ul>
+		</div>
 	</form>
 	
 	<script language="javascript">
