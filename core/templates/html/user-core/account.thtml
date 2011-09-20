@@ -18,11 +18,14 @@
 		<li><?php echo _('Your firstname') ?>: <strong><?php echo $user_object->getFirstname () ?></strong> <span class="right">[<a href="<?php echo url() ?>user-core/profile" title="<?php echo _('Edit profile') ?>"><?php echo _('Edit') ?></a>]</span></li> 
 		<li><?php echo _('Your lastname') ?>: <strong><?php echo $user_object->getLastname () ?></strong></li>
 	<?php 
+	
+	if ( isset($data) && is_array($data) ):
+	
 	foreach ( $data as $key => $info ) :
 	if ( $key != 'id' && $key != 'user_id' ):
 	?>
 		<li><?php echo $key ?>: <strong><?php echo $info ?></strong></li> 
-	<?php endif; endforeach; ?>
+	<?php endif; endforeach; endif; ?>
 	</ul>
 <?php if ( !App::isAjax() ) : ?>
 </div>

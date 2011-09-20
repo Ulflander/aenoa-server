@@ -684,7 +684,12 @@ class MySQLEngine extends AbstractDBEngine {
     function keysToLabel($table, $dbselection) {
 
 	$schema = $this->tableExistsOr403($table);
-
+	
+	if ( !is_array($dbselection) )
+	{
+	    return $dbselection ;
+	}
+	
 	$unique = false;
 	foreach ($dbselection as $k => &$res) {
 	    if (is_string($k)) {
