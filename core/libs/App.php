@@ -329,6 +329,7 @@ class App extends AeObject
 		'207' => '207 Multi-Status',
 		'226' => '226 IM Used',
 		'300' => '300 Multiple Choices',
+		'301' => '301 Moved Permanently',
 		'302' => '302 Found',
 		'303' => '303 See Other',
 		'304' => '304 Not Modified',

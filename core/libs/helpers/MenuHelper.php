@@ -61,9 +61,29 @@ class MenuHelper {
 		
 		foreach ($structures as $id => &$db )
 		{
-			self::displayStructuresMenu($id) ;
+		    self::displayStructuresMenu($id) ;
 		}
 		
+		echo $str ;
+		
+		$menu = array () ;
+		
+		$futil = new FSUtil(ROOT);
+		$files = $futil->getTree(AE_APP_WEBPAGES);
+		
+		$str = '<ul id="webpages-menu" class="no-list-style aemenu '. $class .'">' . "\n" ;
+		$str .= '<li class="caption">' . _('Webpages') . '</li>' . "\n" ;
+		foreach ( $files as $file )
+		{
+		    if ( strpos($file, '.html') === false)
+		    {
+			continue;
+		    }
+		    $file = str_replace(AE_APP_WEBPAGES,'',$file) ;
+		    $str .= '<li><a href="'.url().'webpages/edit/'.$file.'" title="'.sprintf(_('Edit %s webpage'), $file ).'" class="icon16 file">' . $file . '</a></li>' . "\n" ;
+		}
+		$str .= '<li><a href="'.url().'webpages/edit/add" title="'. _('Add a new webpage') .'" class="icon16 add">' . _('Add a new webpage') . '</a></li>' . "\n" ;
+		$str .= '</ul>'  . "\n" ;
 		
 		
 		echo $str ;
@@ -96,6 +116,7 @@ class MenuHelper {
 					case 'ae_users': $class = 'icon16 user' ; break;
 					case 'ae_groups': $class = 'icon16 group' ; break;
 					case 'ae_api_keys': $class = 'icon16 lock' ; break;
+					default: $class ='icon16 db';
 				}
 				
 				$tableName = _(ucfirst(humanize($table,'_'))) ;
