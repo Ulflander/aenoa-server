@@ -837,8 +837,13 @@ class App extends AeObject
 			{
 				App::getSession()->set('redirect',self::getQuery());
 			}
+			if ( Config::get(self::USER_CORE_SYSTEM) === true)
+			{
+			    self::redirectGlobal( url().'user-core/login' );
+			} else {
+			    self::redirectGlobal( url() ) ;
+			}
 			
-			self::redirectGlobal( url().'user-core/login' );
 		} else {
 			self::doRespond(401, $headerResponse , true , _('Unauthorized action'), _('Server has triggered an unauthorized action.') ) ;
 		}

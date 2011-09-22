@@ -344,7 +344,7 @@ class Dispatcher {
 		$page = new Webpage ( $parameters[0] , @$parameters[1] , false );
 		if ( $page )
 		{
-			$page->render () ;
+		    $page->render () ;
 		}
 		App::end () ;
 	}

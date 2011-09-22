@@ -20,6 +20,8 @@
 
 	<?php $this->renderElement ( 'header-end' ) ; ?>
 <?php endif; ?>
+	<?php $this->renderElement ( 'responses' ) ; ?>
+
 	<?php $this->renderWebpage () ; ?>
 	
 <?php if ( !App::isAjax() ): ?>

@@ -90,6 +90,12 @@ class Webpage extends Template {
 	    $this->appendToTitle($title);
 	}
 
+
+	if (App::getSession()->has('Controller.responses')) {
+	    $this->set('__responses' , App::getSession()->get('Controller.responses') );
+	    App::getSession()->uset('Controller.responses');
+	}
+
 	if ($autoGetWebpage === true) {
 	    $query = App::getQuery();
 

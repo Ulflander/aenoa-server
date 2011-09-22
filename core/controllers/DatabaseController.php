@@ -817,7 +817,7 @@ class DatabaseController extends Controller {
         $pageLength = ceil($count / $length);
 
         if ($page > $pageLength) {
-            $page = $pageLength + 1;
+            $page = $pageLength ;
         }
 
         $this->view->set('count', $count);

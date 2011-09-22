@@ -82,7 +82,7 @@ class MenuHelper {
 		    $file = str_replace(AE_APP_WEBPAGES,'',$file) ;
 		    $str .= '<li><a href="'.url().'webpages/edit/'.$file.'" title="'.sprintf(_('Edit %s webpage'), $file ).'" class="icon16 file">' . $file . '</a></li>' . "\n" ;
 		}
-		$str .= '<li><a href="'.url().'webpages/edit/add" title="'. _('Add a new webpage') .'" class="icon16 add">' . _('Add a new webpage') . '</a></li>' . "\n" ;
+		$str .= '<li><a href="'.url().'webpages/create" title="'. _('Add a new webpage') .'" class="icon16 add">' . _('Add a new webpage') . '</a></li>' . "\n" ;
 		$str .= '</ul>'  . "\n" ;
 		
 		
