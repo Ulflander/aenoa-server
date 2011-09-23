@@ -17,7 +17,7 @@ class TemplateRenderingService extends Service {
 
 	$this->db = App::getDatabase() ;
 		
-	//$this->authRequired = true ;
+	$this->authRequired = true ;
 	
     }
     
