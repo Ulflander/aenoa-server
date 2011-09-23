@@ -26,9 +26,8 @@ class AeRoute {
     }
 
     function get($query) {
-	
 	foreach ( $this->_routes as $fromRoute => &$toRoute) {
-	    preg_match_all('|' . str_replace('\\*', '[a-z0-9\_\/]{1,}', preg_quote($fromRoute)) . '|i', $query, $m);
+	    preg_match_all('|^' . str_replace('\\*', '[a-z0-9\_]{1,}', preg_quote($fromRoute)) . '$|i', $query, $m);
 	    if ($m && !empty($m[0])) {
 		$tokenQuerys = explode('/', $query);
 		$tokens = explode('/', $toRoute);

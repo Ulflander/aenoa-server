@@ -9,9 +9,13 @@
 	$this->renderElement ( 'header-end' ) ;
 	$this->renderElement ( 'top' ) ;
 ?>	
+	<?php $this->renderElement ( 'backend-nav' ) ; ?>
+	
+	<section>
 <?php
 	$this->renderElement ( 'tasks' ) ;
 ?>
+    </section>
 		
 		
 <?php
