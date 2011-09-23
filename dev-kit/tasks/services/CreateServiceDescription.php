@@ -47,7 +47,7 @@ class CreateServiceDescription extends Task {
 	    if (!empty($this->_methods[1])) {
 		foreach ($this->_methods[1] as $error) {
 		    if (is_a($error, 'ServiceIntrospectorError')) {
-			$this->view->setError('Service introspection error: ' . $error->error);
+			$this->view->setError('Service introspection error: ' . $error->error . ' / on method: ' . $error->method );
 		    }
 		}
 		$this->manager->cancel('Service introspection failed, see errors below.');

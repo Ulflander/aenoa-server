@@ -474,9 +474,7 @@ class Template extends View {
 		{
 			$this->set ( 'user_object' , $user ) ;
 			$this->set ( 'user_super' , $user->isLevel(0) ) ;
-			$this->set ( 'user_super_update' , $user->isLevel(0) && App::$session->get('Server.hasUpdate') === true ) ;
 		} else {
-			$this->set ( 'user_super_update', false);
 			$this->set ( 'user_object' , null ) ;
 			$this->set ( 'user_super' , false ) ;
 		}

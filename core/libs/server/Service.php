@@ -1,8 +1,14 @@
 <?php
 
 abstract class Service {
-
+    
+    
+    /**
+     *
+     * @var AenoaServerProtocol
+     */
     public $protocol;
+    
     protected $authRequired = false;
 
     public final function applyQuery(ServiceQuery $query, array $arguments = null) {

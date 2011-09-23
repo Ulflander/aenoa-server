@@ -91,8 +91,10 @@ class ServiceIntrospector {
 			if ( in_array ( $method , $coreMethods ) == false )
 			{
 				$mDesc = array () ;
-				$pattern = '/function '.$method.' \(([^\{]*)\)\s{0,50}\{(.*?)\}\s{0,50}(private|protected|public|function|var|}\s{0,50})/ims' ;
+				
+				$pattern = '/function '.$method.'\s{0,500}\(([^\{]*)\)\s{0,500}\{(.*?)\}\s{0,500}(\}|private|protected|public|function|var)\s{0,500}/ims' ;
 				preg_match($pattern , $content , $res ) ;
+				pr($pattern);
 				
 				if ( !empty ( $res ) )
 				{
@@ -119,8 +121,6 @@ class ServiceIntrospector {
 					
 					$mDesc['firstLevelReturns'] = array () ;
 					preg_match_all ( $bodyFirstLevelMethodPattern ,$methodBody , $res2 ) ;
-					pr($methodBody);
-					pr($res2);
 					if ( !empty ( $res2[1] ) )
 					{
 						$c = count($res2[1]) ;
