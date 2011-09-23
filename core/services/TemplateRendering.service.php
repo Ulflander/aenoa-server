@@ -27,7 +27,7 @@ class TemplateRenderingService extends Service {
 	
 	$user = App::getUser() ;
 	
-	if ( !is_null($userId) )
+	if ( !is_null($userId) && is_int($userId) && $userId > 0 )
 	{
 	    $dbuser = $this->db->findFirst ('ae_users', array ('id'=>$userId) ) ;
 	    
