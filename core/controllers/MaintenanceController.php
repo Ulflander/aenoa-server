@@ -7,7 +7,26 @@ class MaintenanceController extends FileController {
 
 	$this->view->layoutName = 'layout-backend';
     }
+    
+    function dbUnitTest ()
+    {
+	$this->checkMaintenanceKey(null);
 
+	
+	$tester = new DBUnitTest () ;
+	
+	$tester->run('MySQLEngine', array ( 'host' => '192.168.0.42:8889' ,
+		'login' => 'root' , 
+		'password' => 'root' , 
+		'database' => 'test' ) ) ;
+	
+	$tester->run('CassandraEngine', array ( 'host' => 'localhost' , 'port' => '9160' ) ) ;
+	
+	$tester->run('CouchDBEngine', array ( 'host' => 'localhost' , 'port' => '5984' ) ) ;
+	
+	App::end () ;
+    }
+    
     function robots($key = null) {
 	$this->checkMaintenanceKey($key);
 

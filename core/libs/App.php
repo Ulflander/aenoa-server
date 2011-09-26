@@ -961,6 +961,16 @@ class App extends AeObject
 		
 		if( !is_null($structureFile) )
 		{
+		    if ( is_array ($structureFile ) )
+		    {
+			if( empty ($structureFile) )
+			{
+			    self::do500 ( 'Structure for database ' . $id . ' is empty.' ) ;
+			}
+			
+			$tables = $structureFile ;
+		    } else {
+		    
 			if ( self::$futil->fileExists( AE_APP_STRUCTURES .$structureFile ) == false )
 			{
 				self::do500 ( 'Structure file for database ' . $id . ' not found.' ) ;
@@ -972,6 +982,7 @@ class App extends AeObject
 			{
 				self::do500 ( 'Structure file for DB ' . $id . ' is not valid.' ) ;
 			}
+		    }
 		}
 		
 		if ( $id == 'main' )
@@ -1023,7 +1034,7 @@ class App extends AeObject
 		
 		if ( $db->setStructure ( $tables ) == false && strpos(self::$query , 'maintenance/check-context') !== 0 )
 		{
-			self::redirect ( 'maintenance/check-context' ) ;
+		    self::do500 ( 'Database ' . $id . ' requires to be deployed.' ) ;
 		}
 		
 		return self::getDatabase($id) ;

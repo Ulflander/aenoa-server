@@ -31,6 +31,8 @@ class DBTableSchema extends AeObject {
 
 		foreach ( $fields as $f )
 		{
+		    $r = null ;
+		    
 			if ( ake ( 'name', $f ) && ($r = $this->validateField($f)) === true )
 			{
 				$this->_fields[$f['name']] = $f ;
@@ -44,7 +46,8 @@ class DBTableSchema extends AeObject {
 				}
 				
 				$this->_initialStructure[$f['name']] = $f ;
-			} else {
+			} else if ( !is_null($r) )
+			{
 				$this->debug($r) ;
 			}
 		}
@@ -206,7 +209,7 @@ class DBTableSchema extends AeObject {
 		|| !( is_string ('name') || is_int ('name') )
 		|| !is_string ('type') || strlen ('type') < 1 )
 		{
-			$this->debug( "DB Errors: \n" . 'Name or type or both are not valids : name must be an int or a string, and type must be a string ' ) ;
+		    trigger_error( "DB Errors: \n" . 'Name or type or both are not valids : name must be an int or a string, and type must be a string ', E_USER_ERROR ) ;
 		}
 
 		// Checking ENUM type : values, default value
