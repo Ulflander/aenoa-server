@@ -895,7 +895,6 @@ class MySQLEngine extends AbstractDBEngine {
 	'string' => 'VARCHAR(255)',
 	'text' => 'LONGTEXT',
 	'int' => 'INT(11)',
-	'c' => 'INT(11)',
 	'float' => 'FLOAT',
 	'datetime' => 'DATETIME',
 	'enum' => 'ENUM',

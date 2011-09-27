@@ -1,6 +1,6 @@
 <?php
 
-require(dirname(__FILE__).DS.'cassandra'.DS.'Cassandra.php') ;
+require(dirname(__FILE__) . DS . 'cassandra' . DS . 'Cassandra.php');
 
 /**
  * Concrete implementation of AbstractDBEngine for Cassandra
@@ -10,7 +10,6 @@ require(dirname(__FILE__).DS.'cassandra'.DS.'Cassandra.php') ;
 class CassandraEngine extends AbstractDBEngine {
 
     private $__connection = false;
-    
     protected $__lastId;
 
     /////////////////////////////////////////////////////
@@ -39,8 +38,8 @@ class CassandraEngine extends AbstractDBEngine {
 	$this->_queries = array();
 
 	$this->_inTransaction = false;
-	
-	return $res ;
+
+	return $res;
     }
 
     /**
@@ -88,18 +87,16 @@ class CassandraEngine extends AbstractDBEngine {
      * @see AbstractDBEngine::open()
      */
     function open() {
-	
+
 	try {
 	    $this->__connection = Cassandra::createInstance(array($this->source));
-	    
-	    return true ;
-	} catch(Exception $e) {
-	    if (debuggin())
-	    {
-		echo $e->__toString() ;
+
+	    return true;
+	} catch (Exception $e) {
+	    if (debuggin()) {
+		echo $e->__toString();
 	    }
-	    
-	} ;
+	};
 
 	return false;
     }
@@ -124,20 +121,18 @@ class CassandraEngine extends AbstractDBEngine {
 
     function sourceExists($database, $create = false) {
 	$result = false;
-	
+
 	try {
 	    Cassandra::createInstance(array($database));
-	    
-	    return true ;
-	} catch(Exception $e) {
-	    if (debuggin())
-	    {
-		echo $e->__toString() ;
-	    }
-	    
-	} ;
 
-	return false ;
+	    return true;
+	} catch (Exception $e) {
+	    if (debuggin()) {
+		echo $e->__toString();
+	    }
+	};
+
+	return false;
     }
 
     function createSource($database) {
@@ -181,7 +176,7 @@ class CassandraEngine extends AbstractDBEngine {
 	} else if ($this->hasAnyTable() == false) {
 	    $res2 = false;
 	}
-	
+
 	return $res2;
     }
 
@@ -197,18 +192,17 @@ class CassandraEngine extends AbstractDBEngine {
 	return array();
     }
 
-
     function findAll($table, $cond = array(), $limit = 0, $fields = array()) {
 	$schema = $this->tableExistsOr403($table);
 
-	$result = false ;
+	$result = false;
 	return $result;
     }
 
     function findFirst($table, $cond = array(), $fields = array(), $childsRecursivity = 0) {
 	$schema = $this->tableExistsOr403($table);
 
-	
+
 	return array();
     }
 
@@ -220,7 +214,7 @@ class CassandraEngine extends AbstractDBEngine {
 
     function edit($table, $id, $content = array()) {
 	$schema = $this->tableExistsOr403($table);
-	
+
 	return false;
     }
 
@@ -233,7 +227,7 @@ class CassandraEngine extends AbstractDBEngine {
     function add($table, $content = array()) {
 	$schema = $this->tableExistsOr403($table);
 
-	
+
 	$this->__lastId = -1;
 	return false;
     }
@@ -256,19 +250,19 @@ class CassandraEngine extends AbstractDBEngine {
 
     function delete($table, $id) {
 	$schema = $this->tableExistsOr403($table);
-	
+
 	return false;
     }
 
     function deleteAll($table, $cond = array()) {
 	$schema = $this->tableExistsOr403($table);
-	
+
 	return false;
     }
 
     protected function hasAnyTable() {
-	
-	return !empty($this->__connection);
+
+	return!empty($this->__connection);
     }
 
     // OK, let's apply Aenoa DB Structure to MySQL Database
@@ -398,7 +392,7 @@ class CassandraEngine extends AbstractDBEngine {
 
     public function aenoaTypeToCassandraType($type) {
 	if (array_key_exists($type, $this->_types)) {
-	    
+
 	    return $this->_types[$type];
 	}
 
@@ -410,7 +404,6 @@ class CassandraEngine extends AbstractDBEngine {
 	'string' => Cassandra::TYPE_UTF8,
 	'text' => Cassandra::TYPE_UTF8,
 	'int' => Cassandra::TYPE_INTEGER,
-	'c' => Cassandra::TYPE_INTEGER,
 	'float' => Cassandra::TYPE_LONG,
 	'datetime' => Cassandra::TYPE_TIME_UUID,
 	'enum' => Cassandra::TYPE_UTF8,
