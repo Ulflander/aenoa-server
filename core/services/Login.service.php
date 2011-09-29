@@ -18,12 +18,12 @@ class LoginService extends Service {
 	}
 	
 	
-	function login ( $email, $pwdHash , $publicKey )
+	function login ( $email, $pwdHash , $key )
 	{
 		
-		$key = $this->db->findFirst( 'ae_api_keys' , array('public'=> $publicKey ) ) ;
+		$keyRow = $this->db->findFirst( 'ae_api_keys' , array('public'=> $key ) ) ;
 		
-		if ( empty ( $key ) )
+		if ( empty ( $keyRow ) )
 		{
 			$this->protocol->setFailure('Public API key not valid');
 			return ;
@@ -37,7 +37,7 @@ class LoginService extends Service {
 			return ;
 		}
 		
-		if ( sha1($key['private'] . $dbuser['password']) !== $pwdHash )
+		if ( sha1($keyRow['private'] . $dbuser['password']) !== $pwdHash )
 		{
 			$this->protocol->setFailure('Private API authentication failed');
 			return ;
