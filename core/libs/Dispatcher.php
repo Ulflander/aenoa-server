@@ -236,6 +236,7 @@ class Dispatcher {
 		$action = null ;
 		
 		
+		
 		// No query, then try to check home
 		if ( $c == 0 || $query == 'index.html' )
 		{

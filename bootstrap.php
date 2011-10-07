@@ -239,7 +239,11 @@ $broker->futil = &$FILE_UTIL ;
 /**
  * TODO: reduce default configuration
  */
-Config::set ( App::APP_URL , retrieveContextURL () ) ;
+if ( !Config::has(App::APP_URL) )
+{
+	Config::set ( App::APP_URL , retrieveContextURL () ) ;
+}
+
 Config::set ( App::SESS_PATH , AE_SESS ) ;
 Config::set ( App::SESS_AUTO_CONNECT , true ) ;
 Config::set ( App::SESS_STRING , App::TEMP_SESS_STRING ) ;

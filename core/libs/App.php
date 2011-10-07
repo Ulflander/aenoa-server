@@ -524,7 +524,6 @@ class App extends AeObject
 		
 		self::$_i18n = new AeI18n () ;
 		
-		
 		// Get the query
 		if ( self::$sanitizer->exists ( 'GET' , 'query' )) 
 		{
@@ -539,8 +538,6 @@ class App extends AeObject
 		
 		
 		new Log () ;
-	
-	
 		
 		// Detect if we try to get page in ajax mode (by sending an http header from JS for example
 		if ( array_key_exists('HTTP_AENOA_AJAX_CONNECTION', $_SERVER ) )
@@ -554,7 +551,7 @@ class App extends AeObject
 		}
 		
 		// Set the APP URL
-		self::$appURL = retrieveContextURL ( ) ;
+		self::$appURL = Config::get(App::APP_URL) ;
 		
 		// Configure local file system tool
 		if ( defined ( 'ROOT' ) && self::$futil == null )

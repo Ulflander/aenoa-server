@@ -21,7 +21,7 @@ class Sanitizer {
 		$this->retrieveParams ( $_POST , $this->POST ) ;
 		
 		// This is used for APIs
-		$this->_restMethod = $_SERVER['REQUEST_METHOD'];
+		$this->_restMethod = ake ('REQUEST_METHOD', $_SERVER) ? $_SERVER['REQUEST_METHOD'] : 'GET' ;
 		
 		$this->_restMethodValid = in_array($this->_restMethod, array ('PUT', 'POST', 'GET', 'HEAD', 'DELETE', 'OPTIONS' ) );
 		
