@@ -478,6 +478,8 @@ class Template extends View {
 			$this->set ( 'user_object' , null ) ;
 			$this->set ( 'user_super' , false ) ;
 		}
+		
+		extract ( $this->vars ) ;
 			
 		$title = $this->title ;
 		
@@ -530,7 +532,20 @@ class Template extends View {
 				
 				if ( !is_null ( $file ) )
 				{
-					$this->_include ( $file ) ;
+
+					if ( substr($file, strpos($file,'.') +1 ) == 'ehtml' )
+					{
+						$ehtml = new AeEHtml () ;
+
+						$ehtml->fromFileToFile($file, AE_TMP . str_replace('/', '__' , $file ) ) ;
+
+						include AE_TMP . str_replace('/', '__' , $file ) ;
+
+						return;
+					}
+
+					include $file ;
+		
 				} else {
 					echo 'No layout file: ' . $this->file ;
 				}

@@ -177,7 +177,7 @@ class Dispatcher {
 	{
 		if ( headers_sent () )
 		{
-			trigger_error ( 'Dispatcher::dispatch cannot be called after headers sent.' , E_USER_ERROR ) ;
+		//	trigger_error ( 'Dispatcher::dispatch cannot be called after headers sent' , E_USER_ERROR ) ;
 		}
 		if ( self::$_activated )
 		{
