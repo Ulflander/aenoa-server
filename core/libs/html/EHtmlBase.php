@@ -116,7 +116,7 @@ class EHtmlBase
 					$res['lines'][] = $line ;
 					if ( !$this->isTokenizedLine($line) )
 					{
-						$prev = '//'.$line;
+						$prev = '/ '.$line;
 					} else {
 						$prev = null ;
 					}
@@ -199,32 +199,28 @@ class EHtmlBase
 		{
 			$token = $this->getLineToken($line);
 			switch ($token['token']) {
-				case '=':
+				case '?':
 					$res .= 'Method ! ' ;
 					break;
-				case 'sprintf':
-				case '_(':
-					$res .= $this->getEchoPHPInline($token['token'] . $token['content']);
-					break;
-				case '->':
+				case ';':
 					$res .= $this->getEchoPHPInline($token['content']);
 					break;
-				case '-':
+				case ':':
 					$res .= $this->getRawPHPInline($token['content']);
 					break;
-				case '//':
+				case '/':
 					$res .= $this->closeLine( $token['content'] ) ;
 					break;
-				case '!-':
+				case '_':
 					$res .= '<!-- ' .$token['content'] . ' -->' ;
 					break;
 				case '"':
 					$res .= $token['content'] ;
 					break;
-				case '+':
+				case '=':
 					$res .= $this->getRawHTMLInline($token['content']);
 					break;
-				case '=>':
+				case '!':
 					preg_match_all('/^[\s]{0,}=>\s{0,1}([a-zA-Z0-9\-\_]{1,})/im',$line,$r);
 					if ( count($r[1]) > 0 )
 					{
@@ -371,6 +367,8 @@ class EHtmlBase
 			
 			$current .= $char ;
 		}
+		
+		
 		
 		return $result ;
 	}

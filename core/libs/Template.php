@@ -517,7 +517,7 @@ class Template extends View {
 		
 		if ( $echo == false || $this->useLayout )
 		{
-			$content_for_layout .= ob_get_contents () ;
+			$this->set ( 'content_for_layout' , ob_get_contents () ) ;
 			
 			ob_end_clean() ;
 			
@@ -532,20 +532,7 @@ class Template extends View {
 				
 				if ( !is_null ( $file ) )
 				{
-
-					if ( substr($file, strpos($file,'.') +1 ) == 'ehtml' )
-					{
-						$ehtml = new AeEHtml () ;
-
-						$ehtml->fromFileToFile($file, AE_TMP . str_replace('/', '__' , $file ) ) ;
-
-						include AE_TMP . str_replace('/', '__' , $file ) ;
-
-						return;
-					}
-
-					include $file ;
-		
+					$this->_include ( $file ) ;
 				} else {
 					echo 'No layout file: ' . $this->file ;
 				}
