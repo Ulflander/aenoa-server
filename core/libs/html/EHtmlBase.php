@@ -1,18 +1,55 @@
 <?php
 
-/**
- * Description of AeEHtmlParser
- *
- * Get a EHtml template and returns a HTML template
- */
+class EHtmlElement {
+	
+	var $tokenized = false ;
+	
+	var $token = '' ;
+	
+	var $parameters = array () ;
+	
+	var $values = array () ;
+	
+	var $source = '' ;
+	
+	function isTokenized ()
+	{
+		return $this->tokenized === true ;
+	}
+	
+	function addParam ( $param )
+	{
+		array_push( $this->parameters , $param ) ;
+	}
+	
+	function addValue ( $val )
+	{
+		array_push( $this->values , $val ) ;
+	}
+	
+	function render ( $methods , $variables )
+	{
+		
+	}
+}
+
 class EHtmlBase
 {
 
 	const STATE_INLINE = 'inline';
 
+	
 	const STATE_MULTILINE = 'multiline';
 
-	private $state = 'inline';
+	
+	private $state ;
+	
+	
+	function __construct ()
+	{
+		$this->state = self::STATE_INLINE ;
+	}
+	
 	
 	function addToken ( $token, $callback )
 	{
@@ -21,6 +58,7 @@ class EHtmlBase
 
 	function evaluate($template = 'No template given', $parameters = array())
 	{
+		$this->state = self::STATE_INLINE ;
 		
 		$lines = explode("\n", str_replace('    ', "\t" , $template));
 
@@ -184,8 +222,11 @@ class EHtmlBase
 		
 		return $res ;
 	}
+	
 
 	function renderLine($line, $scope = 0, array $methods = array () ) {
+		
+		$element = $this->parseLine($line) ;
 		
 		$s = $scope ;
 		$ind = '' ;
@@ -195,7 +236,60 @@ class EHtmlBase
 		}
 		
 		$res = $ind;
-		if ( $this->isTokenizedLine($line) )
+		
+		switch ( $element->isTokenized())
+		{
+			case true:
+				switch ($element->token) {
+					case '?':
+						$res .= 'Method ! ' ;
+						break;
+					case ';':
+						$res .= $this->getEchoPHPInline($token['content']);
+						break;
+					case ':':
+						$res .= $this->getRawPHPInline($token['content']);
+						break;
+					case '/':
+						$res .= $this->closeLine( $token['content'] ) ;
+						break;
+					case '_':
+						$res .= '<!-- ' .$token['content'] . ' -->' ;
+						break;
+					case '"':
+						$res .= $token['content'] ;
+						break;
+					case '=':
+						$res .= $this->getRawHTMLInline($token['content']);
+						break;
+					case '!':
+						preg_match_all('/^[\s]{0,}=>\s{0,1}([a-zA-Z0-9\-\_]{1,})/im',$line,$r);
+						if ( count($r[1]) > 0 )
+						{
+							if ( array_key_exists( $r[1][0] , $methods ) )
+							{
+								$res2 = array() ;
+								$res = implode("\n" , $this->renderScope( $methods[$r[1][0]] , $scope + 1 , array () , $res2 , $methods ) );
+							}
+						}
+						break;
+					case '>':
+						$res .= '<?php ' . preg_replace('/^(>)/im', '', $line) . "\n" . $ind . '?>' ;
+						break;
+					default:
+						$res .= '-- unknown token: ' .$token['token'] . ' in line ' . $line . '--' ;
+				}
+				break;
+			case false:
+				break;
+		}
+		
+		if ( $element->isTokenized() )
+		{
+			
+		}
+		
+		/*if ( $this->isTokenizedLine($line) )
 		{
 			$token = $this->getLineToken($line);
 			switch ($token['token']) {
@@ -253,13 +347,113 @@ class EHtmlBase
 						$res .= "\n" . $ind . '</script>' ;
 					}
 				} else {
+					
 					$res .= $this->renderHTMLLine($tag['tag'], $tag['content']) ;
 				} 
 			}
 		}
-
+		*/
 		return $res ;
 	}
+	
+	
+	
+	/**
+	 *
+	 * @param string $line
+	 * @return EHtmlElement 
+	 */
+	function parseLine ( $line )
+	{
+		$line = trim($line) . ' '  ;
+		
+		$len = mb_strlen($line) ;
+		
+		$element = new EHtmlElement () ;
+		
+		$element->source = $line ;
+		
+		
+		// 0=> token
+		// 1=> id
+		// 2=> tokenized || params
+		$step = 0 ;
+		
+		$escaped = false ;
+		$prev = $char = '' ;
+
+		$current = '' ;
+		
+		$step = preg_match('/^[^a-zA-Z0-9]{1,2}/i',$line) == 1 ? 0 : 1 ;
+		
+		for ( $i = 0 ; $i < $len ; $i ++ )
+		{
+			$continue = false ;
+			$prev = $char ;
+			$char = $line[$i] ;
+			
+			if ( $char == ' ' || $char == "\t" )
+			{
+				switch ( $step )
+				{
+					case 0:
+						$element->tokenized = true ;
+						$element->token = $current ;
+						$step ++ ;
+						break;
+					case 1:
+						$element->token = $current ;
+						break;
+					default:
+						if ( $escaped )
+						{
+							$current .= $char ;
+							$continue = true ;
+							break;
+						}
+						$current = trim($current) ;
+						if  ( preg_match('/^[^a-zA-Z0-9]{1,2}/i',$current) == 1 )
+						{
+							$element->addParam($current) ;
+						} else {
+							$element->addValue($current) ;
+						}
+
+				}
+				if ( !$continue )
+				{
+					$step ++ ;
+					$current = '' ;
+				}
+				$continue = false ;
+				continue;
+			} else if ( $char == '"' )
+			{
+				if (!$escaped)
+				{
+					$escaped = true ;
+				} else if ( $escaped && $prev != '\\' )
+				{
+					$escaped = false ;
+				} else if ( $escaped && $prev == '\\' )
+				{
+					$current = substr($current,  0 , mb_strlen($current) - 1 ) ;
+					$current .= $char ;
+				}
+				continue;
+			} else {	
+				$current .= $char ;
+			}
+		
+		}
+		
+		pr($element);
+		
+		return $element ;
+	}
+	
+	
+	
 	
 	function closeLine ( $line )
 	{
@@ -305,73 +499,6 @@ class EHtmlBase
 			. ( $content != '' ? $content . '</' . $tag . '>' : '' ) ;
 	}
 	
-	function parseLine ( $line )
-	{
-		$line = trim($line) ;
-		
-		$len = mb_strlen($line) ;
-		
-		$result = array (
-			'token' => '',
-			'identifier' => '',
-			'tokenized' => '',
-			'parameters' => array()
-		) ;
-		
-		// 0=> token
-		// 1=> id
-		// 2=> tokenized || params
-		$step = 0 ;
-		
-		$token = 0 ;
-		$id = '' ;
-		$tokenized = array () ;
-		$params = array () ;
-		$escaped = false ;
-		$prev = $char = '' ;
-
-		$current = '' ;
-
-
-
-		$step = preg_match('/^[^a-zA-Z0-9]{1,2}/i',$line) == 0 ? 0 : 1 ;
-		
-		for ( $i = 0 ; $i < $len ; $i ++ )
-		{
-			$prev = $char ;
-			$char = $line[$i] ;
-			
-			if ( $line[$i] == ' ' )
-			{
-				switch ( $step )
-				{
-					case 0:
-						pr('token : ' . $current ) ;
-						$token = $current ;
-						break;
-					case 1:
-						pr('id : ' . $current ) ;
-						$id = $current ;
-						break;
-					default:
-						if ( $escaped )
-						{
-							continue;
-						}
-
-				}
-				$step ++ ;
-				$current = '' ;
-				continue;
-			}
-			
-			$current .= $char ;
-		}
-		
-		
-		
-		return $result ;
-	}
 	
 	function isTokenizedLine ( $line )
 	{
