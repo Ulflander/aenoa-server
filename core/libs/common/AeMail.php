@@ -822,7 +822,6 @@ class AeMail
 		$template->setMode('email') ;
 		$template->setFile( $this->__current['template']['file'] );
 		$template->setAll(array_key_exists( 'vars', $this->__current['template']) ? $this->__current['template']['vars'] : array ()) ;
-		
 		return $template->render(false) ;
 	}
 	

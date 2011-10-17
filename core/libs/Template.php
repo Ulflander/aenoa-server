@@ -514,10 +514,11 @@ class Template extends View {
 		
 		$this->rendered = true ;
 		
-		
 		if ( $echo == false || $this->useLayout )
 		{
-			$this->set ( 'content_for_layout' , ob_get_contents () ) ;
+			$content_for_layout = ob_get_contents ()  ;
+			
+			$this->set ( 'content_for_layout' , $content_for_layout ) ;
 			
 			ob_end_clean() ;
 			
