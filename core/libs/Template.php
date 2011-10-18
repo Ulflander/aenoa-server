@@ -551,6 +551,8 @@ class Template extends View {
 	{
 		extract ( $this->vars ) ;
 		
+		$title = $this->title ;
+		
 		if ( substr($file, strpos($file,'.') +1 ) == 'ehtml' )
 		{
 			$ehtml = new AeEHtml () ;
