@@ -451,7 +451,7 @@ class DBTableSchema extends AeObject {
 			{
 				if ( debuggin () )
 				{
-					trigger_error('Value [' . $value . '] of field [' . $n . '] should be a string.', E_USER_ERROR );
+					trigger_error('Value of field [' . $n . '] should be a string.', E_USER_ERROR );
 				}
 			} else {
 				$value = mysql_real_escape_string ( $value , $mysql_connection ) ;
