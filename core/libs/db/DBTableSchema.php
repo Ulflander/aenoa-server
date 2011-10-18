@@ -447,7 +447,15 @@ class DBTableSchema extends AeObject {
 		// TODO: mysql_real_escape_string must be done in MySQL engine, not here
 		if ( !is_null($mysql_connection) && ( $t == DBSchema::TYPE_STRING || $t == DBSchema::TYPE_TEXT ) )
 		{
-			$value = mysql_real_escape_string ( $value , $mysql_connection ) ;
+			if ( !is_string($value) )
+			{
+				if ( debuggin () )
+				{
+					trigger_error('Value [' . $value . '] of field [' . $n . '] should be a string.', E_USER_ERROR );
+				}
+			} else {
+				$value = mysql_real_escape_string ( $value , $mysql_connection ) ;
+			}
 		}
 
 		return $value ;

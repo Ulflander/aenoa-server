@@ -193,7 +193,7 @@ if ( debuggin() )
  */
 if ( !function_exists( 'addAutoloadPath' ) )
 {
-	trigger_error ( 'File basics.php could not access required function addAutoLoadPath' , E_USER_ERROR ) ;
+	trigger_error ( 'File bootstrap.php could not access required function addAutoLoadPath' , E_USER_ERROR ) ;
 }
 
 

@@ -228,6 +228,8 @@ class Dispatcher {
 		}
 		self::$_q = $q ;
 		
+		
+		
 		// Number of parameters in query
 		$c = count($q) ;
 		

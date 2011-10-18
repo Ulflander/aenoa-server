@@ -478,10 +478,9 @@ if ( !function_exists ( 'addAutoloadPath' ) )
  * @param String $class_name The class name to load
  * @return 
  */
-if ( !function_exists ( '__autoload' ) )
-{
-	function __autoload ( $className )
+	spl_autoload_register(function ( $className )
 	{
+		
 		static $ext = '.php' ;
 		
 		global $AUTOLOAD_PATHS;
@@ -496,8 +495,7 @@ if ( !function_exists ( '__autoload' ) )
 		}
 		
 		return false ;
-	}
-}
+	});
 
 /**
  * Require a file named $className.
