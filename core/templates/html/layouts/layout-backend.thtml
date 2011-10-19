@@ -25,7 +25,7 @@
 	<body class="sans-serif">
 	<header class="shadowed">
 	    <h1><?php echo Config::get(App::APP_NAME) ?></h1>
-	    <span><?php echo _('Aenoa Server admin zone') ?></span>
+	    <span><?php echo _('Aenoa Server manager') ?></span>
 	</header>
 	<div id="nav" class="shadowed">
 	    <a href="<?php echo url() ?>" title="<?php echo _('Back to application') ?>">&laquo; <?php echo _('Back to application') ?></a>

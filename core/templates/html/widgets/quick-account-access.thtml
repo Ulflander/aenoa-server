@@ -47,7 +47,7 @@
 		<?php
 		endif;
 	?>
-		<li><a href="<?php echo url() ?>database/main/products/readAll" class="icon16 manage unlabeled"><?php echo _('Aenoa Manager')?></a></li>
+		<li><a href="<?php echo url() ?>maintenance/status" class="icon16 manage unlabeled"><?php echo _('Aenoa Server manager') ?></a></li>
 	<?php endif; ?> 
 
 <?php

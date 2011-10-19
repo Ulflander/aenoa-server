@@ -50,8 +50,7 @@ class MenuHelper {
 		$baseURL = url() ;
 		
 		$str = '<ul class="no-list-style aemenu '. $class .'">' . "\n" ;
-		$str .= '<li class=""><a href="'.url().'" class="icon16 home">' . ucfirst(sprintf(_('Home'),$struct)) . '</a></li>' . "\n" ;
-		$str .= '<li><a href="' . $baseURL .'maintenance/status" class="icon16 filter">' . _('Maintenance') . '</a></li>' . "\n" ;
+		$str .= '<li class=""><a href="'.url().'maintenance/status" class="icon16 home">' . ucfirst(sprintf(_('Manager home'),$struct)) . '</a></li>' . "\n" ;
 		$str .= '</ul>' ;
 		
 		echo $str ;
