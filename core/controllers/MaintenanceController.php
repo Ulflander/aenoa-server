@@ -73,7 +73,7 @@ class MaintenanceController extends FileController {
 
 		$f = new File(ROOT . '.private' . DS . '.aenoalog', true);
 		
-		App::requireMemory(10);
+		App::requireMemory(64);
 		
 		if ($f->isEmpty()) {
 			$this->addResponse(_('Log file is empty'), 'info');
