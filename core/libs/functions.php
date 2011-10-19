@@ -472,30 +472,33 @@ if ( !function_exists ( 'addAutoloadPath' ) )
 	}
 }
 
+
+function ae_autoload ( $className )
+{
+
+	static $ext = '.php' ;
+
+	global $AUTOLOAD_PATHS;
+
+	foreach ( $AUTOLOAD_PATHS as $dir )
+	{
+		if ( is_file ( $addr = $dir . $className . $ext ) )
+		{
+			require_once $addr ;
+			return true ;
+		}
+	}
+
+	return false ;
+}
+
 /**
  * __autoload PHP magic function implementation.
  * 
  * @param String $class_name The class name to load
  * @return 
  */
-	spl_autoload_register(function ( $className )
-	{
-		
-		static $ext = '.php' ;
-		
-		global $AUTOLOAD_PATHS;
-	
-		foreach ( $AUTOLOAD_PATHS as $dir )
-		{
-			if ( is_file ( $addr = $dir . $className . $ext ) )
-			{
-				require_once $addr ;
-				return true ;
-			}
-		}
-		
-		return false ;
-	});
+	spl_autoload_register('ae_autoload');
 
 /**
  * Require a file named $className.

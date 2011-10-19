@@ -149,6 +149,14 @@ class File {
 		return false ;
 	}
 	
+	function truncate ( $size )
+	{
+		if ( filesize($this->path) > $size )
+		{
+			
+		}
+	}
+	
 	/**
 	 * Prepend content before current content
 	 * 
