@@ -72,7 +72,9 @@ class MaintenanceController extends FileController {
 		$this->createView('html/maintenance/logs.thtml');
 
 		$f = new File(ROOT . '.private' . DS . '.aenoalog', true);
-
+		
+		App::requireMemory(10);
+		
 		if ($f->isEmpty()) {
 			$this->addResponse(_('Log file is empty'), 'info');
 		} else {
