@@ -319,8 +319,8 @@ class Dispatcher {
 				break;
 				
 			// Controller access
-			case $c >= 1 && Controller::requireController ( $q[0] , ($c > 1 ? $q[1] : 'index' ) )== true:
-				self::_launchController ( $q[0], $q[1], (@$q[2] ? $q[2] : null ) , array () ,@array_slice($q, 3) );
+			case $c >= 1 && Controller::requireController ( $q[0] , ($action = ($c > 1 && $q[1] ? $q[1] : 'index' )) )== true:
+				self::_launchController ( $q[0], $action, (@$q[2] ? $q[2] : null ) , array () ,@array_slice($q, 3) );
 				break;
 				
 			// Webpages access
