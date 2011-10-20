@@ -24,9 +24,6 @@
 	Aenoa CSS Framework: /hyperspace/git/ac
 	Aenoa Server: /hyperspace/git/ajsf
 	Natural Docs Aenoa fork : /hyperspace/git/nsdocsfork
-
-	Developement of following repositories is currently : 
-	Aenoa Dev Kit : /hyperspace/git/dev-kit
 	
 	Getting the code:
 	
@@ -44,10 +41,6 @@
 	
 	Getting the passwords for repositories and servers:
 	For the moment, send an email to Xavier Laumonier <contact@aenoa-systems.com> to get a user/password set to connect to repositories.
-	
-	
-	
-	
 	
 	
 	

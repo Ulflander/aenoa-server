@@ -1,0 +1,49 @@
+	
+			As first token						As second token
+	
+	
+	.		Print line as is					Define an HTML classname
+			> simplest sign						> as css convention
+			
+	-		Define an HTML comment
+			> second char of HTML comments
+	
+	_		
+	=		Define a pure HTML statement
+	"											Starts/ends escaped sequence, html tag will be closed
+	+		
+	
+	
+	^		Starts a Javascript escaped seq.
+	>		Starts an escaped sequence			Starts an escape sequence
+	<		Ends any escaped sequence
+	
+	
+	:		Define a method
+	;		Call a method
+	,	
+	
+	
+	?		PHP statement
+	!		PHP echo statement
+	
+	
+	/		Close an HTML tag 
+				(Internal)
+	\
+	
+	
+	@											Define a href or src HTML attribute
+	&
+	%											Define an HTML style inline attribute
+	$	
+	#		Define an EHtml comment				Define an HTML id
+			> as most programming languages		> as css convention
+	
+	
+	(											Starts pure HTML inline attributes statement
+	)											Ends pure HTML inline attributes statement
+	{											Starts echo PHP statement, html tag will be closed
+	}											Ends echo PHP statement, html tag will be closed
+	
+	[a-zA-Z0-9] Create HTML tag
