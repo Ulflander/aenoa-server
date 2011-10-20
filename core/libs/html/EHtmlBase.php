@@ -60,11 +60,15 @@ class EHtmlElement {
 			case '/':
 				$res .= '</' . $this->keyword . '>';
 				break;
+			// HTML comment statement
 			case '-':
 				$res .= '<!-- ' . $this->rawTokenContent . ' -->';
 				break;
+			// Raw content
 			case '.':
 				$res .= $this->rawTokenContent;
+				break;
+			case '':
 				break;
 			/* default:return;//vdfjs
 			  case '/':
