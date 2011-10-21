@@ -1,4 +1,6 @@
 
+<h1 class="p"><?php echo sprintf(_('DevKit / %s'),$this->title);?></h1>
+
 <?php if ( !empty ( $menu ) ) : ?>
 	<ul id="menu" class="col-16 r-2 inline light hidden">
 		<?php foreach ( $menu as $item ) :?>
@@ -9,7 +11,7 @@
 	<hr class="hidden thin" />
 <?php endif; ?>
 
-<div id="tasks" class="col-16">
+<div id="tasks" class="p">
 
 	<?php echo $content_for_layout ; ?>
 	

@@ -12,6 +12,8 @@ class TaskView {
 	function __construct ( $title , $isHome = false )
 	{
 		$this->template = new Template ( 'html/Global.thtml' , $title ) ;
+		$this->template->useLayout = true ;
+		$this->template->layoutName = 'layout-backend' ;
 		$this->template->set ( 'is_home' , $isHome ) ;
 		$this->template->set ( 'status_message' , '' ) ;
 		$this->template->set ( 'menu' , array() ) ;
@@ -169,11 +171,6 @@ class TaskView {
 		}
 	}
 	
-	function hideIndicator ()
-	{
-		$this->template->appendScript ( 'tasks' , 'hideIndicator ();' ) ;
-	}
-	
 	
 	function redirect ( $to , $delay = 5000 )
 	{
@@ -182,8 +179,6 @@ class TaskView {
 	
 	function endTask ( $success = true )
 	{
-		$this->hideIndicator () ;
-		
 		if ( $this->avoidMessages == false && $this->avoidEndMessage == false )
 		{
 			$this->template->set ( 'task_success' , $success ) ;
@@ -202,7 +197,6 @@ class TaskView {
 		
 		$this->template->render () ;
 		
-		sleep ( 1 ) ;
 	}
 }
 ?>

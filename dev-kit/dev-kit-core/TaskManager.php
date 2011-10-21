@@ -107,16 +107,7 @@ class TaskManager {
 		
 		global $broker ;
 		
-		if ( $broker->preferences->isEmpty () != false )
-		{
-			$this->taskName = 'SDKPrefs' ;
-			// Create the view
-			$this->view = new TaskView ( $this->taskName , true ) ;
-		} else {
-			
-			// Create the view
-			$this->view = new TaskView ( $this->taskName , $this->taskName == $this->defaultTask ) ;
-		}
+		$this->view = new TaskView ( $this->taskName , $this->taskName == $this->defaultTask ) ;
 		
 		// We start logging task process
 		$log = date('y/m/d H:i') . ' Starting task: ' . $this->taskName ;
@@ -328,7 +319,6 @@ class TaskManager {
 			}
 			
 			$this->view->render () ;
-			$this->view->hideIndicator () ;
 			
 			Log::wlog ( '- Waiting for options' . "\n" ) ;
 			

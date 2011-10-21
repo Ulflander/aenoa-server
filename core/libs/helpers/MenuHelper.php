@@ -49,11 +49,25 @@ class MenuHelper {
 		
 		$baseURL = url() ;
 		
-		$str = '<ul class="no-list-style aemenu '. $class .'">' . "\n" ;
-		$str .= '<li class=""><a href="'.url().'maintenance/status" class="icon16 home">' . ucfirst(sprintf(_('Manager home'),$struct)) . '</a></li>' . "\n" ;
-		$str .= '</ul>' ;
+		if ( debuggin() )
+		{
+			$str = '<ul class="no-list-style aemenu '. $class .'">' . "\n" ;
+			$str .= '<li class=""><a href="'.url().'maintenance/status" class="icon16 home">' . ucfirst(sprintf(_('Manager home'),$struct)) . '</a></li>' . "\n" ;
+			$str .= '</ul>' ;
+
+			echo $str ;
+		}
+		
+		$str = '<ul id="dev-menu" class="no-list-style aemenu '. $class .'">' . "\n" ;
+		$str .= '<li class="caption">' . _('Development') . '</li>' . "\n" ;
+		$str .= '<li><a href="'.url().'dev/PHPI18n" title="'. _('Extract I18n string') .'" class="icon16 i18n">' . _('Extract I18n string') . '</a></li>' . "\n" ;
+		$str .= '<li><a href="'.url().'dev/GenerateStructureDocFile" title="'. _('Update structures doc') .'" class="icon16 manual">' . _('Update structures doc') . '</a></li>' . "\n" ;
+		$str .= '<li><a href="'.url().'dev/GenerateDocumentation" title="'. _('Create documentation') .'" class="icon16 manual">' . _('Create documentation') . '</a></li>' . "\n" ;
+		$str .= '</ul>'  . "\n" ;
+		
 		
 		echo $str ;
+		
 		
 		$structures = App::getAllDBs();
 		$str = '' ;
@@ -83,7 +97,6 @@ class MenuHelper {
 		}
 		$str .= '<li><a href="'.url().'webpages/create" title="'. _('Add a new webpage') .'" class="icon16 add">' . _('Add a new webpage') . '</a></li>' . "\n" ;
 		$str .= '</ul>'  . "\n" ;
-		
 		
 		echo $str ;
 		

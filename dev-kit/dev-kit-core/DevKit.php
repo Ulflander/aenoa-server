@@ -285,12 +285,12 @@ class DevKit {
 	{
 		$files = $this->futil->getDirsList ( DK_PLUGINS ) ;
 		$plugins = array () ;
-		
+		/*
 		foreach ( $files as $file )
 		{
 			$plugins[$file['name']] = $file['path'] ;
 		}
-		
+		*/
 		return $plugins ;
 	}
 	

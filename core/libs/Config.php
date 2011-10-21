@@ -38,6 +38,7 @@ class Config {
 	static function getAll ()
 	{
 		$tvars = self::$_vars ;
+		ksort($tvars);
 		return $tvars ;
 	}
 }

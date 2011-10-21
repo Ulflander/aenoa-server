@@ -1,24 +1,4 @@
 
 <?php
-	// HEADER
-	$this->renderElement ( 'header' ) ;
-?>
-    <title><?php echo Config::get(App::APP_NAME) ?> | Dev Kit</title>
-<?php
-	// HEADER
-	$this->renderElement ( 'header-end' ) ;
-	$this->renderElement ( 'top' ) ;
-?>	
-	<?php $this->renderElement ( 'backend-nav' ) ; ?>
-	
-	<section>
-<?php
 	$this->renderElement ( 'tasks' ) ;
-?>
-    </section>
-		
-		
-<?php
-	// FOOTER
-	$this->renderElement ( 'footer' ) ;
 ?>

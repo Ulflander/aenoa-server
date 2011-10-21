@@ -94,7 +94,6 @@ class ServiceIntrospector {
 				
 				$pattern = '/function '.$method.'\s{0,500}\(([^\{]*)\)\s{0,500}\{(.*?)\}\s{0,500}(\}|private|protected|public|function|var)\s{0,500}/ims' ;
 				preg_match($pattern , $content , $res ) ;
-				pr($pattern);
 				
 				if ( !empty ( $res ) )
 				{

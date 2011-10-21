@@ -3,8 +3,6 @@
 class PHPI18n extends Task
 {
 	
-	private $CMD = '/Applications/MAMP/Library/bin/' ;
-	
 	function getOptions ()
 	{
 		$this->requireMemory ( 256 ) ;
@@ -28,7 +26,7 @@ class PHPI18n extends Task
 	
 	function onSetParams ( $options = array () )
 	{
-		$params = $this->broker->sanitizer->POST ;
+		$params = App::$sanitizer->POST ;
 		
 		if ( $this->hasParam ('languages') == true )
 		{
@@ -69,9 +67,9 @@ class PHPI18n extends Task
 		
 		$baseDir = 'LC_MESSAGES' ;
 		
-		$localeDir = $this->project->path . 'app' . DS . 'locale' . DS ;  
+		$localeDir = ROOT. 'app' . DS . 'locale' . DS ;  
 		
-		$cmd = $this->CMD ; ;
+		$cmd = '' ;
 		
 		if ( $this->futil->dirExists( $localeDir ) == false )
 		{
@@ -94,7 +92,7 @@ class PHPI18n extends Task
 		}
 		
 		$localeDir = $localeDir.$baseDir . DS;
-		$file = 'default.po' ;
+		$file = 'default2.po' ;
 		
 		$f = new File ( $localeDir . $file , true ) ;
 		
@@ -108,7 +106,7 @@ class PHPI18n extends Task
 			$join = true ;
 		}
 		
-		$cmd .= 'xgettext -j --from-code UTF-8';
+		$cmd .= 'xgettext -j --from-code UTF-8 --debug';
 		
 		$cmd .= ' --package-name='.urlize($this->project->name).' --package-version=  --msgid-bugs-address=dev@aenoa-systems.com' ;
 			
@@ -119,7 +117,7 @@ class PHPI18n extends Task
 		$cmdServer = $cmd . ' -L PHP -p ' . $localeDir . ' -o ' . $file ;
 		$extensions = array('php','html','thtml','js','xml','') ;
 		
-		$tree = $this->futil->getFolderTree(ROOT . 'aenoa-server' . DS, false);
+		$tree = $this->futil->getFolderTree(AE_SERVER, false);
 		
 		foreach ( $tree as $t )
 		{
@@ -136,9 +134,9 @@ class PHPI18n extends Task
 			
 		}
 		
-		$tree = $this->futil->getFolderTree(ROOT .$this->project->name . DS, false);
+		$tree = $this->futil->getFolderTree(ROOT , false);
 		
-		$cmdServer .= ' ' . ROOT . $this->project->name . DS .'*.php' ;
+		$cmdServer .= ' ' . ROOT .'*.php' ;
 		
 		foreach ( $tree as $t )
 		{
@@ -156,13 +154,13 @@ class PHPI18n extends Task
 		
 		$this->view->setSuccess ( 'Here is the system command: ' . $cmdServer ) ;
 		
-		$ret = exec($cmdServer) ;
-		
+		system($cmdServer, $ret) ;
+		pr($ret);
 		if ( $ret == 0 )
 		{
 			$this->view->setSuccess ( 'I18n terms file parsing in PHP project done.') ;
 		} else {
-			$this->view->setError ( 'I18n terms file parsing in PHP project NOT done.') ;
+			$this->view->setError ($ret) ;
 		}
 		
 	}

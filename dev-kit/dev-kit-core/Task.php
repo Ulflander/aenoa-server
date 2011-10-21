@@ -71,6 +71,7 @@ class Task {
 	{
 		$this->futil = new FSUtil(dirname(ROOT)) ;
 		
+		$this->broker = $broker;
 	}
 	
 	
