@@ -15,7 +15,13 @@ class AeEHtml extends EHtmlBase {
 
 	function __construct ()
 	{
-		$this->addToken ( '$$' , array ($this, 'makeFormElement') ) ;
+		$this->addToken ( '$$' ,'makeFormElement' ) ;
+		$this->addToken('+', 'pr');
+	}
+
+	function pr ( $token , $value, $inline )
+	{
+		return '<?php pr ( ' . $value . ') ; ?>' ;
 	}
 
 	function makeFormElement ( $token , $value )

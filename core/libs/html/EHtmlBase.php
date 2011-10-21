@@ -8,7 +8,9 @@ class EHtmlElement {
 	var $rawTokenContent = '';
 	var $parameters = array();
 	var $values = array();
+	var $multiline = false ;
 	var $source = '';
+	var $result = '' ;
 
 	function isTokenized() {
 		return $this->tokenized === true;
@@ -22,39 +24,123 @@ class EHtmlElement {
 		array_push($this->values, $val);
 	}
 
-	function render($indentation, $methods, $variables) {
+	function render($indentation, $methods, $variables, EHtmlBase $base) {
 		if ($this->isTokenized()) {
-			return $this->renderTokenized($indentation, $methods, $variables);
+			return $this->renderTokenized($indentation, $methods, $variables, $base);
 		}
 
-		return $this->renderHTML($indentation, $methods, $variables);
+		return $this->renderHTML($indentation, $methods, $variables, $base);
 	}
 
-	private function renderHTML($indentation, $methods, $variables) {
+	private function renderHTML($indentation, $methods, $variables, EHtmlBase &$base) {
+		
 		$res = $indentation;
 
-		$res .= '<' . $this->keyword;
+		$classes = array () ;
 
+		$styles = array() ;
+		
+		$attributes = '' ;
 
-		return $res . '>';
+		$value = '' ;
+
+		$closure = '' ;
+
+		$res .= '<' . $this->keyword ;
+
+		foreach ( $this->parameters as $param )
+		{
+			$tok = substr($param, 0, 1);
+			if ( $tok == '$' )
+			{
+				if ( ($i = intval(substr($param, 1)) ) > 0 && count($variables) >= $i )
+				{
+					$param = $variables[$i-1] ;
+					$tok = substr($param, 0, 1);
+				}
+			}
+			switch ( true )
+			{
+				case in_array($tok , array('{','(','"')):
+					$val = substr($param,1,  mb_strlen($param)-2);
+					break;
+				default:
+					$val = substr($param, 1) ;
+					break;
+			}
+
+			switch ( $tok )
+			{
+				// RAW value
+				case '"':
+					$value .= $val ;
+					break;
+				// CSS class
+				case '.':
+					$classes[] = $val ;
+					break;
+				// CSS inline Style
+				case '%':
+					$styles[] = $val ;
+					break;
+				// HTML Id
+				case '#':
+					$attributes .= ' id="' . $val . '"';
+					break;
+				// Raw attributes
+				case '(':
+					$attributes .= ' ' . $val ;
+					break;
+				// PHP echo tag, will defined value (and later, closure)
+				case '{':
+					$value .= '<?php echo ' . $val . ' ?>' ;
+					break;
+			}
+		}
+
+		if ( !empty ($classes) )
+		{
+			$attributes .= ' class="'.implode(' ', $classes) . '"' ;
+		}
+
+		if ( !empty ($styles) )
+		{
+			$attributes .= ' style="'.implode(' ', $styles) . '"' ;
+		}
+
+		if ( $value != '' )
+		{
+			$closure = '</'.$this->keyword.'>' ;
+		}
+
+		$this->result = $res . $attributes . '>' . $value . $closure ;
+		
+		return $this->result ;
 	}
 
-	private function renderTokenized($indentation, $methods, $variables) {
+	
+
+	private function renderTokenized($indentation, $methods, $variables, EHtmlBase &$base ) {
 		$res = $indentation;
 
 		switch ($this->token) {
 
 			// Method call
 			case ';':
-				$res .= 'Method ! ';
+				if ( !ake($this->keyword , $methods) )
+				{
+					break;
+				}
+				$res = implode("\n",$base->renderScope($methods[$this->keyword], strlen($indentation), $this->parameters));
 				break;
 			// PHP statement
 			case '?':
-				$res .= '<?php ' . $this->rawTokenContent . ' ?>';
+				$res .= '<?php ' . $this->rawTokenContent 
+							. ($this->multiline ? "\n".$indentation : '') . ' ?>'."\n";
 				break;
 			// PHO echo statement
 			case '!':
-				$res .= '<?php echo ' . $this->rawTokenContent . ' ?>';
+				$res .= '<?php echo ' . $this->rawTokenContent . ' ?>'."\n";
 				break;
 			// Close HTML tag
 			case '/':
@@ -68,37 +154,48 @@ class EHtmlElement {
 			case '.':
 				$res .= $this->rawTokenContent;
 				break;
-			case '':
+			// Javascript
+			case '^':
+				$res .= '<script type="text/javascript">'.$this->rawTokenContent
+							. ($this->multiline ? "\n".$indentation : '') .'</script>' ;
 				break;
-			/* default:return;//vdfjs
-			  case '/':
-			  $res .= $this->closeLine($token['content']);
-			  break;
-			  case '_':
-			  $res .= '<!-- ' . $token['content'] . ' -->';
-			  break;
-			  case '"':
-			  $res .= $token['content'];
-			  break;
-			  case '=':
-			  $res .= $this->getRawHTMLInline($token['content']);
-			  break;
-			  case '!':
-			  preg_match_all('/^[\s]{0,}=>\s{0,1}([a-zA-Z0-9\-\_]{1,})/im', $line, $r);
-			  if (count($r[1]) > 0) {
-			  if (array_key_exists($r[1][0], $methods)) {
-			  $res2 = array();
-			  $res = implode("\n", $this->renderScope($methods[$r[1][0]], $scope + 1, array(), $res2, $methods));
-			  }
-			  }
-			  break;
-			  case '>':
-			  $res .= '<?php ' . preg_replace('/^(>)/im', '', $line) . "\n" . $ind . '?>';
-			  break; */
+			// Parameter of function
+			case '$':
+				if ( ($i = intval($this->keyword) ) > 0 && count($variables) >= $i )
+				{
+					$param = $variables[$i-1] ;
+					$tok = substr($param, 0, 1);
+					switch ( true )
+					{
+						case in_array($tok , array('{','(','"')):
+							$val = substr($param,1,  mb_strlen($param)-2);
+							break;
+						default:
+							$val = substr($param, 1) ;
+							break;
+					}
+
+					switch ( $tok )
+					{
+						// PHP echo tag, will defined value (and later, closure)
+						case '{':
+							$val = '<?php echo ' . $val . ' ?>' ;
+							break;
+					}
+					
+					$res .= $val ;
+				}
+				break;
 			default:
-				echo '-- unknown token: ' . $this->token . ' in line ' . $this->source . '--';
+				$custom = $base->getCustomTokenResult($this->token, $this->rawTokenContent) ;
+				if (is_null($custom) )
+				{
+					echo '-- unknown token: ' . $this->token . ' in line ' . $this->source . '--';
+				} else {
+					$res .= $custom ;
+				}
 		}
-		return $res . "\n";
+		return $res;
 	}
 
 }
@@ -110,16 +207,32 @@ class EHtmlBase {
 
 	private $state;
 
+	private $methods = array () ;
+
+	private $customTokens = array () ;
+
 	function __construct() {
 		$this->state = self::STATE_INLINE;
 	}
 
 	function addToken($token, $callback) {
-		
+		$this->customTokens[$token] = $callback ;
+	}
+
+	function getCustomTokenResult ( $token , $value, $inline = false )
+	{
+		if ( ake ( $token , $this->customTokens ) )
+		{
+			return $this->{$this->customTokens[$token]} ( $token, $value , $inline ) ;
+		}
+		return null ;
 	}
 
 	function evaluate($template = 'No template given', $parameters = array()) {
+
 		$this->state = self::STATE_INLINE;
+
+		$this->methods = array ( ) ;
 
 		$lines = explode("\n", str_replace('    ', "\t", $template));
 
@@ -172,9 +285,9 @@ class EHtmlBase {
 
 			if ($this->state == self::STATE_MULTILINE) {
 				if (trim($line) === '<') {
-					echo ('<script type="text/javascript">alert("' . $multiline . '");</script>');
 					$res['lines'][] = $multiline;
 					$this->state = self::STATE_INLINE;
+					$multiline = '';
 				} else {
 					$multiline .= "\n" . $lines[$i];
 				}
@@ -204,9 +317,9 @@ class EHtmlBase {
 				$prev = null;
 			} else {
 				$line = trim($line);
-				if ((preg_match('/>$/i', $line) === 1 || preg_match('/^>/i', $line) === 1 ) && preg_match('/^\+/i', $line) == 0) {
+				if (preg_match('/>$/i', $line) === 1 || preg_match('/^>/i', $line) === 1 ) {
 					$this->state = self::STATE_MULTILINE;
-					$multiline .= $line;
+					$multiline .= preg_replace('/(>)$/i','',$line);
 				} else {
 					$res['lines'][] = $line;
 					if (!$this->isTokenizedLine($line)) {
@@ -246,7 +359,7 @@ class EHtmlBase {
 				$l2[] = $this->extractMethods($line, $methods);
 			} else {
 				if (preg_match('/^\s{0,}:\s/i', $line) > 0) {
-					$last = preg_replace('/^(\s{0,}=\s{0,})/i', '', $line);
+					$last = preg_replace('/^(\s{0,}:\s{0,})/i', '', $line);
 				} else {
 					$last = false;
 					$l2[] = $line;
@@ -255,29 +368,25 @@ class EHtmlBase {
 		}
 
 
-		return array('lines' => $l2, 'methods' => $methods);
+		$this->methods = array_merge($methods, $this->methods);
+
+		return $l2 ;
 	}
 
-	function renderScope(array $lines, $scope = 0, array $parameters = array(), array &$res = array(), array $methods = array()) {
-
-		$methods = array_merge($lines['methods'], $methods);
-
-		//	pr($methods);
-
-		$lines = $lines['lines'];
+	function renderScope(array $lines, $scope = 0, array $parameters = array(), array &$res = array() ) {
 
 		foreach ($lines as $line) {
 			if (is_array($line)) {
-				$this->renderScope($line, $scope + 1, $parameters, $res, $methods);
+				$this->renderScope($line, $scope + 1, $parameters, $res);
 			} else {
-				$res[] = $this->renderLine($line, $scope, $methods);
+				$res[] = $this->renderLine($line, $scope, $this->methods , $parameters);
 			}
 		}
 
 		return $res;
 	}
 
-	function renderLine($line, $scope = 0, array $methods = array()) {
+	function renderLine($line, $scope = 0, array $methods = array(), $parameters = array () ) {
 
 		$ind = '';
 
@@ -285,7 +394,7 @@ class EHtmlBase {
 			$ind .= "\t";
 		}
 
-		return $this->parseLine($line)->render($ind, $methods, array());
+		return $this->parseLine($line)->render($ind, $methods, $parameters, $this);
 	}
 
 	/**
@@ -337,12 +446,7 @@ class EHtmlBase {
 				if ( $escapes[$escapedChar] == $char && $prev != '\\' )
 				{
 
-					if ( $escapedChar == '"')
-					{
-						$element->addValue($current);
-					} else {
-						$element->addParam($current);
-					}
+					$element->addParam($current);
 					$current = '' ;
 					$escaped = false ;
 				}
@@ -385,88 +489,10 @@ class EHtmlBase {
 
 			continue;
 		}
-/*
-			if ($char == '{' || $char == '(') {
-				$current .= $char;
-
-				if (!$escaped) {
-					$escapedChar = $char ;
-					$escaped = true;
-				} else {
-					$current = substr($current, 0, mb_strlen($current) - 1);
-					$current .= $char;
-				}
-				
-			} else if ($char == '}' || $char == ')') {
-				$current .= $char;
-				if ($escaped && $prev != '\\' && ( ($char == '}' && $escapedChar == '{') || ($char == ')' && $escapedChar == '(') ) ) {
-					$escaped = false;
-					$current = trim($current);
-					if (preg_match('/^[^a-z0-9]{1,2}/i', $current) == 1) {
-						$element->addParam($current);
-					} else {
-						$element->addValue($current);
-					}
-					$escapedChar = '';
-					$step++;
-					$current = '';
-				} else {
-					$current = substr($current, 0, mb_strlen($current) - 1);
-					$current .= $char;
-				}
-			} else if ($char == ' ' || $char == "\t") {
-				switch ($step) {
-					case 0:
-						$element->tokenized = true;
-						$element->token = $current;
-						preg_match_all('/^[^a-z0-0]{1,2}\s{1,}([a-z0-9]{1,})/i', $line, $m);
-						if (count($m[1]) > 0) {
-							$element->keyword = $m[1][0];
-						}
-
-						$element->rawTokenContent = preg_replace('/^[^a-z0-9]{1,2}/i', '', trim($line));
-						$step++;
-						break;
-					case 1:
-						$element->keyword = $current;
-						break;
-					default:
-						if ($escaped) {
-							$current .= $char;
-							$continue = true;
-							break;
-						}
-						$current = trim($current);
-						if (preg_match('/^[^a-z0-9]{1,2}/i', $current) == 1) {
-							$element->addParam($current);
-						} else {
-							$element->addValue($current);
-						}
-				}
-				if (!$continue) {
-					$step++;
-					$current = '';
-					$escapedChar = '';
-				}
-				$continue = false;
-				continue;
-			} else if ($char == '"') {
-				if (!$escaped) {
-					$escaped = true;
-				} else if ($escaped && $escapedChar == '"' && $prev != '\\') {
-					$escaped = false;
-				} else {
-					$current = substr($current, 0, mb_strlen($current) - 1);
-					$current .= $char;
-				}
-				continue;
-			} else {
-				$current .= $char;
-			}
+		if ( strpos($element->source,"\n") !== false )
+		{
+			$element->multiline = true ;
 		}
-		*/
-		pr($element);
-
 		return $element;
 	}
 
@@ -475,87 +501,6 @@ class EHtmlBase {
 		return!empty($res);
 	}
 
-	/*
-	  function closeLine($line) {
-	  $token = $this->getLineTag($line);
-	  if (!empty($token)) {
-	  return '</' . $token['tag'] . '>';
-	  }
-	  }
-
-	  function renderHTMLLine($tag, $line) {
-	  $escaped = array();
-	  $classes = array();
-	  $id = '';
-	  $content = '';
-	  $tokenized = array();
-
-	  $l = mb_strlen($line);
-
-	  $line = ' ' . $line . ' ';
-
-	  preg_match_all('/\s\.([a-zA-Z0-9\-\_]{1,})\s/i', $line, $c);
-	  $classes = $c[1];
-
-	  preg_match_all('/\s\(([^)]{1,})\)\s/i', $line, $c);
-	  $escaped = $c[1];
-
-	  preg_match_all('/\s#([a-zA-Z0-9\-\_\\\]{1,})\s/i', $line, $c);
-	  $id = @$c[1][0];
-
-	  preg_match_all('/\s_\(([^)]{1,})\)\s/i', $line, $c);
-	  if (!empty($c) && count($c[0]) > 0) {
-	  $content = $this->getEchoPHPInline($c[0][0]);
-	  }
-
-
-	  return
-	  '<' . $tag
-	  . ( $id && $id != '' ? ' id="' . $id . '"' : '')
-	  . (count($classes) > 0 ? ' class="' . implode(' ', $classes) . '"' : '' )
-	  . (count($escaped) > 0 ? ' ' . implode(' ', $escaped) : '' ) . '>'
-	  . ( $content != '' ? $content . '</' . $tag . '>' : '' );
-	  }
-
-
-	  function getLineToken($line) {
-	  preg_match('/^([^a-zA-Z0-9\s\n]{1,2}|sprintf)(.*)$/im', $line, $res);
-
-	  if (count($res) > 1) {
-	  return array('token' => $res[1], 'content' => trim($res[2]));
-	  } else {
-	  return array('token' => 'no-token');
-	  }
-	  }
-
-	  function getLineTag($line) {
-	  preg_match('/^\s{0,}([a-zA-Z0-9]{1,})\s{0,}(.{0,})/i', trim($line), $res);
-	  if (count($res) > 1) {
-	  return array('tag' => $res[1], 'content' => trim($res[2]));
-	  }
-	  }
-
-	  function getRawPHPInline($line) {
-	  return '<?php ' . trim($line) . ' ?>';
-	  }
-
-	  function getEchoPHPInline($line) {
-	  return '<?php echo ' . trim($line) . ' ?>';
-	  }
-
-	  function getRawHTMLMultiline($lines) {
-	  return implode("\n", $lines);
-	  }
-
-	  function getRawHTMLInline($line) {
-	  return $line;
-	  }
-
-	  function renderHTMLJS($line) {
-
-	  return $line;
-	  }
-	 */
 }
 
 ?>

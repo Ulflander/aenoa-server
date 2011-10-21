@@ -9,14 +9,14 @@
 			> second char of HTML comments
 	
 	_		
-	=		Define a pure HTML statement
+	=		
 	"											Starts/ends escaped sequence, html tag will be closed
 	+		
 	
 	
 	^		Starts a Javascript escaped seq.
-	>		Starts an escaped sequence			Starts an escape sequence
-	<		Ends any escaped sequence
+	>		Starts a multiline sequence			
+	<		Ends last multiline sequence
 	
 	
 	:		Define a method
@@ -25,11 +25,13 @@
 	
 	
 	?		PHP statement
+			> second char of php open tag
 	!		PHP echo statement
+			
 	
 	
 	/		Close an HTML tag 
-				(Internal)
+			> Internal
 	\
 	
 	
@@ -46,4 +48,4 @@
 	{											Starts echo PHP statement, html tag will be closed
 	}											Ends echo PHP statement, html tag will be closed
 	
-	[a-zA-Z0-9] Create HTML tag
+	[a-z] Create HTML tag
