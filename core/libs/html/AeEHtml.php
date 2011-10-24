@@ -34,8 +34,7 @@ class AeEHtml extends EHtmlBase {
 			{
 				new ErrorException('IDs for field method are not valid') ;
 			}
-			return '<?php echo $this->getField(\'' . $ids[0] . '\',\'' . $ids[1] . '\',\'' . $ids[2] . '\', '.
-				'isset($baseURL) ? $baseURL : null, isset($data) ? $data : array() ); ?>' ;
+			return '<?php echo $this->getField(\'' . $ids[0] . '\',\'' . $ids[1] . '\',\'' . $ids[2] . '\', isset($baseURL) ? $baseURL : null, isset($data) ? $data : array() ); ?>' ;
 		}
 		
 		return '' ;

@@ -96,7 +96,7 @@ class QueryString extends AeObject {
 
 	function getFrom ( $index )
 	{
-		return array_slice($this->_tokens , 5 ) ;
+		return array_slice($this->_tokens , $index ) ;
 	}
 
 	function setAt ( $index, $value )
