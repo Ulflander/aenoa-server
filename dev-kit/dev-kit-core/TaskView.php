@@ -107,7 +107,8 @@ class TaskView {
 			$this->template->append ( 'tasks' , 'task_status' ) ;
 		}
 	}
-	
+
+
 	function setWarning ( $message , $substatus = false )
 	{
 		if ( $this->avoidMessages == false )

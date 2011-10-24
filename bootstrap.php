@@ -153,6 +153,13 @@ define ( 'AE_APP_HOOKS', AE_APP . 'hooks' . DS ) ;
 define ( 'AE_APP_PLUGINS', AE_APP . 'plugins' . DS ) ;
 
 /**
+ * Constant: AE_APP_TEMPLATES
+ *
+ * Application dedicated templates folder path
+ */
+define ( 'AE_APP_TEMPLATES', AE_APP . 'templates' . DS ) ;
+
+/**
  * Constant: AE_APP_WEBPAGES
  *
  * Application webpages folder path
@@ -273,7 +280,7 @@ if ( strpos( url(), '192.168.0.42' ) !== false )
 	Config::set ( App::STATIC_SERVER , 'http://localhost:8888/aenoa-desk/' ) ;
 } else if ( strpos( url(), 'localhost' ) !== false ) 
 {
-	Config::set ( App::STATIC_SERVER , 'http://localhost/' ) ;
+	Config::set ( App::STATIC_SERVER , 'http://localhost/aenoa-desk/' ) ;
 } else {
 	Config::set ( App::STATIC_SERVER , 'http://static.aenoa-systems.com/' ) ;
 }

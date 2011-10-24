@@ -9,7 +9,7 @@ class HashMachine extends Task {
 		$opt = new Field () ;
 		$opt->name = 'password' ;
 		$opt->type = 'input' ;
-		$opt->label = 'Clear password' ;
+		$opt->label = 'Clear string' ;
 		$opt->required = true ;
 		
 		$opt2 = new Field () ;

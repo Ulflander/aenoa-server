@@ -401,10 +401,16 @@ class App extends AeObject
 	public static $futil ;
 	
 	/**
-	 * The query
+	 * The query as string
 	 * @var string
 	 */
 	public static $query ;
+
+	/**
+	 * The query as QueryString instance
+	 * @var QueryString
+	 */
+	public static $queryStr ;
 	
 	/**
 	 * Are we in ajax context
@@ -528,6 +534,14 @@ class App extends AeObject
 		if ( self::$sanitizer->exists ( 'GET' , 'query' )) 
 		{
 			self::$query = self::$sanitizer->get ( 'GET' , 'query' ) ;
+			self::$queryStr = new QueryString( self::$query ) ;
+
+		}
+
+		// Check rights for this query
+		if ( AenoaRights::hasRightsOnQuery() == false )
+		{
+			self::do401 ('Permission denied') ;
 		}
 		
 		// Check for install mode
@@ -1157,6 +1171,14 @@ class App extends AeObject
 	static function getQuery ()
 	{
 		return self::$query ;
+	}
+
+	/**
+	 * @return QueryString
+	 */
+	static function getQueryString ()
+	{
+		return self::$queryStr ;
 	}
 
 	/**

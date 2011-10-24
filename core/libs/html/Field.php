@@ -32,6 +32,7 @@ class Field {
 		$this->label = $message ;
 		$this->name = 'confirm' ;
 		$this->type = 'radio' ;
+		$this->value = 'cancelled';
 		$this->description = 'You must confirm you want to run this task.' ;
 		$this->values = array ( 'confirmed' => 'Confirm' , 'cancelled' => 'Cancelled' ) ;
 		$this->required = true ;
@@ -51,10 +52,7 @@ class Field {
     				$this->attributes['checked'] = 'checked' ;
     			else unset ( $this->attributes['checked'] ) ;
     			break;
-    		case 'input':
-    		case 'textfield':
-    		case 'select':
-    		case 'radio':
+    		default:
     			$this->value = $value ;
     				break;
     	}

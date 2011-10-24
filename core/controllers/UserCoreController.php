@@ -16,7 +16,7 @@ class UserCoreController extends Controller{
 		
 		if ( Config::get(App::USER_CORE_SYSTEM) !== true )
 		{
-			App::do404 ( 'This is not the right gateway for user management.' ) ;
+			App::do404 ( _('Core user management is not available.') ) ;
 		}
 		
 		$this->view->useLayout = true ;

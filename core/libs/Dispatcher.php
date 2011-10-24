@@ -62,7 +62,8 @@
  * This operation is definitive, but if you have to use later the Dispatcher::dispatch method,
  * then use the forceDispatch method or the dispatchThis method.</p>
  * 
- * 
+ *
+ * @see QueryString
  * @see App
  * @see Controller
  * @see RESTGateway
@@ -73,66 +74,11 @@
 class Dispatcher {
 	
 	
-	/**
-	 * First token in URLs to access to core DatabaseController
-	 * 
-	 * Value:
-	 * 'database'
-	 */
-	const DB_TOKEN = 'database' ;
-	
-	/**
-	 * First token in URLs to access to Server/Services system
-	 * 
-	 * Value:
-	 * 'api'
-	 */
-	const SERVICES_TOKEN = 'api' ;
-	
-	/**
-	 * First token in URLs to access to REST service
-	 * 
-	 * Value:
-	 * 'rest'
-	 */
-	const REST_TOKEN = 'rest' ;
-	
-	/**
-	 * First token in URLs to access Dev Kit features
-	 * 
-	 * Value:
-	 * 'dev'
-	 */
-	const DEV_TOKEN = 'dev' ;
-	
 	static private $_more = array () ;
-	
-	/**
-	 * The query splitted by / char in dispatch
-	 * @var array
-	 */
-	static private $_q ;
 	
 	static private $_done = false ;
 	
 	static private $_activated = true ;
-	
-	/**
-	 * First token aliases
-	 */
-	static private $_routes = array () ;
-	
-	/**
-	 * Reroute an alias to a given token
-	 * 
-	 * @param string $alias
-	 * @param string $token
-	 */
-	static public function route ( $alias, $token )
-	{
-		self::$_routes[$alias] = $token ;
-	}
-	
 	
 	/**
 	 * Returns unidentified tokens in url
@@ -163,7 +109,7 @@ class Dispatcher {
 	 */
 	static public function forceDispatch ()
 	{
-		self::_dispatch ( App::$query ) ;
+		self::_dispatch ( App::getQueryString() ) ;
 	}
 	
 	/**
@@ -181,7 +127,7 @@ class Dispatcher {
 		}
 		if ( self::$_activated )
 		{
-			self::_dispatch ( App::$query ) ;
+			self::_dispatch ( App::getQueryString() ) ;
 		}
 	}
 	
@@ -192,7 +138,7 @@ class Dispatcher {
 	 * 
 	 * 
 	 */
-	static public function dispatchThis ( $query )
+	static public function dispatchThis ( QueryString &$query )
 	{
 		self::_dispatch ($query , true ) ;
 	}
@@ -201,10 +147,10 @@ class Dispatcher {
 	/**
 	 * Concrete method to dispatch the query
 	 * 
-	 * @param $query The query to dispatch
+	 * @param $query QueryString The query to dispatch
 	 * @param $redispatch Dispatch even if yet dispatched another query
 	 */
-	static private function _dispatch ($query = '', $redispatch = false )
+	static private function _dispatch ( QueryString &$query = null, $redispatch = false )
 	{
 		// If dispatch yet done, we return
 		if ( self::$_done == false )
@@ -214,33 +160,31 @@ class Dispatcher {
 		{
 			return false ;
 		}
+
+		if ( $query == null )
+		{
+			$query = new QueryString('index.html') ;
+		}
 		
 		$route = new AeRoute () ;
-		$query = $route->get($query) ;
 		
-		
-		$c = 0 ;
-		if ( strlen($query) == 0 )
-		{
-			$q = array () ;
-		} else {
-			$q = explode('/',$query) ;
-		}
-		self::$_q = $q ;
-		
+		$query->reset( $route->get( $query->raw() ) ) ;
 		
 		
 		// Number of parameters in query
-		$c = count($q) ;
+		$c = $query->count () ;
 		
 		// For now, no controller neither action
 		$controller = null ;
 		$action = null ;
-		
-		
+
+		// Get main token
+		$token = $query->getAt(0) ;
+
+		$raw = $query->raw () ;
 		
 		// No query, then try to check home
-		if ( $c == 0 || $query == 'index.html' )
+		if ( $c == 0 || $token == 'index.html' )
 		{
 			if ( Controller::requireController ( 'Home' , 'index' ) == true )
 			{
@@ -251,45 +195,41 @@ class Dispatcher {
 			return;
 		}
 		
-		if ( ake($q[0], self::$_routes ) )
-		{
-			$q[0] = self::$_routes[$q[0]] ; 
-		}
-		
-		if ( $q[0] == 'phpinfo' && debuggin () )
+		if ( $token == 'phpinfo' && debuggin () )
 		{
 			phpinfo() ;
+			
 			App::end () ;
 		}
-	
-		// Check rights for this query
-		if ( AenoaRights::hasRightsOnQuery() == false )
-		{
-			App::do401 ('Permission denied') ;
-		}
+
 		
 		// And dispatch
 		switch ( true )
 		{
 			// For DB access
-			case $q[0]==self::DB_TOKEN:
+			case $token==QueryString::DB_TOKEN:
 				if ( $c == 3 ) {
-					$q[3] = 'index'  ;
-					$c = 4 ;
+					$query->setAt(3, 'index' ) ;
 				}
-				if ( $c >= 4
-				&& App::hasDatabase($q[1])
-				&& Controller::requireController ('Database' , $q[3]))
-				{
-					Controller::launchController('Database', $q[3], @$q[4], array(
-						'databaseID'=>$q[1],
-						'table'=>$q[2]) , array_slice($q,5)
-					) ;
-				}
+				if ( $query->count() >= 4
+					&& App::hasDatabase($query->getAt(1))
+					&& Controller::requireController ('Database' , $query->getAt(3) ) )
+					{
+						Controller::launchController(
+							'Database',
+							$query->getAt(3),
+							$query->getAt(4),
+							array(
+								'databaseID' => $query->getAt(1),
+								'table'=> $query->getAt(2)
+							) ,
+							$query->getFrom(5)
+						) ;
+					}
 				break;
 				
 			// For REST API access
-			case $q[0]==self::REST_TOKEN:
+			case $token==QueryString::REST_TOKEN:
 				if ( $c > 2 )
 				{
 					$gateway = new RESTGateway () ;
@@ -299,7 +239,7 @@ class Dispatcher {
 				break;
 				
 			// For dev kit access
-			case $q[0]==self::DEV_TOKEN:
+			case $token==QueryString::DEV_TOKEN:
 				if(App::getUser()->isGod() && debuggin() )
 				{
 					if ( file_exists(AE_SERVER.'dev-kit'.DS.'devkit-bootstrap.php') )
@@ -314,23 +254,23 @@ class Dispatcher {
 				break;
 				
 			// For Services access
-			case $q[0]==self::SERVICES_TOKEN:
+			case $token==QueryString::SERVICES_TOKEN:
 				$gateway = new Gateway () ;
 				break;
 				
 			// Controller access
-			case $c >= 1 && Controller::requireController ( $q[0] , ($action = ($c > 1 && $q[1] ? $q[1] : 'index' )) )== true:
-				self::_launchController ( $q[0], $action, (@$q[2] ? $q[2] : null ) , array () ,@array_slice($q, 3) );
+			case $c >= 1 && Controller::requireController ( $token , $query->getAt(1,'index') ) == true:
+				self::_launchController ( $token, $query->getAt(1,'index'), $query->getAt(2) , array () , $query->getFrom(3) );
 				break;
 				
 			// Webpages access
-			case Webpage::webpageExists(str_replace('/',DS,$query))==true:
-				self::_applyWebpage(array($query)) ;
+			case Webpage::webpageExists(str_replace('/',DS,$query->raw()))==true:
+				self::_applyWebpage(array($query->raw())) ;
 				break;
 			
 			// Default : no pattern found, run 404
 			default:
-				App::do404 ( 'No dispatch available' ) ;
+				App::do404 ( _('No dispatch available') ) ;
 		}
 		
 		// All done, web app can end

@@ -1,5 +1,16 @@
 
-<h1 class="p"><?php echo sprintf(_('DevKit / %s'),$this->title);?></h1>
+<ul class="no-list-style inline">
+	<li class="icon16 home"><a href="<?php echo url() ; ?>" ><?php echo sprintf(_('%s app'), Config::get(App::APP_NAME)) ?></a></li>
+	<li class="icon16 play"><a href="<?php echo url() ; ?>maintenance/status" ><?php echo sprintf(_('Aenoa Server manager'), Config::get(App::APP_NAME)) ?></a></li>
+	<li class="icon16 play"><a href="<?php echo url() ; ?>dev/ExploreTasks" ><?php echo _('Development tasks') ?></a></li>
+	<li class="icon16 play"><?php echo sprintf(_('%s task'),$this->title);?></li>
+</ul>
+
+<h1 class="expanded m p"><?php echo sprintf(_('DevKit / %s'),$this->title);?></h1>
+
+<?php if ( isset ( $description ) ): ?>
+<p class="m p b"><?php echo $description ?></p>
+<?php endif; ?>
 
 <?php if ( !empty ( $menu ) ) : ?>
 	<ul id="menu" class="col-16 r-2 inline light hidden">

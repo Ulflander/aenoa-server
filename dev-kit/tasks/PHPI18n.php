@@ -8,6 +8,22 @@ class PHPI18n extends Task
 		$this->requireMemory ( 256 ) ;
 		
 		$options = array () ;
+
+		$opt = new Field () ;
+		$opt->value = 'This task will create .po gettext files by extracting locales from both Aenoa Server and the application.' ;
+		$opt->type = 'label' ;
+
+		$options[] = $opt ;
+
+		$opt = new Field () ;
+		$opt->label = 'Folder of xgettext utility' ;
+		$opt->name = 'xgettext_root' ;
+		$opt->type = 'input' ;
+		$opt->required = true ;
+		$opt->description = '' ;
+		$opt->value = '/Applications/MAMP/Library/bin' ;
+
+		$options[] = $opt ;
 		
 		$opt = new Field () ;
 		$opt->label = 'Languages' ;
@@ -15,7 +31,19 @@ class PHPI18n extends Task
 		$opt->type = 'input' ;
 		$opt->required = true ;
 		$opt->description = 'Languages, separated by a comma' ;
-		$opt->value = 'en_US' ;
+
+
+		$v = array () ;
+		$dirs = $this->futil->getFilesList(AE_APP . 'locale', false);
+		foreach ( $dirs as $dir )
+		{
+			if ( $dir['type'] === 'dir' )
+			{
+				$v[] = $dir['name'] ;
+			}
+		}
+
+		$opt->value = implode(',',$v) ;
 		
 		$options[] = $opt ;
 		
@@ -104,6 +132,11 @@ class PHPI18n extends Task
 		} else {
 			$this->view->setStatus ( 'I18n file found.') ;
 			$join = true ;
+		}
+
+		if ( $this->params['xgettext_root'] != '' )
+		{
+			$cmd .= setTrailingDS($this->params['xgettext_root']) ;
 		}
 		
 		$cmd .= 'xgettext -j --from-code UTF-8 --debug';

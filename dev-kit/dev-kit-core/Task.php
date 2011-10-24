@@ -29,6 +29,12 @@ class Task {
 	 * @var
 	 */
 	protected $name ;
+
+	/**
+	 * Description of what does the task for the user
+	 * @var
+	 */
+	protected $description ;
 	
 	/**
 	 * If the task is about one project, the id of the project

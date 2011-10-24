@@ -47,10 +47,11 @@ class AeEHtml extends EHtmlBase {
 			return ;
 		}
 
-		$f2->write($this->evaluate($f1->read())) ;
+		return $f2->write($this->evaluate($f1->read())) &&
+			$f1->close () &&
+			$f2->close () ;
 
-		$f1->close () ;
-		$f2->close () ;
+
 	}
 
 

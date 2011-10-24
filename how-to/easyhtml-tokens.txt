@@ -11,7 +11,7 @@
 	_		
 	=		
 	"											Starts/ends escaped sequence, html tag will be closed
-	+		
+	+		Continue secondary tokens on a new line
 	
 	
 	^		Starts a Javascript escaped seq.

@@ -148,7 +148,7 @@
 		    </div>
 
 		    <div class="control">
-			<label for="ajsf/parent">Class name</label>
+			<label for="ajsf/parent">Class parent</label>
 			<select id="ajsf/parent" name="ajsf/parent">
 			    <option value="ajsf.Class">ajsf.Class</option>
 			    <option value="ajsf.AbstractEvtDispatcher">ajsf.AbstractEvtDispatcher</option>
