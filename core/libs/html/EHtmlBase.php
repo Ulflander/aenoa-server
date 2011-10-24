@@ -526,7 +526,7 @@ class EHtmlBase {
 					case 0:
 						$element->tokenized = true;
 						$element->token = $current;
-						preg_match_all('/^[^a-z0-0]{1,2}\s{1,}([a-z0-9]{1,})/i', $line, $m);
+						preg_match_all('/^[^a-z0-9]{1,2}\s{1,}([a-z0-9]{1,})/i', $line, $m);
 						if (count($m[1]) > 0) {
 							$element->keyword = $m[1][0];
 						}

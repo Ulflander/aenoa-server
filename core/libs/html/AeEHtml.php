@@ -15,7 +15,7 @@ class AeEHtml extends EHtmlBase {
 
 	function __construct ()
 	{
-		$this->addToken ( '$$' ,'makeFormElement' ) ;
+		$this->addToken ( '*' ,'makeFormElement' ) ;
 		$this->addToken('+', 'pr');
 	}
 
@@ -24,9 +24,21 @@ class AeEHtml extends EHtmlBase {
 		return '<?php pr ( ' . $value . ') ; ?>' ;
 	}
 
-	function makeFormElement ( $token , $value )
+	function makeFormElement ( $token , $value , $inline )
 	{
+		if ( $inline == false )
+		{
+			$elements = explode(' ', $value) ;
+			$ids = explode('/',$elements[0]) ;
+			if ( count($ids) < 3 )
+			{
+				new ErrorException('IDs for field method are not valid') ;
+			}
+			return '<?php echo $this->getField(\'' . $ids[0] . '\',\'' . $ids[1] . '\',\'' . $ids[2] . '\', '.
+				'isset($baseURL) ? $baseURL : null, isset($data) ? $data : array() ); ?>' ;
+		}
 		
+		return '' ;
 	}
 
 	function fromFileToFile ( $from , $to )

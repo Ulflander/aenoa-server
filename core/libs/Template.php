@@ -553,17 +553,27 @@ class Template extends View {
 		
 		$title = $this->title ;
 		
-		if ( substr($file, strpos($file,'.') +1 ) == 'ehtml' )
+		if ( debuggin () )
 		{
-			$ehtml = new AeEHtml () ;
+			$l = strlen($file) ;
+			if ( strpos($file,'.thtml') === $l - 6)
+			{
+				$f2 = substr($file, 0, strpos($file,'.') + 1 ) .'ehtml' ;
+				
+				if (file_exists($f2) )
+				{
+					$ehtml = new AeEHtml () ;
+					
+					$f3 = sha1(str_replace('/', '__' , $file )) ;
 
-			$ehtml->fromFileToFile($file, AE_TMP . str_replace('/', '__' , $file ) ) ;
+					$ehtml->fromFileToFile($f2, AE_TMP . $f3 ) ;
 
-			include AE_TMP . str_replace('/', '__' , $file ) ;
+					include AE_TMP . $f3 ;
 
-			return;
+					return;
+					}
+			}
 		}
-		
 		include $file ;
 	}
 	

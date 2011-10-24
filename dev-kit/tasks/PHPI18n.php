@@ -10,7 +10,7 @@ class PHPI18n extends Task
 		$options = array () ;
 
 		$opt = new Field () ;
-		$opt->value = 'This task will create .po gettext files by extracting locales from both Aenoa Server and the application.' ;
+		$opt->value = 'This task will create .po gettext files by extracting locales from both Aenoa Server and the application, using the xgettext utility (xgettext must be available on system).' ;
 		$opt->type = 'label' ;
 
 		$options[] = $opt ;
@@ -120,7 +120,7 @@ class PHPI18n extends Task
 		}
 		
 		$localeDir = $localeDir.$baseDir . DS;
-		$file = 'default2.po' ;
+		$file = 'default.po' ;
 		
 		$f = new File ( $localeDir . $file , true ) ;
 		
@@ -188,7 +188,7 @@ class PHPI18n extends Task
 		$this->view->setSuccess ( 'Here is the system command: ' . $cmdServer ) ;
 		
 		system($cmdServer, $ret) ;
-		pr($ret);
+		
 		if ( $ret == 0 )
 		{
 			$this->view->setSuccess ( 'I18n terms file parsing in PHP project done.') ;

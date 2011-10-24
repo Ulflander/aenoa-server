@@ -12,6 +12,7 @@
 	=		
 	"											Starts/ends escaped sequence, html tag will be closed
 	+		Continue secondary tokens on a new line
+	*		Aenoa Server - display form field
 	
 	
 	^		Starts a Javascript escaped seq.
@@ -30,7 +31,7 @@
 			
 	
 	
-	/		Close an HTML tag 
+	/		Close an HTML tag							NOT USABLE
 			> Internal
 	\
 	
@@ -48,4 +49,4 @@
 	{											Starts echo PHP statement, html tag will be closed
 	}											Ends echo PHP statement, html tag will be closed
 	
-	[a-z] Create HTML tag
+	[a-z/] Create HTML tag
