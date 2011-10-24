@@ -166,42 +166,37 @@ class Dispatcher {
 			$query = new QueryString('index.html') ;
 		}
 		
-		$route = new AeRoute () ;
-		
-		$query->reset( $route->get( $query->raw() ) ) ;
-		
-		
-		// Number of parameters in query
-		$c = $query->count () ;
-		
-		// For now, no controller neither action
-		$controller = null ;
-		$action = null ;
-
-		// Get main token
-		$token = $query->getAt(0) ;
-
-		$raw = $query->raw () ;
-		
 		// No query, then try to check home
-		if ( $c == 0 || $token == 'index.html' )
+		if ( $query->count() == 0 || $query->getAt(0) == 'index.html' )
 		{
 			if ( Controller::requireController ( 'Home' , 'index' ) == true )
 			{
-				self::_launchController ( 'Home' , 'index' ) ;
+				$query->reset('home/index') ;
 			} else {
-				self::_applyWebpage(array('index',Config::get(App::APP_NAME))) ;
+				$query->reset('index.html') ;
 			}
-			return;
-		}
-		
-		if ( $token == 'phpinfo' && debuggin () )
+		// Simple PHP info
+		} else if ( $query->getAt(0) == 'phpinfo' && debuggin () )
 		{
 			phpinfo() ;
 			
 			App::end () ;
 		}
+		
+		
+		// Get main token
+		$token = $query->getAt(0) ;
 
+		$raw = $query->raw () ;
+		
+		// Number of parameters in query
+		$c = $query->count () ;
+		
+		// Check rights for this query
+		if ( AenoaRights::hasRightsOnQuery( $query->raw() ) == false )
+		{
+			App::do401 ('Permission denied') ;
+		}
 		
 		// And dispatch
 		switch ( true )
@@ -270,6 +265,8 @@ class Dispatcher {
 			
 			// Default : no pattern found, run 404
 			default:
+		pr($token) ;
+
 				App::do404 ( _('No dispatch available') ) ;
 		}
 		

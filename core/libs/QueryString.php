@@ -113,9 +113,11 @@ class QueryString extends AeObject {
 
 	function reset ( $query )
 	{
-		$this->_raw = $query ;
-
 		$this->_tokens = explode('/',$query) ;
+		
+		array_clean( $this->_tokens ) ;
+		
+		$this->_raw = implode('/', $this->_tokens );
 
 		$this->_count = count ( $this->_tokens ) ;
 	}

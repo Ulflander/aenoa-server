@@ -533,16 +533,17 @@ class App extends AeObject
 		// Get the query
 		if ( self::$sanitizer->exists ( 'GET' , 'query' )) 
 		{
-			self::$query = self::$sanitizer->get ( 'GET' , 'query' ) ;
-			self::$queryStr = new QueryString( self::$query ) ;
-
+			$query = self::$sanitizer->get ( 'GET' , 'query' ) ;
+		} else {
+			$query = '' ;
 		}
 
-		// Check rights for this query
-		if ( AenoaRights::hasRightsOnQuery() == false )
-		{
-			self::do401 ('Permission denied') ;
-		}
+		$route = new AeRoute () ;
+
+		self::$query =  $route->get( $query ) ;
+
+		self::$queryStr = new QueryString( self::$query ) ;
+		
 		
 		// Check for install mode
 		if ( self::$query == 'maintenance/check-context' )
