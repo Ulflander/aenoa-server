@@ -477,7 +477,7 @@ class MySQLEngine extends AbstractDBEngine {
 	    $q = 'UPDATE `' . $this->source['database'] . '`.`' . $table . '` SET ';
 	    $q .= implode(', ', $entries);
 	    $q .= ' WHERE `' . $this->source['database'] . '`.`' . $table . '`.`' . $schema->getPrimary() . '` = ' . (is_numeric($id) ? $id : '\'' . $id . '\'') . ' LIMIT 1';
-echo $q .'<br/>';
+
 	    $this->log($q);
 
 	    if (!$this->_inTransaction) {
