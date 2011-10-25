@@ -76,7 +76,7 @@ class MaintenanceController extends FileController {
 		if ($f->isEmpty()) {
 			$this->addResponse(_('Log file is empty'), 'info');
 		} else {
-			$this->addResponse('<pre>'. $f->read() .'</pre><br />', 'info');
+			$this->addResponse('<pre>'. $f->tail() .'</pre><br />', 'info');
 		}
 	}
 

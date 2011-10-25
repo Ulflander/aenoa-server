@@ -302,6 +302,27 @@ class MySQLEngine extends AbstractDBEngine {
 	@mysql_free_result($res);
 	return $result;
     }
+    
+    function findAndOrder ( $table , $cond = array () , $limit = 0 , $fields = array (), $order_fields = array(), $order = 'ASC' )
+	{
+		$schema = $this->tableExistsOr403($table);
+		$q = 'SELECT ' . $this->__selectFields($fields,$table) . ' FROM `' . $this->source['database'] . '`.`' . $table . '` ' ;
+		$q .= $this->__getCond ( $cond , $table) ;
+		$q .= $this->__getLimit ( $table , $limit ) ;
+		$q .= ' ORDER BY '. $this->__selectFields($order_fields,$table).' ';
+		$q .= $order;
+		$q .= ';';
+		$this->log($q);
+		$res = mysql_query($q, $this->getConnection()) ;
+		if ( $res === false )
+		{
+			return $res ;
+		}
+		$result =  $this->__fetchArr($res,$schema->getInitial (),$fields,array(),false);
+		
+		@mysql_free_result ( $res ) ;
+		return $result ;
+	}
 
     function findFirst($table, $cond = array(), $fields = array(), $childsRecursivity = 0) {
 	$res = $this->findAll($table, $cond, 1, $fields, $childsRecursivity);
@@ -456,7 +477,7 @@ class MySQLEngine extends AbstractDBEngine {
 	    $q = 'UPDATE `' . $this->source['database'] . '`.`' . $table . '` SET ';
 	    $q .= implode(', ', $entries);
 	    $q .= ' WHERE `' . $this->source['database'] . '`.`' . $table . '`.`' . $schema->getPrimary() . '` = ' . (is_numeric($id) ? $id : '\'' . $id . '\'') . ' LIMIT 1';
-
+echo $q .'<br/>';
 	    $this->log($q);
 
 	    if (!$this->_inTransaction) {

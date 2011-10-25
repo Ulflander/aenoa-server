@@ -97,6 +97,47 @@ class File {
 		return '' ;
 	}
 	
+	function tail(
+	$lines = 100,
+	$skipEmptyLines = true,
+	$toString = true,
+	$stringSeparator = "\n") {
+	
+
+	if ($skipEmptyLines) {
+		$_flags = FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES;
+	}
+	else {
+		$_flags = FILE_IGNORE_NEW_LINES;
+	}
+
+	$contents = @file($this->path, $_flags);
+
+	if ($contents === false) {
+	  
+		return (sprintf(
+			"Impossible de lire le contenu du fichier '%s'.",
+			$this->path
+		));
+	}
+	else {
+		$tail = array();
+
+		for ($i = 0; $i < intval($lines); $i++) {
+			$tail[] = array_pop($contents);
+		}
+
+		unset($contents);
+
+		return ($toString)
+			? implode($stringSeparator, $tail)
+			: $tail;
+	}
+}
+
+	
+	
+	
 	function isEmpty ()
 	{
 		if ( $this->f )

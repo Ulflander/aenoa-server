@@ -564,24 +564,23 @@ class AbstractDBEngine extends DBSchema {
     function hasQueryCapability() {
 	return false;
     }
-    
-    function exists ( $table )
-    {
+
+    function exists($table) {
 	
     }
-    
-    function get ( $table , $id , $fields = array () ) {
-	return $this->find($table, $id, $fields) ;
+
+    function get($table, $id, $fields = array()) {
+	return $this->find($table, $id, $fields);
     }
-    
-    function getAll ( $table , $cond , $limit = 0 , $fields = array () ) {
-	return $this->findAll($table, $cond, $limit, $fields) ;
+
+    function getAll($table, $cond, $limit = 0, $fields = array()) {
+	return $this->findAll($table, $cond, $limit, $fields);
     }
-    
-    function set ( $table , $data , $id ) {
+
+    function set($table, $data, $id) {
 	
     }
-    
+
     /**
      * Find an entry in a table based on ID
      *
@@ -613,6 +612,20 @@ class AbstractDBEngine extends DBSchema {
      * @param object $table The table where to search
      * @param object $cond [optional] Conditions
      * @param object $fields [optional] Fields to return, default will return all fields
+     * @return bool False on failure, entry on success
+     */
+    function findAndOrder($table, $cond = array(), $limit = 0, $fields = array(), $order_fields = array(), $order = 'ASC') {
+	return false;
+    }
+
+    /**
+     * Find first entry in a table, depending on conditions
+     *
+     * @param object $table The table where to search
+     * @param object $cond [optional] Conditions
+     * @param object $fields [optional] Fields to return, default will return all fields
+     * @param object $fields [optional] Fields to order
+     * @param object $order , default will return ascendant order
      * @return bool False on failure, entry on success
      */
     function findFirst($table, $cond = array(), $fields = array()) {
@@ -944,7 +957,6 @@ class AbstractDBEngine extends DBSchema {
 	}
 	return array();
     }
-
 
     /**
      * Find parents and children relative data given an array of data
