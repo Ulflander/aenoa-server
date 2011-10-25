@@ -37,6 +37,7 @@
 	
 	
 	@											Define a href or src HTML attribute
+												(not available)
 	&
 	%											Define an HTML style inline attribute
 	$	
