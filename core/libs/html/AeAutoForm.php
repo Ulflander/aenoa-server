@@ -407,37 +407,33 @@ class AeAutoForm {
 				
 			}
 			
-			
-			if ( !is_null($res) )
+			if ( $this->renderContainer != false )
 			{
-				if ( $this->renderContainer != false )
+				$this->_result[] = '<div class="control '.str_replace('/','-',$id).'">';
+			}
+
+			if ( $this->renderLabel != false )
+			{
+				$this->_result[] = '<label for="'.$id.'">' . $label . '</label>';
+			}
+			
+			if ( is_null($res) && $this->renderField != false )
+			{
+				$this->_result[] = $res ;
+			}
+
+			if ( $this->renderDescription != false )
+			{
+				if ( @$field['description'] )
 				{
-					$this->_result[] = '<div class="control '.str_replace('/','-',$id).'">';
+					$this->_result[] = '<div class="description">' . $field['description'] . '</div>';
 				}
-				
-				if ( $this->renderLabel != false )
-				{
-					$this->_result[] = '<label for="'.$id.'">' . $label . '</label>';
-				}
-				
-				if ( $this->renderField != false )
-				{
-					$this->_result[] = $res ;
-				}
-				
-				if ( $this->renderDescription != false )
-				{
-					if ( @$field['description'] )
-					{
-						$this->_result[] = '<div class="description">' . $field['description'] . '</div>';
-					}
-					
-				}
-				
-				if ( $this->renderContainer != false )
-				{
-					$this->_result[] = '</div>';
-				}
+
+			}
+
+			if ( $this->renderContainer != false )
+			{
+				$this->_result[] = '</div>';
 			}
 		}
 	}

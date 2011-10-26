@@ -209,9 +209,9 @@ class HTMLBehavior extends Behavior {
 
 		$finalStructure = null;
 
-		foreach ($struct[$table] as $field) {
-			if ($field['name'] == $fieldname) {
-				$finalStructure = array($field);
+		foreach ($struct[$table] as $_field) {
+			if ($_field['name'] == $fieldname) {
+				$finalStructure = array($_field);
 				break;
 			}
 		}
