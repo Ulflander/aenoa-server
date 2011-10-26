@@ -184,7 +184,7 @@ class AeAutoForm {
 		
 		
 		
-		if ( ake('group',$field) && $this->renderContainer == true )
+		if ( ake('group',$field) && $this->fieldsOnly == false )
 		{
 			if ( !is_null($this->_currentFieldset) )
 			{
