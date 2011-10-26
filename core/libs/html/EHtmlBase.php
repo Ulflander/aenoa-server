@@ -120,7 +120,6 @@ class EHtmlElement {
 					}
 					break;
 				default:
-					pr($this->token);
 					$custom = $base->getCustomTokenResult($tok, $val, true, $this) ;
 					if (!is_null($custom) )
 					{
