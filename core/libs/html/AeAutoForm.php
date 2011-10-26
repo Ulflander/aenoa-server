@@ -182,8 +182,6 @@ class AeAutoForm {
 			return;
 		}
 		
-		
-		
 		if ( ake('group',$field) && $this->fieldsOnly == false )
 		{
 			if ( !is_null($this->_currentFieldset) )
@@ -197,7 +195,6 @@ class AeAutoForm {
 			$this->_result[] = '<legend>' . $this->_currentFieldset . '</legend>' ;
 			
 		}
-		
 		
 		$data = @$fieldData[$this->_dbID .'/'.$this->_table.'/'.$field['name']] ;
 		
@@ -430,12 +427,11 @@ class AeAutoForm {
 				
 				if ( $this->renderDescription != false )
 				{
-					$this->_result[] = '<div class="description">' ;
 					if ( @$field['description'] )
 					{
-						$this->_result[] = $field['description'] ;
+						$this->_result[] = '<div class="description">' . $field['description'] . '</div>';
 					}
-					$this->_result[] = '</div>' ;
+					
 				}
 				
 				if ( $this->renderContainer != false )
