@@ -293,10 +293,11 @@ class MySQLEngine extends AbstractDBEngine {
 	$q .= $this->__getCond($cond, $table);
 	$q .= $this->__getLimit($table, $limit);
 	$q .= ';';
+	
 	$this->log($q);
 	$res = mysql_query($q, $this->getConnection());
 	if ($res === false) {
-	    return $res;
+	    return $res;  
 	}
 	$result = $this->__fetchArr($res, $schema->getInitial(), $fields, array(), false);
 	@mysql_free_result($res);

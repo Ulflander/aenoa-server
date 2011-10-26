@@ -774,6 +774,10 @@ class AbstractDBEngine extends DBSchema {
 	if ($schema->getLength() < 2) {
 	    return $dbselection;
 	}
+	if (empty($dbselection)) {
+
+	    return $dbselection;
+	}
 
 	$unique = false;
 	foreach ($dbselection as $k => &$res) {
@@ -989,8 +993,12 @@ class AbstractDBEngine extends DBSchema {
 	if ($schema->getLength() < 2) {
 	    return $dbselection;
 	}
+	if (empty($dbselection)) {
 
+	    return $dbselection;
+	}
 	$unique = false;
+
 	foreach ($dbselection as $k => &$res) {
 	    if (is_string($k)) {
 		$dbselection = array($dbselection);
