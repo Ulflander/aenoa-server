@@ -95,6 +95,28 @@ class EHtmlElement {
 				case '{':
 					$value .= '<?php echo ' . $val . ' ?>' ;
 					break;
+				// src, action, href attribute depending on main tag (script, iframe, img, a tags)
+				case '@':
+					$url = $val ;
+					if ( strpos($val,'.') === 0 )
+					{
+						$val = '<?php echo url() ?>' . substr($val,1);
+					}
+					switch($this->keyword)
+					{
+						case 'script':
+						case 'iframe':
+							$attributes .= ' src="' . $val . '"' ;
+							$closure = '</' . $this->keyword . '>' ;
+							break;
+						case 'a':
+							$attributes .= ' href="' . $val . '"' ;
+							break;
+						case 'form':
+							$attributes .= ' action="' . $val . '"' ;
+							break;
+					}
+					break;
 			}
 		}
 
@@ -107,13 +129,22 @@ class EHtmlElement {
 		{
 			$attributes .= ' style="'.implode(' ', $styles) . '"' ;
 		}
-
+		
+		$tagClosure = '>' ;
+		
+		if( $this->keyword == 'input' )
+		{
+			$tagClosure = ' />' ;
+			$value = '' ;
+		}
+		
 		if ( $value != '' )
 		{
 			$closure = '</'.$this->keyword.'>' ;
 		}
+		
 
-		$this->result = $res . $attributes . '>' . $value . $closure ;
+		$this->result = $res . $attributes . $tagClosure . $value . $closure ;
 		
 		return $this->result ;
 	}
