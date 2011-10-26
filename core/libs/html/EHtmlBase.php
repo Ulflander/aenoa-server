@@ -291,7 +291,7 @@ class EHtmlBase {
 			$line = $lines[$i];
 
 			if ($this->state == self::STATE_MULTILINE) {
-				if (trim($line) === '<') {
+				if (trim($line) === '>') {
 					$res['lines'][] = $multiline;
 					$this->state = self::STATE_INLINE;
 					$multiline = '';
@@ -327,9 +327,9 @@ class EHtmlBase {
 				$prev = null;
 			} else {
 				$line = trim($line);
-				if (preg_match('/>$/i', $line) === 1 || preg_match('/^>/i', $line) === 1 ) {
+				if (preg_match('/<$/i', $line) === 1 || preg_match('/^</i', $line) === 1 ) {
 					$this->state = self::STATE_MULTILINE;
-					$multiline .= preg_replace('/(>)$/i','',$line);
+					$multiline .= preg_replace('/(<)$/i','',$line);
 				} else {
 					$res['lines'][] = $line;
 					if (!$this->isTokenizedLine($line)) {
