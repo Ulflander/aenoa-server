@@ -24,7 +24,7 @@ class AeEHtml extends EHtmlBase {
 		return '<?php pr ( ' . $value . ') ; ?>' ;
 	}
 
-	function makeFormElement ( $token , $value , $inline )
+	function makeFormElement ( $token , $value , $inline = false , $element = null )
 	{
 		if ( $inline == false )
 		{
@@ -62,6 +62,15 @@ class AeEHtml extends EHtmlBase {
 			}
 			
 			return '<?php echo $this->getField(\'' . $ids[0] . '\',\'' . $ids[1] . '\',\'' . $ids[2] . '\', isset($baseURL) ? $baseURL : null, isset($data) ? $data : array() , '.$container.' , '.$label.' , '.$field.' , '.$desc.' );  ?>' ;
+		} else if ( !is_null($element) && $element->keyword == 'form' )
+		{
+			$elements = explode(' ', $value) ;
+			$ids = explode('/',  array_shift($elements)) ;
+			if ( count($ids) < 2 )
+			{
+				new ErrorException('IDs for field method are not valid') ;
+			}
+			return '<?php echo $this->getFormTagAttributes(\'' . $ids[0] . '\',\'' . $ids[1] . '\', isset($baseURL) ? $baseURL : null, isset($data) ? $data : array() );  ?>' ;
 		}
 		
 		return '' ;

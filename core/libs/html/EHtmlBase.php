@@ -41,6 +41,8 @@ class EHtmlElement {
 		$styles = array() ;
 		
 		$attributes = '' ;
+		
+		$customAttr = '' ;
 
 		$value = '' ;
 
@@ -117,6 +119,13 @@ class EHtmlElement {
 							break;
 					}
 					break;
+				default:
+					pr($this->token);
+					$custom = $base->getCustomTokenResult($tok, $val, true, $this) ;
+					if (!is_null($custom) )
+					{
+						$customAttr .= ' ' . $custom ;
+					}
 			}
 		}
 
@@ -144,7 +153,7 @@ class EHtmlElement {
 		}
 		
 
-		$this->result = $res . $attributes . $tagClosure . $value . $closure ;
+		$this->result = $res . $attributes . $customAttr . $tagClosure . $value . $closure ;
 		
 		return $this->result ;
 	}
@@ -223,7 +232,7 @@ class EHtmlElement {
 				}
 				break;
 			default:
-				$custom = $base->getCustomTokenResult($this->token, $this->rawTokenContent) ;
+				$custom = $base->getCustomTokenResult($this->token, $this->rawTokenContent , false , $this) ;
 				if (is_null($custom) )
 				{
 					echo '-- unknown token: ' . $this->token . ' in line ' . $this->source . '--';
@@ -255,11 +264,11 @@ class EHtmlBase {
 		$this->customTokens[$token] = $callback ;
 	}
 
-	function getCustomTokenResult ( $token , $value, $inline = false )
+	function getCustomTokenResult ( $token , $value, $inline = false , $element = null )
 	{
 		if ( ake ( $token , $this->customTokens ) )
 		{
-			return $this->{$this->customTokens[$token]} ( $token, $value , $inline ) ;
+			return $this->{$this->customTokens[$token]} ( $token, $value , $inline, $element ) ;
 		}
 		return null ;
 	}

@@ -155,22 +155,30 @@ class AeAutoForm {
 		
 	}
 	
+	public function setURL ( $url )
+	{
+		$this->_url = $url;
+	}
 	
 	public function startForm ( $data = array () )
+	{		
+		$this->_result[] = '<form ' . $this->getFormTagAttributes($data) . '>' ;
+		$this->_result[] = '<input type="hidden" id="__SESS_ID" name="__SESS_ID" value="'.App::$session->getSID(). '" />' ;
+	}
+	
+	public function getFormTagAttributes ( $data = array () )
 	{
-		$header = '<form ' ;
+		$attrs = '' ;
 		if ( $this->_hasFile ) 
 		{
-			$header .= 'enctype="multipart/form-data" ' ; 
+			$attrs .= 'enctype="multipart/form-data" ' ; 
 		}
 		if (!empty($data) && !ake($this->_dbID .'/'. $this->_table . '/'.$this->_primaryKey,$data) )
 		{
-			$header .= ' data-modified="modified"';
+			$attrs .= ' data-modified="modified"';
 		}
-		$header .= 'id="' .$this->_dbID .'/'. $this->_table . '" action="'.$this->_url.'" method="post" data-validation-message="'._('You\'ve made some modifications on data. Don\'t forget to submit in order to save data.').'">' ;
-		
-		$this->_result[] = $header ;
-		$this->_result[] = '<input type="hidden" id="__SESS_ID" name="__SESS_ID" value="'.App::$session->getSID(). '" />' ;
+		$attrs .= 'id="' .$this->_dbID .'/'. $this->_table . '" action="'.$this->_url.'" method="post" data-validation-message="'._('You\'ve made some modifications on data. Don\'t forget to submit in order to save data.').'"' ;
+		return $attrs ;
 	}
 	
 	

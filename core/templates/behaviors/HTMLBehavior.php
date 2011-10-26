@@ -193,6 +193,38 @@ class HTMLBehavior extends Behavior {
 		}
 		return $script;
 	}
+	
+	
+	public function getFormTagAttributes ($db,$table,$url,$data)
+	{
+		$_db = App::getDatabase($db);
+
+		if (!$_db) {
+			trigger_error('Database ' . $db . ' does not exists', E_USER_ERROR);
+		}
+
+		$struct = $_db->getStructure();
+
+		if (!ake($table, $struct)) {
+			trigger_error('Table ' . $table . '  does not exists', E_USER_ERROR);
+		}
+
+		if (is_null($url)) {
+			$url = url();
+		}
+
+		$form = new AeAutoForm();
+		
+		$form->setURL($url);
+
+		$form->fieldsOnly = true;
+
+		if ($form->setDatabase($db, $table, $struct)) {
+			return $form->getFormTagAttributes($data);
+		}
+
+		return 'Error';
+	}
 
 	public function getField($db, $table, $fieldname, $url = null, $data = array(), $container = true , $label = true , $field = true , $desc = true) {
 		$_db = App::getDatabase($db);
