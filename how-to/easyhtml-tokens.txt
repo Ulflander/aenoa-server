@@ -1,6 +1,10 @@
-	
+
+All tokens are available if the description does not starts by AES (stands for only Aenoa Server)
+
+
 			As first token						As second token
 	
+	[a-z] 	Create HTML tag
 	
 	.		Print line as is					Define an HTML classname
 			> simplest sign						> as css convention
@@ -8,47 +12,64 @@
 	-		Define an HTML comment
 			> second char of HTML comments
 	
-	_		
+	_											Aenoa Server
+	
 	=		
+	
 	"											Starts/ends escaped sequence, html tag will be closed
-	+		Continue secondary tokens on a new line
-	*		Aenoa Server - display form field
+	
+	+		Continue second tokens on a new line
+	
+	*		AES - display form field			AES - display custom Aenoa "form" tag attributes
 	
 	
 	^		Starts a Javascript escaped seq.
-	<		Starts a multiline sequence			
+	
+	<		Starts a multiline sequence		
+		
 	>		Ends last multiline sequence
 	
 	
 	:		Define a method
+	
 	;		Call a method
+	
 	,	
 	
 	
 	?		PHP statement
 			> second char of php open tag
+			
 	!		PHP echo statement
 			
 	
 	
-	/		Close an HTML tag							NOT USABLE
+	/		Close an HTML tag					NOT USABLE
 			> Internal
+			
 	\
 	
 	
 	@											Define a href,src,action HTML attribute
-	&		Render an element
-			> Aenoa Server only
-	%											Define an HTML style inline attribute
+	
+	&		AES - Render an element
+			
+			
+	%		Define a dependency to load			Define an HTML style inline attribute (closed by ;)
+	
 
 	$		Used as parameter for methods						Used as parameter for methods
+	
 	#		Define an EHtml comment				Define an HTML id
 			> as most programming languages		> as css convention
 	
 	
 	(											Starts pure HTML inline attributes statement
+	
 	)											Ends pure HTML inline attributes statement
+	
 	{											Starts echo PHP statement, html tag will be closed
+	
 	}											Ends echo PHP statement, html tag will be closed
 	
-	[a-z] Create HTML tag
+	

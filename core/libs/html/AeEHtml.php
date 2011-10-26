@@ -86,6 +86,12 @@ class AeEHtml extends EHtmlBase {
 			return ;
 		}
 
+		$res = $this->evaluate($f1->read(), array (), dirname($from) ) ;
+		if ( $res == '' )
+		{
+			return;
+		}
+			
 		$f2 = new File ( $to , true ) ;
 
 		if ( !$f2->exists() )
@@ -93,8 +99,8 @@ class AeEHtml extends EHtmlBase {
 			new ErrorException('File '.$to.' has not been created') ;
 			return ;
 		}
-
-		return $f2->write($this->evaluate($f1->read())) &&
+		
+		return $f2->write($res) &&
 			$f1->close () &&
 			$f2->close () ;
 

@@ -252,7 +252,9 @@ class EHtmlBase {
 	private $state;
 
 	private $methods = array () ;
-
+	
+	protected $dependencies = '' ;
+	
 	private $customTokens = array () ;
 
 	function __construct() {
@@ -272,8 +274,15 @@ class EHtmlBase {
 		return null ;
 	}
 
-	function evaluate($template = 'No template given', $parameters = array()) {
-
+	function evaluate($template = 'No template given', $parameters = array(), $dependencies = '' )
+	{
+		if ( substr(trim($template),0,1) === '%%' )
+		{
+			return '' ;
+		}
+		
+		$this->dependencies = rtrim($dependencies, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR ;
+		
 		$this->state = self::STATE_INLINE;
 
 		$this->methods = array ( ) ;
@@ -281,7 +290,9 @@ class EHtmlBase {
 		$lines = explode("\n", str_replace('    ', "\t", $template));
 
 		$lines = $this->clean($lines);
-
+		
+		$lines = $this->includeDependencies ($lines) ;
+		
 		$lines = $this->parseScope($lines);
 
 		$lines = $this->extractMethods($lines);
@@ -312,6 +323,44 @@ class EHtmlBase {
 			$res[] = $lines[$i];
 		}
 		return $res;
+	}
+	
+	function includeDependencies ( $lines )
+	{
+		if ( $this->dependencies == '' )
+		{
+			return $lines ;
+		}
+		
+		$lines2 = array() ;
+		
+		foreach ( $lines as &$line )
+		{
+			preg_match_all('/^(\s{0,})%\s{0,}([a-z0-9\-\_\.]{1,})/i', $line , $res ) ;
+			if ( @$res[2][0] )
+			{
+				$ind = $res[1][0] ;
+				$content = @file_get_contents($this->dependencies . $res[2][0] .'.ehtml');
+				$linesContent = explode("\n",$content);
+				if ( count($linesContent) > 0 && substr($linesContent[0],0,2) == '%%' )
+				{
+					array_shift($linesContent) ;
+					foreach($linesContent as $line2 )
+					{
+						if (trim($line2) == '' || strpos(trim($line2), '#') === 0) {
+							continue;
+						}
+						$lines2[] = $ind.$line2;
+					}
+				}
+			} else {
+				$lines2[] = $line ;
+			}
+		}
+		
+		pr($lines2);
+		
+		return $lines2 ;
 	}
 
 	function parseScope(array $lines, $scope = 0) {

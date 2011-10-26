@@ -265,8 +265,6 @@ class Dispatcher {
 			
 			// Default : no pattern found, run 404
 			default:
-		pr($token) ;
-
 				App::do404 ( _('No dispatch available') ) ;
 		}
 		
