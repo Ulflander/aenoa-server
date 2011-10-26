@@ -194,7 +194,7 @@ class HTMLBehavior extends Behavior {
 		return $script;
 	}
 
-	public function getField($db, $table, $fieldname, $url = null, $data = array()) {
+	public function getField($db, $table, $fieldname, $url = null, $data = array(), $container = true , $label = true , $field = true , $desc = true) {
 		$_db = App::getDatabase($db);
 
 		if (!$_db) {
@@ -230,13 +230,17 @@ class HTMLBehavior extends Behavior {
 		$form->fieldsOnly = true;
 
 		if ($form->setDatabase($db, $table, $finalStructure)) {
+			$form->renderContainer = $container ;
+			$form->renderLabel = $label ;
+			$form->renderField = $field ;
+			$form->renderDescription = $desc ;
 			return $form->build($data, array(), $url, true, array());
 		}
 
 		return 'Error';
 	}
 
-	public function getPickInField($db, $table, $fieldname, $pickin = false, $url = null, $data = array()) {
+	public function getPickInField($db, $table, $fieldname, $pickin = false, $url = null, $data = array(), $container = true , $label = true , $field = true , $desc = true ) {
 		$_db = App::getDatabase($db);
 
 		if (!$_db) {
@@ -283,9 +287,15 @@ class HTMLBehavior extends Behavior {
 
 		$form = new AeAutoForm();
 
+		
 		$form->fieldsOnly = true;
 
 		if ($form->setDatabase($db, $table, $structure)) {
+			
+			$form->renderContainer = $container ;
+			$form->renderLabel = $label ;
+			$form->renderField = $field ;
+			$form->renderDescription = $desc ;
 			return $form->build($data, array(), $url, true, array());
 		}
 

@@ -16,8 +16,8 @@
 	
 	
 	^		Starts a Javascript escaped seq.
-	>		Starts a multiline sequence			
-	<		Ends last multiline sequence
+	<		Starts a multiline sequence			
+	>		Ends last multiline sequence
 	
 	
 	:		Define a method
@@ -36,11 +36,12 @@
 	\
 	
 	
-	@											Define a href or src HTML attribute
-												(not available)
-	&
+	@											Define a href,src,action HTML attribute
+	&		Render an element
+			> Aenoa Server only
 	%											Define an HTML style inline attribute
-	$	
+
+	$		Used as parameter for methods						Used as parameter for methods
 	#		Define an EHtml comment				Define an HTML id
 			> as most programming languages		> as css convention
 	
@@ -50,4 +51,4 @@
 	{											Starts echo PHP statement, html tag will be closed
 	}											Ends echo PHP statement, html tag will be closed
 	
-	[a-z/] Create HTML tag
+	[a-z] Create HTML tag

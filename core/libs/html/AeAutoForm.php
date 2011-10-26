@@ -32,6 +32,15 @@ class AeAutoForm {
 	
 	private $db ;
 	
+	
+	public $renderContainer = true ;
+	
+	public $renderLabel = true ;
+	
+	public $renderField = true ;
+	
+	public $renderDescription = true ;
+	
 	public $fieldsOnly = false ;
 	
 	
@@ -175,7 +184,7 @@ class AeAutoForm {
 		
 		
 		
-		if ( ake('group',$field) )
+		if ( ake('group',$field) && $this->renderContainer == true )
 		{
 			if ( !is_null($this->_currentFieldset) )
 			{
@@ -191,7 +200,6 @@ class AeAutoForm {
 		
 		
 		$data = @$fieldData[$this->_dbID .'/'.$this->_table.'/'.$field['name']] ;
-		
 		
 		
 		$res = null ;
@@ -405,16 +413,35 @@ class AeAutoForm {
 			
 			if ( !is_null($res) )
 			{
-				$this->_result[] = '<div class="control '.str_replace('/','-',$id).'">';
-				$this->_result[] = '<label for="'.$id.'">' . $label . '</label>';
-				$this->_result[] = $res ;
-				
-				if ( @$field['description'] )
+				if ( $this->renderContainer != false )
 				{
-					$this->_result[] = '<div class="description">' . $field['description'] . '</div>';
+					$this->_result[] = '<div class="control '.str_replace('/','-',$id).'">';
 				}
 				
-				$this->_result[] = '</div>';
+				if ( $this->renderLabel != false )
+				{
+					$this->_result[] = '<label for="'.$id.'">' . $label . '</label>';
+				}
+				
+				if ( $this->renderField != false )
+				{
+					$this->_result[] = $res ;
+				}
+				
+				if ( $this->renderDescription != false )
+				{
+					$this->_result[] = '<div class="description">' ;
+					if ( @$field['description'] )
+					{
+						$this->_result[] = $field['description'] ;
+					}
+					$this->_result[] = '</div>' ;
+				}
+				
+				if ( $this->renderContainer != false )
+				{
+					$this->_result[] = '</div>';
+				}
 			}
 		}
 	}

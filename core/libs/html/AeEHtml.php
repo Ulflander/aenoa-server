@@ -29,12 +29,39 @@ class AeEHtml extends EHtmlBase {
 		if ( $inline == false )
 		{
 			$elements = explode(' ', $value) ;
-			$ids = explode('/',$elements[0]) ;
+			$ids = explode('/',  array_shift($elements)) ;
 			if ( count($ids) < 3 )
 			{
 				new ErrorException('IDs for field method are not valid') ;
 			}
-			return '<?php echo $this->getField(\'' . $ids[0] . '\',\'' . $ids[1] . '\',\'' . $ids[2] . '\', isset($baseURL) ? $baseURL : null, isset($data) ? $data : array() ); ?>' ;
+			if ( count ($elements) == 0 )
+			{
+				$container = 'true' ;
+				$label = 'true' ;
+				$field = 'true' ; 
+				$desc = 'true' ;
+			} else {
+				$container = 'false' ;
+				$label = 'false' ;
+				$field = 'false' ;
+				$desc = 'false' ;
+				
+				while ( $el = array_shift($elements) )
+				{
+					if ( substr($el,0,1) === '_' )
+					{
+						switch ( $el )
+						{
+							case '_label': $label = 'true'; break;
+							case '_container': $container = 'true'; break;
+							case '_field': $field = 'true'; break;
+							case '_description': $desc = 'true'; break;
+						}
+					}
+				}
+			}
+			
+			return '<?php echo $this->getField(\'' . $ids[0] . '\',\'' . $ids[1] . '\',\'' . $ids[2] . '\', isset($baseURL) ? $baseURL : null, isset($data) ? $data : array() , '.$container.' , '.$label.' , '.$field.' , '.$desc.' );  ?>' ;
 		}
 		
 		return '' ;
