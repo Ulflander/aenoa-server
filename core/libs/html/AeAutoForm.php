@@ -417,7 +417,7 @@ class AeAutoForm {
 				$this->_result[] = '<label for="'.$id.'">' . $label . '</label>';
 			}
 			
-			if ( is_null($res) && $this->renderField != false )
+			if ( !is_null($res) && $this->renderField != false )
 			{
 				$this->_result[] = $res ;
 			}
