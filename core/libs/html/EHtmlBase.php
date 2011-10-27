@@ -358,8 +358,6 @@ class EHtmlBase {
 			}
 		}
 		
-		pr($lines2);
-		
 		return $lines2 ;
 	}
 
