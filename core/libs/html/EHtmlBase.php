@@ -232,8 +232,9 @@ class EHtmlElement {
 				break;
 			default:
 				$custom = $base->getCustomTokenResult($this->token, $this->rawTokenContent , false , $this) ;
-				if (is_null($custom) )
+				if (is_null($custom) && $this->token != '' )
 				{
+					
 					echo '-- unknown token: ' . $this->token . ' in line ' . $this->source . '--';
 				} else {
 					$res .= $custom ;
@@ -294,10 +295,8 @@ class EHtmlBase {
 		$lines = $this->includeDependencies ($lines) ;
 		
 		$lines = $this->parseScope($lines);
-
+		
 		$lines = $this->extractMethods($lines);
-
-		$lines = $this->filterLines($lines);
 
 		$res = $this->renderScope($lines);
 
@@ -322,7 +321,24 @@ class EHtmlBase {
 
 			$res[] = $lines[$i];
 		}
-		return $res;
+		
+		$res2 = array () ;
+		$prev = '' ;
+		foreach( $res as $line )
+		{
+			if ( preg_match('/^\s{0,}\+\s{1,}/',$line) > 0 )
+			{
+				$prev .= ' ' . trim( preg_replace('/^(\s{0,}\+\s{1,})/','',$line) ) ;
+				continue;
+			}
+			
+			$res2[] = $prev ;
+			$prev = $line ;
+		}
+		
+		$res2[] = $prev ;
+		
+		return $res2;
 	}
 	
 	function includeDependencies ( $lines )
@@ -481,67 +497,7 @@ class EHtmlBase {
 
 		return $res;
 	}
-
-	function filterLines ( $lines )
-	{
-
-		$lines = $this->solveLineAdds($lines);
-
-		if ( ake('__add',$lines) )
-		{
-			unset ( $lines['__add'] ) ;
-		}
-
-		return $lines ;
-	}
-
-	function solveLineAdds ( $lines )
-	{
-		$lines2 = array () ;
-		$last = null ;
-		$add = '' ;
-		foreach ( $lines as $line )
-		{
-
-			if (is_array($line) )
-			{
-				$res = $this->solveLineAdds($line) ;
-				
-				if ( ake ('__add', $res ) )
-				{
-					$last .= $res['__add'] ;
-					unset($res['__add']);
-					$line = $res ;
-				}
-				
-				$line = $res ;
-			} else if ( preg_match('/^\s{0,}\+\s{1,}/',$line) > 0 )
-			{
-				
-				if ( !ake('__add',$lines2) )
-				{
-					$lines2['__add'] = '' ;
-				}
-				$lines2['__add'] .= ' ' . preg_replace('/^\s{0,}(\+)\s{1,}/','',$line);
-				$line = null ;
-			}
-
-			if( !is_null($last) )
-			{
-				$lines2[] = $last ;
-			}
-			
-			$last = $line ;
-		}
-
-		if( !is_null($last) )
-		{
-			$lines2[] = $last ;
-		}
-
-		return  $lines2 ;
-	}
-
+	
 	function renderLine($line, $scope = 0, array $methods = array(), $parameters = array () ) {
 
 		$ind = '';
