@@ -378,6 +378,8 @@ class MySQLEngine extends AbstractDBEngine {
 		$fieldname = trim($fieldname);
 
 		$escapeVal = true;
+		if ($val[0]=='(') $escapeVal = false ;
+		
 		if (@$this->struct[$table][$fieldname]['behavior'] & DBSchema::BHR_PICK_IN) {
 		    $val = '\'(^' . $val . '\,)|(\,' . $val . '$)|(\,' . $val . '\,)|(^' . $val . '$)\'';
 		    $escapeVal = false;
@@ -385,6 +387,8 @@ class MySQLEngine extends AbstractDBEngine {
 		}
 
 		// $operatorMatch = '/^(\\x20(' . join(')|(', $this->__sqlOps) .')|\\x20<[>=]?(?![^>]+>)|\\x20[>=!]{1,3}(?!<))/is';
+
+
 
 		if (is_string($val)) {
 		    if ($val === 'IS NULL') {
@@ -404,7 +408,10 @@ class MySQLEngine extends AbstractDBEngine {
 		    $c .= '`' . $fieldname . '` ' . trim($operator);
 
 		    if ($escapeVal) {
+			
 			$c .= ' \'' . $val . '\'';
+			
+			
 		    } else {
 			$c .= ' ' . $val;
 		    }
@@ -414,6 +421,7 @@ class MySQLEngine extends AbstractDBEngine {
 	    }
 	    $c = ' WHERE ' . $c;
 	}
+	
 	return $c . ' ';
     }
 
@@ -635,8 +643,8 @@ class MySQLEngine extends AbstractDBEngine {
 	$schema = $this->tableExistsOr403($table);
 
 	$q = 'SELECT COUNT(*) FROM `' . $this->source['database'] . '`.`' . $table . '` ' . (!empty($cond) ? $this->__getCond($cond, $table) : '' ) . ' ;';
-
 	$this->log($q);
+	
 	$res = mysql_fetch_array(mysql_query($q, $this->getConnection()));
 
 	return $res[0];

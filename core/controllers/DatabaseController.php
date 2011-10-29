@@ -764,7 +764,7 @@ class DatabaseController extends Controller {
      * @param mixed $id A string or an int depending of the type of the primary field
      * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of 
      */
-    public function readAll($page = null, $order = null, $dir = null, $useSession = true) {
+    public function readAll($page = null, $order = null, $dir = null, $useSession = true, $data =null) {
 	if (intval($page) < 1 || is_null($page)) {
 	    if (App::getSession()->has('DB_PAGE_' . $this->databaseID . '_' . $this->table)) {
 		$page = App::getSession()->get('DB_PAGE_' . $this->databaseID . '_' . $this->table);
@@ -849,12 +849,17 @@ class DatabaseController extends Controller {
 	    $this->output = $this->db->findRelatives($this->table, $this->db->findAll($this->table, $this->conditions, $limit, $this->fields), $this->subFields, $this->recursivity);
 	    
 	} else {
+	
 	    $this->output = $this->db->findAll($this->table, $this->conditions, $limit, $this->fields);
 	}
 
-
+if (is_null($data)){
 	$this->view->set('data', $this->output);
-
+}
+else
+{
+    $this->view->set('data', $data);
+}
 	$urls = array(
 	    sprintf(_('Add a new entry to %s'), $this->table) => array('url' => $this->baseURL . 'add', 'class' => 'icon16 add'),
 	    sprintf(_('Mass import in %s'), $this->table) => array('url' => $this->baseURL . 'mass-import', 'class' => 'icon16 download'),
@@ -908,6 +913,50 @@ class DatabaseController extends Controller {
 	}
     }
 
+    public function readModeFilter($page = 1, $order = null, $dir = null) {
+	$id='65 </br>';
+	
+	$res = $this->db->findRelatives('widgets', $this->db->findFirst('widgets', array('id'=>$id ) ) ) ;
+		$t='';
+		if ( empty( $res ) )
+		{
+			App::do404 (_('Widget not found')) ;
+		}
+		
+		foreach ( $res['widget_tabs'] as &$tab )
+		{
+		$t .= $tab['products'] ;	
+		    
+		}
+		
+	$k = $this->databaseID . '/' . $this->table . '/search';
+	if (!empty($res) && $t != '') {
+	   
+	    $this->conditions[ 'id IN'] = '('. $t .')';
+	//   App::getSession()->set('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $t);
+	} 
+	
+	else {
+	    App::getSession()->uset('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $this->table);
+	}
+
+	App::getSession()->set('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
+	if ($order =='desc') $order ='created';
+	$this->readAll($page, $order, $dir);
+
+	if (App::isAjax()) {
+
+	    $this->view->set('mode', 'readAllUpdate');
+	}	
+	
+    }
+    public function resetFilter($page = 1, $order = null, $dir = null){
+	App::getSession()->uset('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $this->table);
+	App::getSession()->set('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
+	$this->readAll($page, $order, $dir);
+	 $this->view->set('mode', 'readAllUpdate');
+    }
+    
     /**
      * Update read with table mode changing
      * 

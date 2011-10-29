@@ -86,13 +86,16 @@ class AeAutoTable {
 		if ( empty ( $data ) )
 		{
 			if ( $this->currentFilter == '' )
+			    
+			  
 			{
-				$this->showGlobalActions = false ;
+			 	
+			    $this->showGlobalActions = false ;
 				
 			}
-			
+			 
 			$cols = $this->startTable ( $page, $length , $count , $order , $dir ) ;
-			
+			echo 'data vide';
 			$this->_result[] = '<tr><td colspan="'.$cols.'"><div class="notify info">' . sprintf(($this->currentFilter == '' ? _('There is no element in table <strong>%s</strong>.') : _('There is no element matching with selection in table <strong>%s</strong>.') ), humanize($this->_table,'_') ). '</div></td></tr>' ;
 			
 		} else {
@@ -101,7 +104,8 @@ class AeAutoTable {
 			{
 				if ( $field['type'] == DBSchema::TYPE_FILE )
 				{
-					$this->_hasFile = true ;
+				
+				    $this->_hasFile = true ;
 					break;
 				}
 			}
@@ -163,6 +167,9 @@ class AeAutoTable {
 		}
 
 		$this->_result[] = '<ul class="right inline no-list-style table-options">' ;
+		$this->_result[] = '<li><a href="' . $this->getURL() . 'read-mode-filter/inline/'. $page . (!is_null($order) ? '/' . $order . '/' . $dir : '' ) .'" class="icon16 rows-list unlabeled '.($this->getMode () == 'inline' ? 'current' : '').'" title="'._('Show widget product content').'"></a></li>' ;
+$this->_result[] = '<li><a href="' . $this->getURL() . 'reset-filter/inline/'. $page . (!is_null($order) ? '/' . $order . '/' . $dir : '' ) .'" class="icon16 rows-list unlabeled '.($this->getMode () == 'inline' ? 'current' : '').'" title="'._('Reset result').'"></a></li>' ;
+
 		$this->_result[] = '<li><a href="' . $this->getURL() . 'read-mode-switch/inline/'. $page . (!is_null($order) ? '/' . $order . '/' . $dir : '' ) .'" class="icon16 rows-list unlabeled '.($this->getMode () == 'inline' ? 'current' : '').'" title="'._('Show results inline').'">'._('Show results inline').'</a></li>' ;
 		
 		if ( $this->_hasFile )
