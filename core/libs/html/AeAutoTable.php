@@ -54,7 +54,7 @@ class AeAutoTable {
 	return false;
     }
 
-    function build($data, $page=1, $length = 1, $count=1, $order = null, $dir = null) {
+    function build($data, $page=1, $length = 1, $count=1, $order = null, $dir = null,$currentWidget = null,$context =nul ) {
 	if (empty($data)) {
 	    if ($this->currentFilter == '') {
 
@@ -74,7 +74,7 @@ class AeAutoTable {
 		}
 	    }
 
-	    $cols = $this->startTable($page, $length, $count, $order, $dir);
+	    $cols = $this->startTable($page, $length, $count, $order, $dir,$currentWidget,$context);
 
 	    foreach ($data as &$row) {
 		$this->addRow($row, $order, $dir);
@@ -86,7 +86,7 @@ class AeAutoTable {
 	echo implode("\n", $this->_result);
     }
 
-    function startTable($page=1, $length= 1, $count=1, $order, $dir) {
+    function startTable($page=1, $length= 1, $count=1, $order, $dir,$currentWidget,$context) {
 	$l = 1;
 
 	if ($this->baseURL == '') {
@@ -121,9 +121,11 @@ class AeAutoTable {
 	}
 
 	$this->_result[] = '<ul class="right inline no-list-style table-options">';
-	$this->_result[] = '<li><a href="' . $this->getURL() . 'read-mode-filter/inline/created/' . $page . (!is_null($order) ? '/' . $order . '/' . $dir : '' ) . '" class="icon16 rows-list unlabeled ' . ($this->getMode() == 'inline' ? 'current' : '') . '" title="' . _('Show widget product content') . '"></a></li>';
-	$this->_result[] = '<li><a href="' . $this->getURL() . 'reset-filter/inline/' . (!is_null($order) ? 'created/' . $dir : '' ) . '" class="icon16 rows-list unlabeled inline" title="' . _('Reset result') . '"></a></li>';
-
+if ($context=='readFilter'){
+	$this->_result[] = '<li><a href="' . $this->getURL() . 'read-mode-filter/inline/desc/created/' . $currentWidget  . '" class="icon16 rows-list unlabeled inline" title="' . _('Show widget product content') . '"></a></li>';
+}
+	$this->_result[] = '<li><a href="' . $this->getURL() . 'reset-filter/inline/' . (!is_null($order) ? 'created/' . $dir .'/'.$currentWidget: '' ) . '" class="icon16 rows-list unlabeled inline" title="' . _('Reset result') . '"></a></li>';
+ 
 	$this->_result[] = '<li><a href="' . $this->getURL() . 'read-mode-switch/inline/' . $page . (!is_null($order) ? '/' . $order . '/' . $dir : '' ) . '" class="icon16 rows-list unlabeled ' . ($this->getMode() == 'inline' ? 'current' : '') . '" title="' . _('Show results inline') . '">' . _('Show results inline') . '</a></li>';
 
 	if ($this->_hasFile) {

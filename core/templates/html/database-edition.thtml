@@ -17,7 +17,7 @@ if ($mode != 'readAllUpdate' && !App::isAjax()):
 
 
     <ul class="expanded clearfix inline margedbottom" id="database_edition_menu">
-    <?php foreach ($urls as $k => $urlAndClass): ?>
+	<?php foreach ($urls as $k => $urlAndClass): ?>
 	    <li><a href="<?php echo $urlAndClass['url'] ?>" class="<?php echo $urlAndClass['class'] ?>" title="<?php echo $k ?>"><?php echo $k ?></a></li>
 	<?php endforeach; ?>
     </ul>
@@ -65,9 +65,15 @@ switch ($mode) {
 	$tableRenderer->showGlobalActions = (isset($showGlobalActions) ? $showGlobalActions : true );
 	$tableRenderer->showActions = (isset($showActions) ? $showActions : true );
 	$tableRenderer->currentFilter = $autoTableConditions;
-
+	$tableRenderer->currentWidget = $currentWidget;
+	$tableRenderer->context = $mode;
+	if ($mode == 'readFilter') {
+	    $tableRenderer->context = 'widget';
+	}
+	
+	    
 	if ($tableRenderer->setDatabase($databaseID, $table)) {
-	    $tableRenderer->build($data, $page, $pageLength, $count, $order, $dir);
+	    $tableRenderer->build($data, $page, $pageLength, $count, $order, $dir, $currentWidget, $mode);
 	}
 	break;
 }

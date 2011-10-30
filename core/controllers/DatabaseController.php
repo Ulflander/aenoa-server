@@ -768,7 +768,7 @@ class DatabaseController extends Controller {
      * @param mixed $id A string or an int depending of the type of the primary field
      * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of
      */
-    public function readAll($page = null, $order = null, $dir = null, $useSession = true) {
+    public function readAll($page = null, $order = null, $dir = null, $useSession = true,$id=null) {
 	if (intval($page) < 1 || is_null($page)) {
 	    if (App::getSession()->has('DB_PAGE_' . $this->databaseID . '_' . $this->table)) {
 		$page = App::getSession()->get('DB_PAGE_' . $this->databaseID . '_' . $this->table);
@@ -812,7 +812,7 @@ class DatabaseController extends Controller {
 	}
 
 	$length = $this->tableLength;
-
+$this->view->set('currentWidget',$id);
 	$this->view->set('mode', 'readAll');
 
 	$this->view->set('structure', $this->structure[$this->table]);
@@ -910,8 +910,8 @@ class DatabaseController extends Controller {
 	}
     }
 
-    public function readModeFilter($page = 1, $order = null, $dir = null) {
-	$id = '65';
+    public function readModeFilter($page = 1, $order = null, $dir = null,$currentWidget) {
+	$id=$currentWidget;
 
 	$res = $this->db->findRelatives('widgets', $this->db->findFirst('widgets', array('id' => $id)));
 	$t = '';
@@ -934,19 +934,22 @@ class DatabaseController extends Controller {
 
 	App::getSession()->set('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
 	if ($order =='desc') $order ='created';
-	$this->view->set('data','');
-	$this->readAll($page, $order, $dir);
-
+	
+	$this->readAll($page, $order, $dir,true,$currentWidget);
+ 
 	if (App::isAjax()) {
 
 	    $this->view->set('mode', 'readFilter');
 	}
     }
 
-    public function resetFilter($page = 1, $order = null, $dir = null) {
+    public function resetFilter($page = 1, $order = null, $dir = null,$currentWidget) {
 	App::getSession()->uset('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $this->table);
 	App::getSession()->uset('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
-	$this->readAll($page, $order, $dir);
+	if (!empty($currentWidget)) $this->readAll($page, $order, $dir,true,$currentWidget);
+	else $this->readAll($page, $order, $dir);
+	
+	
 	
 	$this->view->set('mode', 'readAllUpdate');
     }
