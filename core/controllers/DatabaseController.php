@@ -947,7 +947,7 @@ class DatabaseController extends Controller {
 	App::getSession()->uset('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $this->table);
 	App::getSession()->uset('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
 	$this->readAll($page, $order, $dir);
-	$this->view->set('data','');
+	
 	$this->view->set('mode', 'readAllUpdate');
     }
 
