@@ -1044,7 +1044,7 @@ class App extends AeObject
 		self::$_dbs[$id]['engine'] = $db ;
 		self::$_dbs[$id]['structure'] = $tables ;
 		
-		if ( $db->setStructure ( $tables ) == false && strpos(self::$query , 'maintenance/check-context') !== 0 )
+		if ( $db->setStructure ( $tables , true ) == false && strpos(self::$query , 'maintenance/check-context') !== 0 )
 		{
 		    self::do500 ( 'Database ' . $id . ' requires to be deployed.' ) ;
 		}

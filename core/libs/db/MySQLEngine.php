@@ -8,9 +8,7 @@
 class MySQLEngine extends AbstractDBEngine {
 
     private $__connection = false;
-    
     private $__sqlOps = array('like', 'ilike', 'or', 'not', 'in', 'between', 'regexp', 'similar to');
-    
     protected $__lastId;
 
     /////////////////////////////////////////////////////
@@ -50,8 +48,8 @@ class MySQLEngine extends AbstractDBEngine {
 	$this->_queries = array();
 
 	$this->_inTransaction = false;
-	
-	return $res ;
+
+	return $res;
     }
 
     /**
@@ -253,7 +251,7 @@ class MySQLEngine extends AbstractDBEngine {
 
 	$this->struct = $tstruct2;
 
-	if (( (!empty($tstruct) && $create) || ($this->hasAnyTable() == true && debuggin() ) ) && Config::get(App::DBS_AUTO_EXPAND) == true) {
+	if ((!empty($tstruct) && $create) || ( ($this->hasAnyTable() == true && debuggin() && Config::get(App::DBS_AUTO_EXPAND) == true ) )) {
 	    $res2 = $this->__applyStructure($tstruct2);
 	} else if ($this->hasAnyTable() == false) {
 	    $res2 = false;
@@ -287,43 +285,41 @@ class MySQLEngine extends AbstractDBEngine {
 
 	return array();
     }
+
     function findAll($table, $cond = array(), $limit = 0, $fields = array()) {
 	$schema = $this->tableExistsOr403($table);
 	$q = 'SELECT ' . $this->__selectFields($fields, $table) . ' FROM `' . $this->source['database'] . '`.`' . $table . '` ';
 	$q .= $this->__getCond($cond, $table);
 	$q .= $this->__getLimit($table, $limit);
 	$q .= ';';
-	
 	$this->log($q);
 	$res = mysql_query($q, $this->getConnection());
 	if ($res === false) {
-	    return $res;  
+	    return $res;
 	}
 	$result = $this->__fetchArr($res, $schema->getInitial(), $fields, array(), false);
 	@mysql_free_result($res);
 	return $result;
     }
-    
-    function findAndOrder ( $table , $cond = array () , $limit = 0 , $fields = array (), $order_fields = array(), $order = 'ASC' )
-	{
-		$schema = $this->tableExistsOr403($table);
-		$q = 'SELECT ' . $this->__selectFields($fields,$table) . ' FROM `' . $this->source['database'] . '`.`' . $table . '` ' ;
-		$q .= $this->__getCond ( $cond , $table) ;
-		$q .= $this->__getLimit ( $table , $limit ) ;
-		$q .= ' ORDER BY '. $this->__selectFields($order_fields,$table).' ';
-		$q .= $order;
-		$q .= ';';
-		$this->log($q);
-		$res = mysql_query($q, $this->getConnection()) ;
-		if ( $res === false )
-		{
-			return $res ;
-		}
-		$result =  $this->__fetchArr($res,$schema->getInitial (),$fields,array(),false);
-		
-		@mysql_free_result ( $res ) ;
-		return $result ;
+
+    function findAndOrder($table, $cond = array(), $limit = 0, $fields = array(), $order_fields = array(), $order = 'ASC') {
+	$schema = $this->tableExistsOr403($table);
+	$q = 'SELECT ' . $this->__selectFields($fields, $table) . ' FROM `' . $this->source['database'] . '`.`' . $table . '` ';
+	$q .= $this->__getCond($cond, $table);
+	$q .= $this->__getLimit($table, $limit);
+	$q .= ' ORDER BY ' . $this->__selectFields($order_fields, $table) . ' ';
+	$q .= $order;
+	$q .= ';';
+	$this->log($q);
+	$res = mysql_query($q, $this->getConnection());
+	if ($res === false) {
+	    return $res;
 	}
+	$result = $this->__fetchArr($res, $schema->getInitial(), $fields, array(), false);
+
+	@mysql_free_result($res);
+	return $result;
+    }
 
     function findFirst($table, $cond = array(), $fields = array(), $childsRecursivity = 0) {
 	$res = $this->findAll($table, $cond, 1, $fields, $childsRecursivity);
@@ -378,8 +374,9 @@ class MySQLEngine extends AbstractDBEngine {
 		$fieldname = trim($fieldname);
 
 		$escapeVal = true;
-		if ($val[0]=='(') $escapeVal = false ;
-		
+		if ($val[0] == '(')
+		    $escapeVal = false;
+
 		if (@$this->struct[$table][$fieldname]['behavior'] & DBSchema::BHR_PICK_IN) {
 		    $val = '\'(^' . $val . '\,)|(\,' . $val . '$)|(\,' . $val . '\,)|(^' . $val . '$)\'';
 		    $escapeVal = false;
@@ -387,8 +384,6 @@ class MySQLEngine extends AbstractDBEngine {
 		}
 
 		// $operatorMatch = '/^(\\x20(' . join(')|(', $this->__sqlOps) .')|\\x20<[>=]?(?![^>]+>)|\\x20[>=!]{1,3}(?!<))/is';
-
-
 
 		if (is_string($val)) {
 		    if ($val === 'IS NULL') {
@@ -408,10 +403,7 @@ class MySQLEngine extends AbstractDBEngine {
 		    $c .= '`' . $fieldname . '` ' . trim($operator);
 
 		    if ($escapeVal) {
-			
 			$c .= ' \'' . $val . '\'';
-			
-			
 		    } else {
 			$c .= ' ' . $val;
 		    }
@@ -421,7 +413,6 @@ class MySQLEngine extends AbstractDBEngine {
 	    }
 	    $c = ' WHERE ' . $c;
 	}
-	
 	return $c . ' ';
     }
 

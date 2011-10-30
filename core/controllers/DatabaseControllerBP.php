@@ -3,11 +3,11 @@
 /**
  * The Database controller is one of the main controllers in Aenoa Server.
  * It contains base action to read, add, edit and delete elements in database.
- *
+ * 
  * It can be used directly using the url token /database/_db_id_/_table_name_/_action_
- * or by extending DatabaseController to your own controller, and then use callbacks
+ * or by extending DatabaseController to your own controller, and then use callbacks 
  * to modify the common DatabaseController behaviors.
- *
+ * 
  */
 class DatabaseController extends Controller {
 
@@ -95,9 +95,10 @@ class DatabaseController extends Controller {
 
 	$this->db = App::getDatabase($this->databaseID);
 
-	if (is_null($this->db)) {
-	    App::do500(sprintf(_('Database %s not available'), $this->databaseID));
-	}
+		if ( is_null($this->db) )
+		{
+			App::do500(sprintf(_('Database %s not available'),$this->databaseID) );
+		}
 
 	$this->structure = $this->db->getStructure();
 
@@ -200,14 +201,14 @@ class DatabaseController extends Controller {
 
     /**
      * Add a database entry
-     *
-     *
-     *
-     *
-     *
-     *
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
      * @param mixed $id A string or an int depending of the type of the primary field
-     * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of
+     * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of 
      */
     public function add($id=null) {
 	$this->view->set('mode', 'add');
@@ -358,12 +359,12 @@ class DatabaseController extends Controller {
 
     /**
      * Mass import
-     *
-     *
-     *
-     *
-     *
-     *
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
      * @param mixed $id A string or an int depending of the type of the primary field to copy from
      */
     public function massImport($id=null) {
@@ -517,14 +518,14 @@ class DatabaseController extends Controller {
 
     /**
      * Display content of one entry
-     *
-     *
-     *
-     *
-     *
-     *
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
      * @param mixed $id A string or an int depending of the type of the primary field
-     * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of
+     * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of 
      */
     public function read($id=null) {
 	$primaryKey = $this->schema->getPrimary();
@@ -569,14 +570,14 @@ class DatabaseController extends Controller {
 
     /**
      * Edit a database entry
-     *
-     *
-     *
-     *
-     *
-     *
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
      * @param mixed $id A string or an int depending of the type of the primary field
-     * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of
+     * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of 
      */
     public function edit($id=null, $child_table = null) {
 
@@ -624,7 +625,7 @@ class DatabaseController extends Controller {
 	/*
 	 * In case of Child edition
 	 * - we select the required child
-	 * -
+	 * - 
 	 */
 	if (!is_null($child_table)) {
 	    $sub_dat = array();
@@ -729,12 +730,12 @@ class DatabaseController extends Controller {
 
     /**
      * List ALL entries
-     *
-     *
+     * 
+     * 
      * This method is used only by REST api
-     *
-     *
-     *
+     * 
+     * 
+     * 
      */
     public function __enumerate() {
 	$this->output = $this->db->findRelatives($this->table, $this->db->findAll($this->table, $this->conditions, 0, $this->fields), $this->subFields, $this->recursivity);
@@ -759,16 +760,16 @@ class DatabaseController extends Controller {
 
     /**
      * Read entries
-     *
-     *
-     *
-     *
-     *
-     *
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
      * @param mixed $id A string or an int depending of the type of the primary field
-     * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of
+     * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of 
      */
-    public function readAll($page = null, $order = null, $dir = null, $useSession = true) {
+    public function readAll($page = null, $order = null, $dir = null, $useSession = true, $data =null) {
 	if (intval($page) < 1 || is_null($page)) {
 	    if (App::getSession()->has('DB_PAGE_' . $this->databaseID . '_' . $this->table)) {
 		$page = App::getSession()->get('DB_PAGE_' . $this->databaseID . '_' . $this->table);
@@ -786,7 +787,6 @@ class DatabaseController extends Controller {
 	    if (App::getSession()->has('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $this->table)) {
 		$this->view->set('autoTableConditions', App::getSession()->get('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $this->table));
 	    } else {
-		
 		$this->view->set('autoTableConditions', '');
 	    }
 
@@ -848,20 +848,22 @@ class DatabaseController extends Controller {
 	    App::getSession()->set('DB_PREV_PAGE', $baseURL);
 	}
 
- 
-	if ($this->recursivity > 0) {
- echo $this->db->findRelatives($this->table, $this->db->findAll($this->table, $this->conditions, $limit, $this->fields), $this->subFields, $this->recursivity);
-	    $this->output = $this->db->findRelatives($this->table, $this->db->findAll($this->table, $this->conditions, $limit, $this->fields), $this->subFields, $this->recursivity);
-	} else {
-
-	    $this->output = $this->db->findAll($this->table, $this->conditions, $limit, $this->fields);
+	if ($this->recursivity > 0 ) {
 	   
+	    $this->output = $this->db->findRelatives($this->table, $this->db->findAll($this->table, $this->conditions, $limit, $this->fields), $this->subFields, $this->recursivity);
+	    
+	} else {
+	
+	    $this->output = $this->db->findAll($this->table, $this->conditions, $limit, $this->fields);
 	}
 
-	
-	    $this->view->set('data', $this->output);
-	
-	
+if (is_null($data)){
+	$this->view->set('data', $this->output);
+}
+else
+{
+    $this->view->set('data', $data);
+}
 	$urls = array(
 	    sprintf(_('Add a new entry to %s'), $this->table) => array('url' => $this->baseURL . 'add', 'class' => 'icon16 add'),
 	    sprintf(_('Mass import in %s'), $this->table) => array('url' => $this->baseURL . 'mass-import', 'class' => 'icon16 download'),
@@ -876,19 +878,19 @@ class DatabaseController extends Controller {
 
     /**
      * Update read with filter or no filter
-     *
-     *
-     *
-     *
+     * 
+     * 
+     * 
+     * 
 
-     *
-     *
-     *
+     * 
+     * 
+     * 
      * @param mixed $id A string or an int depending of the type of the primary field
-     * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of
-     *
-     *
-     *
+     * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of 
+     * 
+     * 
+     * 
      */
     public function readAllUpdate($page = 1, $order = null, $dir = null) {
 	$k = $this->databaseID . '/' . $this->table . '/search';
@@ -896,13 +898,14 @@ class DatabaseController extends Controller {
 	    $key = AbstractDBEngine::getFilterable($this->structure[$this->table]);
 	    $this->conditions[$key . ' LIKE'] = '%' . trim($this->data[$k]) . '%';
 	    App::getSession()->set('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $this->table, $this->data[$k]);
-	} else {
+		} else {
 	    App::getSession()->uset('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $this->table);
 	}
 
 	App::getSession()->set('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
-	if ($order =='desc') $order ='created';
-	$this->readAll($page, $order, $dir,true,'');
+		if ($order == 'desc')
+			$order = 'created';
+	$this->readAll($page, $order, $dir);
 
 	if (App::isAjax()) {
 
@@ -911,49 +914,52 @@ class DatabaseController extends Controller {
     }
 
     public function readModeFilter($page = 1, $order = null, $dir = null) {
-	$id = '65';
-
-	$res = $this->db->findRelatives('widgets', $this->db->findFirst('widgets', array('id' => $id)));
-	$t = '';
-	if (empty($res)) {
-	    App::do404(_('Widget not found'));
-	}
-
-	foreach ($res['widget_tabs'] as &$tab) {
-	    $t .= $tab['products'];
-	}
-
+	$id='65 </br>';
+	
+	$res = $this->db->findRelatives('widgets', $this->db->findFirst('widgets', array('id'=>$id ) ) ) ;
+		$t='';
+		if ( empty( $res ) )
+		{
+			App::do404 (_('Widget not found')) ;
+		}
+		
+		foreach ( $res['widget_tabs'] as &$tab )
+		{
+		$t .= $tab['products'] ;	
+		    
+		}
+		
 	$k = $this->databaseID . '/' . $this->table . '/search';
 	if (!empty($res) && $t != '') {
-
-	    $this->conditions['id IN'] = '(' . $t . ')';
-	    App::getSession()->set('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $this->table, $t);
-	} else {
+	   
+	    $this->conditions[ 'id IN'] = '('. $t .')';
+	//   App::getSession()->set('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $t);
+	} 
+	
+	else {
 	    App::getSession()->uset('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $this->table);
 	}
 
 	App::getSession()->set('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
 	if ($order =='desc') $order ='created';
-	$this->view->set('data','');
 	$this->readAll($page, $order, $dir);
 
 	if (App::isAjax()) {
 
-	    $this->view->set('mode', 'readFilter');
-	}
+	    $this->view->set('mode', 'readAllUpdate');
+	}	
+	
     }
-
-    public function resetFilter($page = 1, $order = null, $dir = null) {
+    public function resetFilter($page = 1, $order = null, $dir = null){
 	App::getSession()->uset('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $this->table);
-	App::getSession()->uset('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
+	   App::getSession()->set('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
 	$this->readAll($page, $order, $dir);
-	$this->view->set('data','');
-	$this->view->set('mode', 'readAllUpdate');
+	 $this->view->set('mode', 'readAllUpdate');
     }
-
+    
     /**
      * Update read with table mode changing
-     *
+     * 
      */
     public function readModeSwitch($mode, $page = 1, $order = null, $dir = null) {
 	if ($mode == 'inline' || $mode == 'icons') {
@@ -969,14 +975,14 @@ class DatabaseController extends Controller {
 
     /**
      * Delete a database entry
-     *
-     *
-     *
-     *
-     *
-     *
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
      * @param mixed $id A string or an int depending of the type of the primary field
-     * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of
+     * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of 
      */
     public function delete($id = null, $redirect = false) {
 
@@ -996,14 +1002,14 @@ class DatabaseController extends Controller {
 
     /**
      * Delete many database entries
-     *
-     *
-     *
-     *
-     *
-     *
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
      * @param mixed $id A string or an int depending of the type of the primary field
-     * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of
+     * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of 
      */
     public function deleteAll($redirect = false) {
 	$ids = array();
@@ -1101,7 +1107,7 @@ class DatabaseController extends Controller {
 	    }
 	}
 
-	// Check out PICK_IN and PICK_ONE in others tables and delete reference to current
+	// Check out PICK_IN and PICK_ONE in others tables and delete reference to current 
 	$referencesTables = $this->db->getTableSchema($this->table)->getPickFields();
 	foreach ($referencesTables as $table => $fields) {
 	    $conds = array();
@@ -1145,7 +1151,7 @@ class DatabaseController extends Controller {
 	}
 
 
-	// Finally delete the entry
+	// Finally delete the entry 
 	$result = $this->db->delete($this->table, $id);
 
 	if ($result) {
