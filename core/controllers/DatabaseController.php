@@ -850,7 +850,7 @@ class DatabaseController extends Controller {
 
  
 	if ($this->recursivity > 0) {
- echo $this->db->findRelatives($this->table, $this->db->findAll($this->table, $this->conditions, $limit, $this->fields), $this->subFields, $this->recursivity);
+// echo $this->db->findRelatives($this->table, $this->db->findAll($this->table, $this->conditions, $limit, $this->fields), $this->subFields, $this->recursivity);
 	    $this->output = $this->db->findRelatives($this->table, $this->db->findAll($this->table, $this->conditions, $limit, $this->fields), $this->subFields, $this->recursivity);
 	} else {
 

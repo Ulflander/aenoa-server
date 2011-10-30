@@ -65,7 +65,7 @@ switch ($mode) {
 	$tableRenderer->showGlobalActions = (isset($showGlobalActions) ? $showGlobalActions : true );
 	$tableRenderer->showActions = (isset($showActions) ? $showActions : true );
 	$tableRenderer->currentFilter = $autoTableConditions;
-if (empty ($data)) echo 'zut';
+
 	if ($tableRenderer->setDatabase($databaseID, $table)) {
 	    $tableRenderer->build($data, $page, $pageLength, $count, $order, $dir);
 	}
