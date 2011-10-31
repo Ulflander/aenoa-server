@@ -48,27 +48,32 @@ class MenuHelper {
 	{
 
 		$query = App::getQueryString() ;
-
-		$str = '<ul class="no-list-style">' ;
-		$js = '<script type="text/javascript">ajsf.load("ae-block-switch");ajsf.ready(function(){';
 		$baseURL = url() ;
-
+		$str = '<ul class="no-list-style">' ;
 		$str .= '<li class=""><a href="'.url().'maintenance/status" class="icon16 home">' . ucfirst(sprintf(_('Manager home'),$struct)) . '</a></li>' . "\n" ;
+		$js = '<script type="text/javascript">ajsf.load("ae-block-switch");ajsf.ready(function(){';
 		
-		$str .= '<li><a href="#" id="dev-menu-btn" class="">' . _('Development') . '</a></li>' . "\n" ;
-		$str .= '<li><ul id="dev-menu" class="no-list-style aemenu '. $class .'">' . "\n" ;
-		$str .= '<li><a href="'.url().'dev/PHPI18n" title="'. _('Extract I18n string using xgetext utility') .'" class="icon16 i18n">' . _('Extract I18n string') . '</a></li>' . "\n" ;
-		$str .= '<li><a href="'.url().'dev/GenerateStructureDocFile" title="'. _('Update structures documentation files by extracting structure description') .'" class="icon16 manual">' . _('Update structures doc') . '</a></li>' . "\n" ;
-		$str .= '<li><a href="'.url().'dev/GenerateDocumentation" title="'. _('Create documentation using NaturalDocs') .'" class="icon16 manual">' . _('Create documentation') . '</a></li>' . "\n" ;
-		$str .= '<li><a href="'.url().'dev/EhtmlToThtml" title="'. _('Generate templates from EHtml files to THtml files') .'" class="icon16 wizard">' . _('Generate templates') . '</a></li>' . "\n" ;
-		$str .= '<li><a href="'.url().'dev/HashMachine" title="'. _('Make some hash') .'" class="icon16 run">' . _('Hash machine') . '</a></li>' . "\n" ;
-		$str .= '</ul></li>'  . "\n" ;
+		if (debuggin())
+		{
+			$str .= '<li><a href="#" id="dev-menu-btn" class="">' . _('Development') . '</a></li>' . "\n" ;
+			$str .= '<li><ul id="dev-menu" class="no-list-style aemenu '. $class .'">' . "\n" ;
+			$str .= '<li><a href="'.url().'dev/PHPI18n" title="'. _('Extract I18n strings using xgetext utility') .'" class="icon16 i18n">' . _('Extract I18n') . '</a></li>' . "\n" ;
+			$str .= '<li><a href="'.url().'dev/GenerateStructureDocFile" title="'. _('Update structures documentation files by extracting structure description') .'" class="icon16 manual">' . _('Update structures doc') . '</a></li>' . "\n" ;
+			$str .= '<li><a href="'.url().'dev/GenerateDocumentation" title="'. _('Create documentation using NaturalDocs') .'" class="icon16 manual">' . _('Create documentation') . '</a></li>' . "\n" ;
+			$str .= '<li><a href="'.url().'dev/EhtmlToThtml" title="'. _('Generate templates from EHtml files to THtml files') .'" class="icon16 wizard">' . _('Generate templates') . '</a></li>' . "\n" ;
+			$str .= '<li><a href="'.url().'dev/HashMachine" title="'. _('Make some hash') .'" class="icon16 run">' . _('Hash machine') . '</a></li>' . "\n" ;
+			$str .= '<li><a href="'.url().'dev/AssetsCompressor" title="'. _('Compress assets') .'" class="icon16 package">' . _('Compress assets') . '</a></li>' . "\n" ;
+			$str .= '<li><a href="'.url().'dev/RevertAssetsCompressor" title="'. _('Revert assets compression') .'" class="icon16 package">' . _('Revert assets compression') . '</a></li>' . "\n" ;
+			$str .= '<li><a href="'.url().'dev/ExploreTasks" title="'. _('List tasks') .'" class="icon16 files">' . _('Explore tasks') . '</a></li>' . "\n" ;
+			$str .= '</ul></li>'  . "\n" ;
 
-		$js .= 'new ajsf.AeBlockSwitch({button:_("#dev-menu-btn"),element:_("#dev-menu"),openedClass:"icon16 down",closedClass:"icon16 play"}).'.
-			($query->getAt() == QueryString::DEV_TOKEN ? 'open' : 'close')
-			.'();';
+			$js .= 'new ajsf.AeBlockSwitch({button:_("#dev-menu-btn"),element:_("#dev-menu"),openedClass:"icon16 down",closedClass:"icon16 play"}).'.
+				($query->getAt() == QueryString::DEV_TOKEN ? 'open' : 'close')
+				.'();';
 
-		
+
+		}
+
 		echo $str . '<li>' ;
 		
 		$structures = App::getAllDBs();
@@ -76,7 +81,7 @@ class MenuHelper {
 		
 		foreach ($structures as $id => &$db )
 		{
-		    self::displayStructuresMenu($id) ;
+		    self::displayStructuresMenu($id , '' , true , true ) ;
 		}
 
 		$str .= '</li>';
@@ -118,13 +123,24 @@ class MenuHelper {
 	 * @param object $showCurrent [optional] Should the current page be shown, default: true
 	 * @return void
 	 */
-	public static function displayStructuresMenu ( $struct = 'main' , $class = '' , $showCurrent = true ) 
+	public static function displayStructuresMenu ( $struct = 'main' , $class = '' , $showCurrent = true , $encapsulate = false )
 	{
 		$db = App::getDatabase($struct) ;
 		$baseURL = url() . 'database/' . $struct . '/' ;
+
+		$str = '' ;
+
+		if ( $encapsulate )
+		{
+			$str .= '<li><a href="#" id="menu-db-'.$struct.'-btn" class="icon16 db">' . ucfirst(sprintf(_('%s database (%s)'),$struct, str_replace('Engine','',get_class($db) ) ) ) . '</a></li><li>' . "\n" ;
+		}
 		
-		$str = '<ul class="no-list-style aemenu '. $class .'">' . "\n" ;
-		$str .= '<li class="caption">' . ucfirst(sprintf(_('%s database'),$struct)) . '</li>' . "\n" ; ;
+		$str .= '<ul id="menu-db-'.$struct.'" class="no-list-style aemenu '. $class .'">' . "\n" ;
+
+		if ( !$encapsulate )
+		{
+			$str .= '<li class="caption">' . ucfirst(sprintf(_('%s database'),$struct)) . '</li>' . "\n" ; 
+		}
 		
 		if ( $db->isUsable() )
 		{
@@ -153,7 +169,17 @@ class MenuHelper {
 			}
 		}
 		$str .= '</ul>'  . "\n" ;
-		
+
+		if ( $encapsulate )
+		{
+			$str .= '</li>' ;
+
+			$str .= '<script type="text/javascript">ajsf.load("ae-block-switch");ajsf.ready(function(){';
+			$str .= 'new ajsf.AeBlockSwitch({button:_("#menu-db-'.$struct.'-btn"),element:_("#menu-db-'.$struct.'"),openedClass:"icon16 down",closedClass:"icon16 play"}).'.
+				(App::getQueryString()->getAt(1) == $struct ? 'open' : 'close')
+				.'();});</script>';
+		}
+
 		echo $str ;
 	}
 	

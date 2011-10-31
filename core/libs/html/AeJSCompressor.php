@@ -58,6 +58,41 @@ class AeJSCompressor
 		return false ;
 		
 	}
+
+
+	public static function safeCompressString ( $jsString )
+	{
+
+		foreach ( self::$PATTERNS as $pattern )
+		{
+			// get method
+			if ($pattern[0] == 'preg_replace' || $pattern[0] == 'preg_replace_callback' )
+			{
+
+				preg_match_all ( $pattern[1] , $jsString , $res ) ;
+
+				self::$__report[] = $pattern[3] . ': <strong>' . count($res[0]) . '</strong>' ;
+
+			} else {
+
+				self::$__report[] = $pattern[3] . ': done' ;
+
+			}
+
+			$jsString = @$pattern[0] ( $pattern[1] , $pattern[2], $jsString ) ;
+
+		}
+		$result = array() ;
+		$jsString = explode("\n",str_replace("\r","\n",$jsString)) ;
+
+		foreach ( $jsString as $line )
+		{
+
+			$result[] = self::cleanInlineComments($line) ;
+		}
+		array_clean($result);
+		return implode("\n",  $result) ;
+	}
 	
 	
 	public static function compressString ( $jsString )

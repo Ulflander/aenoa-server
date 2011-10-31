@@ -217,7 +217,7 @@ class FSUtil
 		
 		return $result ;
 	}
-
+	
 	/**
 	 * Returns a list of paths of all dirs conained in $path
 	 * 

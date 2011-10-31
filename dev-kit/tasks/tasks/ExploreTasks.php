@@ -26,7 +26,7 @@ class ExploreTasks extends Task {
 				{
 					if ( !empty ( $file ) && $file['type'] != 'dir' && substr($file['name'], 0 , 1) != '.' )
 					{
-						$tasks[] = str_replace ( DK_DEV_KIT , '' ,$path ) . ' <a href="' . url() . $file['filename'] . '">' . $file['filename'] . '</a>' ;
+						$tasks[] = str_replace ( DK_DEV_KIT , '' ,$path ) . ' <a href="' . url() . 'dev/'. $file['filename'] . '">' . $file['filename'] . '</a>' ;
 					}
 				}
 			}

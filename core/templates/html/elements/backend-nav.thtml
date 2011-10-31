@@ -2,9 +2,4 @@
 		<?php
 			MenuHelper::displayBackendMenu () ;
 		?>
-		
-		
-		<?php
-			$this->renderElement('backend-nav-append');
-		?>
 </aside>

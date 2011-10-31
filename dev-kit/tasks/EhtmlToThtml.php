@@ -10,6 +10,7 @@ class EhtmlToThtml extends Task {
 
 	function getOptions ()
 	{
+		$this->manager->shouldBackup = true ;
 
 		$opt = new Field () ;
 		$opt->label = 'Convert core Aenoa Server files too' ;
@@ -24,7 +25,7 @@ class EhtmlToThtml extends Task {
 
 		$opt3 = new Field () ;
 		$opt3->type = 'label';
-		$opt3->value = 'This task will OVERWRITE ALL existing .thtml files by the newer version of .ehtml files. Always consider backup first.';
+		$opt3->value = 'This task will OVERWRITE ALL existing .thtml files by the newer version of .ehtml files.';
 
 		return array ( $opt3 , $opt2, $opt ) ;
 	}
