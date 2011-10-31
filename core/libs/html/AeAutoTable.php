@@ -121,11 +121,12 @@ class AeAutoTable {
 	}
 
 	$this->_result[] = '<ul class="right inline no-list-style table-options">';
-if ($context=='readFilter'){
+if ($context!='readFilter' && isset($currentWidget)){
 	$this->_result[] = '<li><a href="' . $this->getURL() . 'read-mode-filter/inline/desc/created/' . $currentWidget  . '" class="icon16 rows-list unlabeled inline" title="' . _('Show widget product content') . '"></a></li>';
 }
+	if ($context=='readFilter'){
 	$this->_result[] = '<li><a href="' . $this->getURL() . 'reset-filter/inline/' . (!is_null($order) ? 'created/' . $dir .'/'.$currentWidget: '' ) . '" class="icon16 rows-list unlabeled inline" title="' . _('Reset result') . '"></a></li>';
- 
+ }
 	$this->_result[] = '<li><a href="' . $this->getURL() . 'read-mode-switch/inline/' . $page . (!is_null($order) ? '/' . $order . '/' . $dir : '' ) . '" class="icon16 rows-list unlabeled ' . ($this->getMode() == 'inline' ? 'current' : '') . '" title="' . _('Show results inline') . '">' . _('Show results inline') . '</a></li>';
 
 	if ($this->_hasFile) {
