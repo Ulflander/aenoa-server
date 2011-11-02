@@ -94,11 +94,11 @@ class AeGeoloc {
 	
 	function getCoords ()
 	{
-		if ( self::_usable && array_keys_exists(array('latitude','longitude'),self::_data))
+		if ( self::$_usable && array_keys_exists(array('latitude','longitude'),self::$_data))
 		{
 			return array (
-				'latitude' => $this->_data['latitude'],
-				'longitude' => $this->_data['longitude'],
+				'latitude' => $this->$_data['latitude'],
+				'longitude' => $this->$_data['longitude'],
 			);
 		}
 		return false ;
