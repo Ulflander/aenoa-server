@@ -38,35 +38,35 @@ define ( 'AE_SERVER', dirname(__FILE__) . DS ) ;
  *
  * Aenoa Server "core" folder path
  */
-define ( 'AE_CORE', AE_SERVER . DS . 'core' . DS ) ;
+define ( 'AE_CORE', AE_SERVER . DS . 'library' . DS ) ;
 
 /**
  * Constant: AE_LIBS
  *
  * Aenoa Server "libs" folder path
  */
-define ( 'AE_LIBS', AE_SERVER . 'core' . DS . 'libs' . DS ) ;
+define ( 'AE_LIBS', AE_SERVER . 'library' . DS ) ;
 
 /**
  * Constant: AE_STRUCTURES
  *
  * Aenoa Server core structures folder path (users, api keys...)
  */
-define ( 'AE_STRUCTURES', AE_SERVER . 'core' . DS . 'structures' . DS ) ;
+define ( 'AE_STRUCTURES', AE_SERVER . 'structures' . DS ) ;
 
 /**
  * Constant: AE_CORE_SERVICES
  *
  * Aenoa Server core services folder path
  */
-define ( 'AE_CORE_SERVICES', AE_SERVER . 'core' . DS . 'services' . DS ) ;
+define ( 'AE_CORE_SERVICES', AE_SERVER . 'services' . DS ) ;
 
 /**
  * Constant: AE_TEMPLATES
  *
  * Aenoa Server core templates folder path
  */
-define ( 'AE_TEMPLATES', AE_SERVER . 'core' . DS . 'templates' . DS ) ;
+define ( 'AE_TEMPLATES', AE_SERVER . 'templates' . DS ) ;
 
 /**
  * Constant: AE_BEHAVIORS
@@ -80,7 +80,7 @@ define ( 'AE_BEHAVIORS', AE_TEMPLATES . 'behaviors' . DS ) ;
  *
  * Aenoa Server core controllers folder path
  */
-define ( 'AE_CONTROLLERS', AE_SERVER . 'core' . DS . 'controllers' . DS ) ;
+define ( 'AE_CONTROLLERS', AE_SERVER  . 'controllers' . DS ) ;
 
 /**
  * Constant: AE_PRIVATE

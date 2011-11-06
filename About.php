@@ -22,7 +22,7 @@
     - <Dispatcher> make the dispatch of URLs
     - <Session>, <User> and <UserCoreController> gives an entire structure of User management
     - <AenoaRights> manage rights
-    - <AeI18n> initializes PHP Gettext locales
+    - <I18n> initializes PHP Gettext locales
     
     *MVC*
     - <Controller>, <Model>, and <View> are the base classes of MVC pattern in Aenoa Server

@@ -58,7 +58,7 @@ class GenerateStructureDocFile extends Task {
 		{
 			$this->view->setStatus ( 'Starting structure doc generation with language: ' . $this->params['language'] ) ;
 
-			$_i18n = new AeI18n ( 'default', $this->params['language'] , 'UTF8', ROOT.'app'.DS.'locale' ) ;
+			$_i18n = new I18n ( 'default', $this->params['language'] , 'UTF8', ROOT.'app'.DS.'locale' ) ;
 		} else {
 			$this->view->setStatus ( 'Starting structure doc generation with core language' ) ;
 		}
@@ -181,7 +181,13 @@ class GenerateStructureDocFile extends Task {
 
 		if ( ake ( 'label', $field ) )
 		{
-			$this->rendering[] = "\t" . $field['label'] ;
+
+			if ( ake ('validation' , $field ) && is_array($field['validation']))
+			{
+				$this->rendering[] = "\t" . $field['label'] . ' (' . _('Has validation') . ')';
+			} else {
+				$this->rendering[] = "\t" . $field['label'] ;
+			}
 			$this->rendering[] = "\t" ;
 			$this->rendering[] = "\t" ;
 		}

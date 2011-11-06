@@ -1,5 +1,0 @@
-
-<form class="search" action="<?php echo url() ?>Search" method="post">
-	<input type="text" id="query" name="query" <?php if ( isset ( $query ) ) { echo 'value="'. $query . '"' ; } ?> />
-	<input type="submit" value="Search" />
-</form>
