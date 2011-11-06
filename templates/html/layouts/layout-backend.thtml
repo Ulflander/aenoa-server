@@ -1,0 +1,59 @@
+<?php
+
+/**********************************
+ * Aenoa Server Engine
+ * (c) Xavier Laumonier 2010
+ *
+ * Since : 1.0
+ * Author : Xavier Laumonier
+ *
+ **********************************/
+
+?>
+
+
+
+<?php if ( !App::isAjax() ): ?>
+	<?php $this->renderElement ( 'header' ) ; ?>
+	
+	<link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ; ?>acf/all.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ; ?>acf/plugins/ajaxize/ajaxize.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ; ?>acf/plugins/aenoa/backend.css" type="text/css" media="screen,projection" />
+	
+	<title><?php echo $this->title ?></title>
+	</head>
+	<body class="sans-serif">
+	<header class="shadowed">
+	    <h1><?php echo Config::get(App::APP_NAME) ?></h1>
+	    <span><?php echo _('Aenoa Server manager') ?></span>
+	</header>
+	<div id="nav" class="shadowed">
+	    <a href="<?php echo url() ?>" title="<?php echo _('Back to application') ?>">&laquo; <?php echo _('Back to application') ?></a>
+	    
+	    <?php if ( debuggin () ): ?>
+		<a href="<?php echo url() ?>maintenance/debug" class=" notify warning debug"><?php echo _('Debug is currently ON') ?></a>
+	    <?php else: ?>
+		<a href="<?php echo url() ?>maintenance/debug" class=" notify info debug"><?php echo _('Debug is currently OFF') ?></a>
+	    <?php endif; ?>
+	    
+	</div>
+	    
+	<div class="backend">
+		
+			
+	
+	<?php $this->renderElement ( 'backend-nav' ) ; ?>
+	
+	<section>
+	<?php $this->renderElement('responses'); ?>
+<?php endif; ?>
+
+<?php echo $content_for_layout ?>
+	
+<?php if ( !App::isAjax() ): ?>
+	</section>
+	</div>
+	<footer>
+	    © Aenoa Systems - 2010/2011
+	</footer>
+<?php endif; ?>

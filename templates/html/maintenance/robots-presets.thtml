@@ -1,0 +1,51 @@
+<form action="#" id="robots/presets/selection">
+	<select name="selection">
+		<option value="void" selected="selected"><?php echo _('Get a preset...') ?></option>
+		<option value="1"><?php echo _('No robot allowed') ?></option>
+		<option value="2"><?php echo _('All robots allowed') ?></option>
+		<option value="back"><?php echo _('Back to initial value') ?></option>
+	</select>
+	
+<div class="hidden">
+<textarea data-robot-preset="1">
+# No robot allowed
+User-agent: *
+Disallow: /
+</textarea>
+<textarea data-robot-preset="2">
+# All robots allowed
+User-agent: *
+Disallow:
+</textarea>
+</div>
+</form>
+<script type="text/javascript">
+	
+	ajsf.ready(function(){
+		
+		var form = _('#robots/presets/selection'),
+			selectList = _u('[name=selection]', form),
+			initialContent, contentTA ;
+		
+		_('#robots/presets/selection').on('submit', function(e){
+			ajsf.prevent(e);
+		}); 
+		
+		selectList.on('change', function(){
+			var val = selectList.options[selectList.selectedIndex].value ;
+			contentTA = _('#file/content','#core/file/edition/form');
+			if ( !initialContent )
+			{
+				initialContent = contentTA.value  ;
+			}
+			switch(val)
+			{
+				case 'void': return;
+				case 'back': contentTA.value = initialContent ; break;
+				default: contentTA.value = _('[data-robot-preset='+val+']', form).value;
+			}
+		});
+		
+	});
+	
+</script>

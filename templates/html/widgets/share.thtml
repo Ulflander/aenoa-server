@@ -1,0 +1,26 @@
+<<?php echo $widget['tag'] ?> class="<?php echo $widget['class'] ?>">
+<?php
+	$t = time() ;
+	$shares = AeSocialShare::mapShares ( $widget['t'] , $widget['u'] ) ;
+	$i = 0 ;
+	foreach ( $shares as $k => $share ):
+?>
+	<<?php echo $widget['subtag'] ?> id="#share_<?php echo $t ; ?>" class="<?php echo $widget['subclass'] ?>">
+		<a href="javascript:void(0);" onclick="javascript:window.open('<?php echo $share['share_url'] ?>','<?php echo $share['title'] ?>','height=500,width=600');" title="<?php echo $share['title'] ?>" class="<?php echo @$widget['linkclass'] ?> <?php echo ($share['influent']===true ? @$widget['influentclass'] : @$widget['normalclass'] ); ?> ">
+		<?php if( $widget['icon'] != 0 ): ?>
+			<img src="http://static.aenoa-systems.com/acf/plugins/iconify/social/<?php echo $k ?>_16.png" style="vertical-align: middle" title="<?php echo $share['title'] ?>" /> 
+		<?php endif ?><?php if( $widget['text'] != 0 ): ?>
+		<?php echo $share['title'] ?><?php endif ?>
+		</a></<?php echo $widget['subtag'] ?>>
+
+
+<?php 
+	$i++;
+	if ( $i == $limit ):
+	break;
+	endif;
+	
+	endforeach;
+?>
+	</<?php echo $widget['tag'] ?>>
+	

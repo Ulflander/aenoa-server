@@ -1,0 +1,66 @@
+<div id="do/update">
+
+	<form action="<?php echo url() ?>maintenance/update<?php if ( isset($key) ) echo '/'.$key; ?>" method="post" class="left expanded" id="do/update">
+		
+		<fieldset>
+			<legend><?php echo _('Dump MySQL databases') ?></legend>
+			<div class="control">
+				<label for="do/dump">
+					<?php echo _('Dump MySQL databases') ?>
+				</label>
+				<?php echo $this->field ( 'checkbox', 'do/dump') ; ?>
+			</div>
+		</fieldset>
+		
+		<?php if (!empty($packages)): ?>
+		
+		<fieldset>
+			<legend><?php echo _('Backup') ?></legend>
+			<div class="control">
+				<label for="do/backup">
+					<?php echo _('Backup packages before update') ?>
+				</label>
+				<?php echo $this->field ( 'checkbox', 'do/backup') ; ?>
+			</div>
+		</fieldset>
+		
+		<fieldset>
+			<legend><?php echo _('Packages to update') ?></legend>
+			<?php foreach( $packages as &$pack ): ?>
+			
+			<div class="control">
+				<label for="do/update/<?php echo $pack->getPackageName () ?>">
+					<?php echo sprintf(_('Package %s from version %s to version %s'), $pack->getPackageName (), $pack->getLocalVersion(), $pack->getRemoteUpdatedVersion () ) ?>
+				</label>
+				<?php echo $this->field ( 'checkbox', 'do/update/' .$pack->getPackageName ()) ; ?>
+				<span>
+					<a href="<?php echo AeFTPUpdate::REPO_URL . $pack->getPackageName () . '-changelog-' . $pack->getRemoteUpdatedVersion () . '.txt'; ?>" target="_blank" class="right"><?php echo sprintf(_('Check %s version %s changelog'), $pack->getPackageName (), $pack->getRemoteUpdatedVersion () ) ?></a>
+				</span>
+			</div>
+			
+			<?php endforeach ?>
+		</fieldset>
+		
+		<div class="expanded margedtop ">
+			<input type="submit" value="<?php echo _('Update selected elements') ?>" />
+		</div>
+		<?php else: ?>
+		<div class="expanded margedtop ">
+			<input type="submit" value="<?php echo _('Make backups') ?>" />
+		</div>
+		<?php endif ?>
+	</form>
+	
+	<hr class="hidden"/>
+	
+	<script language="javascript">
+		ajsf.load('aeforms');
+		ajsf.load('aejax');
+		ajsf.ready ( function () {
+			if ($.aeforms) {
+				$.aeforms.ajaxize(_("#do/update") , "<?php echo _('Please fill all required fields') ?>" , _("#do/update/container") );
+			}
+			_('#aenoaResponses').empty () ;
+		});
+	</script>
+</div>

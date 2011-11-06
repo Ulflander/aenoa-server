@@ -1,0 +1,33 @@
+
+<h2><?php echo _('Create a new webpage') ?></h2>
+
+<div class="expanded">
+
+    <form id="webpage_creation" action="<?php echo url() ?>webpages/create" method="post">
+    <?php $this->renderElement('responses'); ?>
+
+	<div class="control">
+	    <label for="webpage_filename"><?php echo _('Webpage filename') ?></label>
+	    <input type="text" id="webpage_filename" name="webpage_filename" />
+	</div>
+	
+	<div class="control">
+	    <label for="webpage_folder"><?php echo _('Choose a webpage folder') ?></label>
+	    <select id="webpage_folder" name="webpage_folder">
+	    <?php foreach ( $folders as $folder ): ?>
+		<option value="<?php echo $folder ?>"><?php echo $folder ?></option>
+	    <?php endforeach ?>
+		
+	    </select>
+	</div>
+	
+	<div class="control">
+	    <label for="webpage_folder"><?php echo _('Create a new webpage folder into selected folder') ?></label>
+	    <input type="text" id="webpage_new_folder" name="webpage_new_folder" />
+	</div>
+	
+	<input type="submit" value="<?php echo _('Submit') ?>" />
+
+    </form>
+    
+</div>

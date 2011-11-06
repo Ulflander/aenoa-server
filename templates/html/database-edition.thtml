@@ -1,0 +1,80 @@
+<?php
+/* * ********************************
+ * Aenoa Server Engine
+ * (c) Xavier Laumonier 2010
+ *
+ * Since : 1.0
+ * Author : Xavier Laumonier
+ *
+ * ******************************** */
+?>
+
+
+
+<?php
+if ($mode != 'readAllUpdate' && !App::isAjax()):
+    ?>
+
+
+    <ul class="expanded clearfix inline margedbottom" id="database_edition_menu">
+	<?php foreach ($urls as $k => $urlAndClass): ?>
+	    <li><a href="<?php echo $urlAndClass['url'] ?>" class="<?php echo $urlAndClass['class'] ?>" title="<?php echo $k ?>"><?php echo $k ?></a></li>
+	<?php endforeach; ?>
+    </ul>
+
+
+    <?php
+endif;
+
+$this->renderElement('responses');
+?>
+<?php
+switch ($mode) {
+    case 'add':
+    case 'edit':
+	if (isset($avoidForm) && $avoidForm == true)
+	    break;
+
+	if (isset($scaffolding) && $scaffolding === true) {
+	    $form = new AeAutoScaffoldedForm ();
+	} else {
+	    $form = new AeAutoForm ();
+	}
+
+	if ($form->setDatabase($databaseID, $table, $structure)) {
+	    $form->build($data, array(), $baseURL, true, $validities);
+	}
+
+	break;
+    case 'read':
+	echo arrayToList($data);
+	break;
+    case 'readAll':
+    case 'readFilter':
+    case 'readAllUpdate':
+
+	if (isset($scaffolding) && $scaffolding === true) {
+	    $tableRenderer = new AeAutoScaffoldedTable ();
+	} else {
+	    $tableRenderer = new AeAutoTable ();
+	}
+
+	$tableRenderer->baseURL = $baseURL;
+	$tableRenderer->setMode(isset($tableMode) ? $tableMode : 'inline');
+	$tableRenderer->isUpdate = ($mode == 'readAllUpdate');
+	$tableRenderer->showGlobalActions = (isset($showGlobalActions) ? $showGlobalActions : true );
+	$tableRenderer->showActions = (isset($showActions) ? $showActions : true );
+	$tableRenderer->currentFilter = $autoTableConditions;
+	$tableRenderer->currentWidget = $currentWidget;
+	$tableRenderer->context = $mode;
+	if ($mode == 'readFilter') {
+	    $tableRenderer->context = 'widget';
+	}
+	
+	    
+	if ($tableRenderer->setDatabase($databaseID, $table)) {
+	    $tableRenderer->build($data, $page, $pageLength, $count, $order, $dir, $currentWidget, $mode);
+	}
+	break;
+}
+?>

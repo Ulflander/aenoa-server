@@ -1,0 +1,10 @@
+
+	<?php $this->renderElement ( 'gg-tracker' ) ?>
+
+	</head>
+	<body class="">
+		<div id="top"><a href="<?php echo url() ?>"><?php echo Config::get ( App::APP_NAME ) ?></a>
+			<div class="right">
+				<?php $this->renderWidget('quick-account-access') ?>
+			</div>
+		</div>

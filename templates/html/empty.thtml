@@ -1,0 +1,31 @@
+<?php
+
+/**********************************
+ * Aenoa Server Engine
+ * (c) Xavier Laumonier 2010
+ *
+ * Since : 1.0
+ * Author : Xavier Laumonier
+ *
+ **********************************/
+
+?>
+
+
+
+<?php if ( !App::isAjax() ): ?>
+	<?php $this->renderElement ( 'header' ) ; ?>
+
+	<title><?php echo $this->title ?></title>
+
+	<?php $this->renderElement ( 'header-end' ) ; ?>
+	
+	<?php $this->renderElement('responses'); ?>
+	
+<?php endif; ?>
+
+<?php echo $content_for_layout ?>
+	
+<?php if ( !App::isAjax() ): ?>
+	<?php $this->renderElement ( 'footer' ) ; ?>
+<?php endif; ?>

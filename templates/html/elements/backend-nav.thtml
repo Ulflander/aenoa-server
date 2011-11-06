@@ -1,0 +1,5 @@
+<aside>
+		<?php
+			MenuHelper::displayBackendMenu () ;
+		?>
+</aside>

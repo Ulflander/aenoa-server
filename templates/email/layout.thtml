@@ -1,0 +1,8 @@
+
+
+<h2><?php echo Config::get(App::APP_NAME) ?></h2>
+
+<?php echo sprintf( _('This is an automatic message from %s'), Config::get(App::APP_NAME) ) ?>
+
+<?php echo $content_for_layout ?>
+

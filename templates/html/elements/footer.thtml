@@ -1,0 +1,5 @@
+
+		<div id="bottom"><?php echo Config::get ( App::APP_COPY_LINK ) ?></div>
+			
+	</body>
+</html>

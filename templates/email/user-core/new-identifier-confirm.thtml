@@ -1,0 +1,35 @@
+<?php
+
+/**********************************
+ * Aenoa Server Engine
+ * (c) Xavier Laumonier 2010
+ *
+ * Since : 1.0
+ * Author : Xavier Laumonier
+ *
+ **********************************/
+
+?>
+
+<?php $this->renderElement('mail-header') ?>
+
+	<h2><?php echo sprintf(_('%s Changing %s %s email address'), Config::get(App::APP_NAME), $firstname , $lastname) ?></h2>
+	<hr />
+	<p>
+		<strong><?php echo sprintf(_('Hello %s %s,'), $firstname , $lastname ) ?></strong>
+	</p>
+	<p><?php echo sprintf(_('You requested a few minutes ago to change your main email address on %s. Please click on the link below in order to confirm this new email address. This link will expire in %s hours.'), Config::get(App::APP_NAME) , $expiry ) ?></p>
+	
+	<p>
+		<a href="<?php echo $link ?>" title="<?php echo _('Confirm the new email address') ?> "><?php echo $link ?> </a>
+	</p>
+	<p>
+		<?php echo _('Your password will remain unchanged.') ?>
+	</p>
+	
+	<p>
+		<?php echo _('Thank you') ?>,<br />
+		<strong><?php echo sprintf(_('%s team'), Config::get(App::APP_NAME)) ?></strong>
+	</p>
+	
+<?php $this->renderElement('mail-footer') ?>

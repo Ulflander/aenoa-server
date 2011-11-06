@@ -1,0 +1,47 @@
+<?php
+
+/**********************************
+ * Aenoa Server Engine
+ * (c) Xavier Laumonier 2010
+ *
+ * Since : 1.0
+ * Author : Xavier Laumonier
+ *
+ **********************************/
+
+?>
+
+
+<?php if ( !App::isAjax () && !$this->useLayout ): ?>
+	<?php $this->renderElement ( 'header' ) ; ?>
+
+		<title><?php echo $title ?> | <?php echo Config::get ( App::APP_NAME ) ?></title>
+
+	<?php $this->renderElement ( 'header-end' ) ; ?>
+	
+		<div class="layout block-centered margedtop"> 
+<?php endif; ?>
+			
+			<div class="marged">
+				<h1><?php echo $title ?></h1>
+				
+				<hr class="hidden" />
+				
+				<div class="notify <?php if (isset($message_class)){echo ' ' . $message_class;}?>">
+					<?php echo $message ?>
+				</div>
+				
+				<hr class="hidden" />
+				
+				<ul class="no-list-style">
+					<li class="caption"><?php echo _('Where to go') ?></li>
+					<li><a href="<?php echo url () ; ?>" class="icon16 home"><?php echo _('Return to home') ?></a></li>
+				</ul>
+			</div>
+			
+		
+<?php if ( !App::isAjax () && !$this->useLayout  ): ?>
+		</div>
+	<?php $this->renderElement ( 'footer' ) ; ?>
+
+<?php endif; ?>

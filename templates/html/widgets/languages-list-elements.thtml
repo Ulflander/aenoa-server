@@ -1,0 +1,24 @@
+
+	<?php 
+	if (!App::getI18n()): ?>
+	<a href="<?php echo url() ?>" title="<?php echo _('Aenoa Server I18n error') ?>" class="icon16 i18n"><?php echo _('Aenoa Server I18n error') ?></a>
+	<?php else:
+	
+	$langs = App::getI18n()->getLangList () ;
+	$current = App::getI18n()->getCurrent () ;
+	$class = $widget['class'] ;
+	if ( count ( $langs ) > 1 ):
+	foreach ( $langs as $lang ):
+		if ( $lang == $current )
+		{
+			$title = sprintf(_('Your current language is %s'), _($lang)) ;
+			$c = $class . ' current' ;
+		} else {
+			$title = sprintf(_('Switch language to %s'), _($lang)) ;
+			$c = $class ;
+		}
+	?>
+	<li><a href="<?php echo url() ?>do/switch-language/<?php echo $lang ?>/<?php echo str_replace('/','_',App::getQuery()) ?>" title="<?php echo $title ?>" class="icon16 flag <?php echo $c ?>" data-lang="<?php echo $lang ?>" style="background-image:url(<?php echo Config::get(App::STATIC_SERVER) ?>acf/plugins/iconify/flags/<?php echo $lang ?>.png);"><?php echo _($lang) ?></a></li>
+	<?php 
+	endforeach;
+	endif; endif; ?>

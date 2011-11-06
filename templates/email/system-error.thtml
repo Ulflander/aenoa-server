@@ -1,0 +1,39 @@
+<?php
+
+/**********************************
+ * Aenoa Server Engine
+ * (c) Xavier Laumonier 2010
+ *
+ * Since : 1.0
+ * Author : Xavier Laumonier
+ *
+ **********************************/
+
+?>
+
+
+
+<?php $this->renderElement('mail-header') ?>
+
+	<h2>
+		<?php echo sprintf(_('%s SYSTEM ERROR REPORT'), Config::get(App::APP_NAME)) ?>
+	</h2>
+	<hr />
+	<p>
+		<strong><?php echo _('Hello administrator,') ?></strong>
+	</p>
+	<p>
+		<?php echo sprintf(_('An error occured on your platform %s. Here is a quick report: '), Config::get(App::APP_NAME) ) ?> <br />
+		<?php echo _('Date:') ?>: <?php echo date('Y/m/d H:i:s') ?> <br />
+		<?php echo _('URL') ?>: <?php echo url() ?> <br />
+		<?php echo _('System error response') ?>: <?php echo $response ?> <br />
+		<?php echo _('Query') ?>: <?php echo App::getQuery() ?> <br />
+		<?php echo _('Ajax mode') ?>: <?php echo (App::isAjax() ? 'Yes' : 'No') ?> <br />
+		<?php echo _('Post data') ?>:<br />
+		<?php pr( $_POST ) ; ?>
+		<?php echo _('API Key') ?>: <?php echo ServerAuthCheck::getUseReport () ?><br />
+		<?php echo _('User') ?>:<br />
+		<?php pr( App::getUser() ) ; ?>
+ 	</p>
+	
+<?php $this->renderElement('mail-footer') ?>

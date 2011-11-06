@@ -1,0 +1,4 @@
+# Auto generated HTACCESS protection / Aenoa Server / Generated : 2011-09-02 07:19:46
+order allow,deny
+deny from all
+

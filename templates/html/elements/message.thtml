@@ -1,0 +1,25 @@
+
+
+<?php if ($type == 'progressDone'): ?>
+
+<script type="text/javascript">
+	_('#progress/<?php echo $id ; ?>').hide();
+</script>
+
+<?php elseif ($type == 'progress'): ?>
+
+<div class="notify notice" id="progress/<?php echo $id ; ?>">
+	<?php echo $message ; ?>
+	<div class="percent-block">
+		<span class="running" style="width: 100%"></span>
+	</div>
+</div>
+<?php ?>
+
+<?php else: ?>
+
+<div class="notify <?php echo $type ?>">
+	<?php echo $message ?>
+</div>
+
+<?php endif; ?>		
