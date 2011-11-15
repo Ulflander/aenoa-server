@@ -396,7 +396,7 @@ class App extends AeObject
 	
 	/**
 	 * FileSystem Util tool
-	 * @var string
+	 * @var FSUtil
 	 */
 	public static $futil ;
 	

@@ -53,28 +53,39 @@ class MenuHelper {
 		$str .= '<li class=""><a href="'.url().'maintenance/status" class="icon16 home">' . ucfirst(sprintf(_('Manager home'),$struct)) . '</a></li>' . "\n" ;
 		$js = '<script type="text/javascript">ajsf.load("ae-block-switch");ajsf.ready(function(){';
 		
-		if (debuggin())
-		{
-			$str .= '<li><a href="#" id="dev-menu-btn" class="">' . _('Development') . '</a></li>' . "\n" ;
-			$str .= '<li><ul id="dev-menu" class="no-list-style aemenu '. $class .'">' . "\n" ;
-			$str .= '<li><a href="'.url().'dev/PHPI18n" title="'. _('Extract I18n strings using xgetext utility') .'" class="icon16 i18n">' . _('Extract I18n') . '</a></li>' . "\n" ;
-			$str .= '<li><a href="'.url().'dev/GenerateStructureDocFile" title="'. _('Update structures documentation files by extracting structure description') .'" class="icon16 manual">' . _('Update structures doc') . '</a></li>' . "\n" ;
-			$str .= '<li><a href="'.url().'dev/GenerateDocumentation" title="'. _('Create documentation using NaturalDocs') .'" class="icon16 manual">' . _('Create documentation') . '</a></li>' . "\n" ;
-			$str .= '<li><a href="'.url().'dev/EhtmlToThtml" title="'. _('Generate templates from EHtml files to THtml files') .'" class="icon16 wizard">' . _('Generate templates') . '</a></li>' . "\n" ;
-			$str .= '<li><a href="'.url().'dev/HashMachine" title="'. _('Make some hash') .'" class="icon16 run">' . _('Hash machine') . '</a></li>' . "\n" ;
-			$str .= '<li><a href="'.url().'dev/AssetsCompressor" title="'. _('Compress assets') .'" class="icon16 package">' . _('Compress assets') . '</a></li>' . "\n" ;
-			$str .= '<li><a href="'.url().'dev/RevertAssetsCompressor" title="'. _('Revert assets compression') .'" class="icon16 package">' . _('Revert assets compression') . '</a></li>' . "\n" ;
-			$str .= '<li><a href="'.url().'dev/ExploreTasks" title="'. _('List tasks') .'" class="icon16 files">' . _('Explore tasks') . '</a></li>' . "\n" ;
-			$str .= '</ul></li>'  . "\n" ;
-
-			$js .= 'new ajsf.AeBlockSwitch({button:_("#dev-menu-btn"),element:_("#dev-menu"),openedClass:"icon16 down",closedClass:"icon16 play"}).'.
-				($query->getAt() == QueryString::DEV_TOKEN ? 'open' : 'close')
-				.'();';
-
-
-		}
 
 		echo $str . '<li>' ;
+		$str = '' ;
+
+		$str .= '<li><a href="#" id="maintenance-menu-btn" class="icon16 group">' . _('Maintenance') . '</a></li>' . "\n" ;
+		$str .= '<li><ul id="maintenance-menu" class="no-list-style aemenu '. $class .'">' . "\n" ;
+		$str .= '<li><a href="'.url().'maintenance/logs" title="'. _('Logs') .'" class="icon16 files">' . _('Logs') . '</a></li>' . "\n" ;
+		$str .= '<li><a href="'.url().'maintenance/update" title="'. _('Updates') .'" class="icon16 update">' . _('Updates') . '</a></li>' . "\n" ;
+		$str .= '<li><a href="'.url().'maintenance/robots" title="'. _('robots.text file') .'" class="icon16">' . _('robots.txt') . '</a></li>' . "\n" ;
+		$str .= '<li><a href="'.url().'maintenance/debug" title="'. _('Debug mode') .'" class="icon16 warning">' . _('Debug mode') . '</a></li>' . "\n" ;
+		$str .= '</ul></li>'  . "\n" ;
+
+		$js .= 'new ajsf.AeBlockSwitch({button:_("#maintenance-menu-btn"),element:_("#maintenance-menu"),openedClass:"icon16 down",closedClass:"icon16 play"}).'.
+			($query->getAt() == 'maintenance' ? 'open' : 'close')
+			.'();';
+
+		echo $str ;
+		$str = '' ;
+
+		if (Config::get(App::USER_CORE_SYSTEM) == true )
+		{
+			$str .= '<li><a href="#" id="users-menu-btn" class="icon16 group">' . _('Users') . '</a></li>' . "\n" ;
+			$str .= '<li><ul id="users-menu" class="no-list-style aemenu '. $class .'">' . "\n" ;
+			$str .= '<li><a href="'.url().'user-manage/new-users" title="'. _('Manage new users') .'" class="icon16 user">' . _('Manage new users') . '</a></li>' . "\n" ;
+			$str .= '<li><a href="'.url().'user-manage/all-users" title="'. _('Manage all users') .'" class="icon16 group">' . _('Manage users') . '</a></li>' . "\n" ;
+			$str .= '</ul></li>'  . "\n" ;
+
+			$js .= 'new ajsf.AeBlockSwitch({button:_("#users-menu-btn"),element:_("#users-menu"),openedClass:"icon16 down",closedClass:"icon16 play"}).'.
+				($query->getAt() == 'user-manage' ? 'open' : 'close')
+				.'();';
+
+			echo $str ;
+		}
 		
 		$structures = App::getAllDBs();
 		$str = '' ;
@@ -109,9 +120,29 @@ class MenuHelper {
 			($query->getAt() == 'webpages' ? 'open' : 'close')
 			.'();';
 
-		$str .='</ul></li>';
+		$str .='</li>';
 
-		echo $str ;
+		if (debuggin())
+		{
+			$str .= '<li><a href="#" id="dev-menu-btn" class="">' . _('Development') . '</a></li>' . "\n" ;
+			$str .= '<li><ul id="dev-menu" class="no-list-style aemenu '. $class .'">' . "\n" ;
+			$str .= '<li><a href="'.url().'dev/Backup" title="'. _('Backup application') .'" class="icon16 backup">' . _('Backup application') . '</a></li>' . "\n" ;
+			$str .= '<li><a href="'.url().'dev/PHPI18n" title="'. _('Extract I18n strings using xgetext utility') .'" class="icon16 i18n">' . _('Extract I18n') . '</a></li>' . "\n" ;
+			$str .= '<li><a href="'.url().'dev/GenerateStructureDocFile" title="'. _('Update structures documentation files by extracting structure description') .'" class="icon16 manual">' . _('Update structures doc') . '</a></li>' . "\n" ;
+			$str .= '<li><a href="'.url().'dev/GenerateDocumentation" title="'. _('Create documentation using NaturalDocs') .'" class="icon16 manual">' . _('Create documentation') . '</a></li>' . "\n" ;
+			$str .= '<li><a href="'.url().'dev/EhtmlToThtml" title="'. _('Generate templates from EHtml files to THtml files') .'" class="icon16 wizard">' . _('Generate templates') . '</a></li>' . "\n" ;
+			$str .= '<li><a href="'.url().'dev/HashMachine" title="'. _('Make some hash') .'" class="icon16 run">' . _('Hash machine') . '</a></li>' . "\n" ;
+			$str .= '<li><a href="'.url().'dev/AssetsCompressor" title="'. _('Compress assets') .'" class="icon16 package">' . _('Compress assets') . '</a></li>' . "\n" ;
+			$str .= '<li><a href="'.url().'dev/RevertAssetsCompressor" title="'. _('Revert assets compression') .'" class="icon16 package">' . _('Revert assets compression') . '</a></li>' . "\n" ;
+			$str .= '<li><a href="'.url().'dev/ExploreTasks" title="'. _('List tasks') .'" class="icon16 files">' . _('Explore tasks') . '</a></li>' . "\n" ;
+			$str .= '</ul></li>'  . "\n" ;
+
+			$js .= 'new ajsf.AeBlockSwitch({button:_("#dev-menu-btn"),element:_("#dev-menu"),openedClass:"icon16 down",closedClass:"icon16 play"}).'.
+				($query->getAt() == QueryString::DEV_TOKEN ? 'open' : 'close')
+				.'();';
+
+		}
+		echo $str . '</ul>';
 		
 		$js .= '});</script>';
 		echo $js;

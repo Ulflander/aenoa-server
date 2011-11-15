@@ -22,16 +22,6 @@
 			<?php $this->renderElement('responses'); ?>
 			
 			
-			<ul class="no-list-style inline">
-				<li><a href="<?php echo url() ?>maintenance/check-context" class="icon16 reload"><?php echo _('Check context') ?></a></li>
-				<li><a href="<?php echo url() ?>maintenance/logs" class="icon16 files"><?php echo _('Logs') ?></a></li>
-				<li><a href="<?php echo url() ?>maintenance/robots" class="icon16"><?php echo _('Robots.txt') ?></a></li>
-				<li><a href="<?php echo url() ?>maintenance/update" class="icon16 update"><?php echo _('Updates') ?></a></li>
-				<li><a href="<?php echo url() ?>maintenance/debug" class="icon16 warning"><?php echo _('Debug mode') ?></a></li>
-			</ul>
-			
-			<hr />
-			
 			
 				<div class="col-5 p b">
 					<?php echo _('Application name') ?>: <strong>

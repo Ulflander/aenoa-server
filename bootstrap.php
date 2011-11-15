@@ -69,6 +69,13 @@ define ( 'AE_CORE_SERVICES', AE_SERVER . 'services' . DS ) ;
 define ( 'AE_TEMPLATES', AE_SERVER . 'templates' . DS ) ;
 
 /**
+ * Constant: AE_WIDGETS
+ *
+ * Aenoa Server core widgets folder path
+ */
+define ( 'AE_WIDGETS', AE_SERVER . 'widgets' . DS ) ;
+
+/**
  * Constant: AE_BEHAVIORS
  *
  * Aenoa Server core behaviors folder path
@@ -95,6 +102,14 @@ define ( 'AE_PRIVATE', ROOT . '.private' . DS ) ;
  * Aenoa Server application temp folder path (in private folder, so not public)
  */
 define ( 'AE_TMP', ROOT . '.private' . DS . 'tmp' . DS ) ;
+
+/**
+ * Constant: AE_APP_BACKUP
+ *
+ * Aenoa Server application backup folder path (in private folder, so not public)
+ */
+define ( 'AE_APP_BACKUP', ROOT . '.private' . DS . 'backup' . DS ) ;
+
 
 /**
  * Constant: AE_SESS
@@ -211,6 +226,7 @@ if ( !function_exists( 'addAutoloadPath' ) )
 // create Autoload directories array 
 addAutoloadPath ( AE_LIBS ) ;
 addAutoloadPath ( AE_CONTROLLERS ) ;
+addAutoloadPath ( AE_WIDGETS ) ;
 
 $FILE_UTIL = new FSUtil ( AE_LIBS ) ;
 $folders = $FILE_UTIL->getDirsList(AE_LIBS,false);

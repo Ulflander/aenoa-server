@@ -12,12 +12,15 @@ class UserCoreController extends Controller{
 	function beforeAction( $action )
 	{
 		
-		$this->user = App::getUser() ;
-		
 		if ( Config::get(App::USER_CORE_SYSTEM) !== true )
 		{
 			App::do404 ( _('Core user management is not available.') ) ;
+		} else if ( is_null($this->db) )
+		{
+			App::do500 ( _('Database is not available') ) ;
 		}
+
+		$this->user = App::getUser() ;
 		
 		$this->view->useLayout = true ;
 		

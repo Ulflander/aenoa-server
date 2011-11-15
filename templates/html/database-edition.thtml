@@ -47,7 +47,7 @@ switch ($mode) {
 
 	break;
     case 'read':
-	echo arrayToList($data);
+	echo HTMLBase::array2HTMLList($data);
 	break;
     case 'readAll':
     case 'readFilter':

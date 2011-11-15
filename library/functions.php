@@ -699,13 +699,13 @@ if ( function_exists ( 'retrieveBasePath' ) == false )
 	function retrieveBasePath ( $dirsToSkip = array () )
 	{
 		
-		$url = $_SERVER['SCRIPT_NAME'] ;
-		$url = preg_split("/\//", $url, -1) ;
+		$path = $_SERVER['SCRIPT_NAME'] ;
+		$path = preg_split("/\//", $path, -1) ;
 		do {
-			unset( $url[count( $url )-1] ) ;
-		} while ( in_array ( $url[count( $url )-1] , $dirsToSkip ) ) ;
+			unset( $path[count( $path )-1] ) ;
+		} while ( in_array ( $path[count( $path )-1] , $dirsToSkip ) ) ;
 		
-		return implode( '/' , $url) . '/'  ;
+		return implode( '/' , $path) . '/'  ;
 	}
 }
 
@@ -772,24 +772,6 @@ function printArray ( $array , $indent = '' )
 	return implode ( "\n" , $arr ) ;
 }
 
-
-function arrayToList ( $array )
-{
-	$res[] = '<ul>';
-	foreach ( $array as $k => $v )
-	{
-		if ( is_array ( $v ) )
-		{
-			$res[] = '<li><span class="col-3">' . _($k) . '</span></li>' ;
-			$res[] = arrayToList($v) ;
-		} else {
-			$res[] = '<li><span class="col-3">' . _($k) . '</span><strong>'. $v . '</strong></li>' ;
-		}
-	}
-	$res[] = '</ul>';
-	return implode("\n",$res) ;
-}
-
 function array_merge_keep_structure($arr,$ins) {
 
     if(is_array($arr))
@@ -825,9 +807,13 @@ function debuggin ()
 	return defined ('DEBUG') && DEBUG ;
 }
 
-function mysql_date ( $time )
+function mysql_date ( $time = null , $separator = ' ' )
 {
-	return date ( 'Y-m-d H:i:s' , $time ) ;
+	if ( is_null($time) )
+	{
+		$time = time () ;
+	}
+	return date ( 'Y-m-d' . $separator . 'H:i:s' , $time ) ;
 }
 
 ?>

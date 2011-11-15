@@ -14,18 +14,16 @@
 
 
 <?php if ( !App::isAjax() ): ?>
-	<?php $this->renderElement ( 'header' ) ; ?>
+	<?php $this->renderElement ( 'header-backend' ) ; ?>
 	
-	<link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ; ?>acf/all.css" type="text/css" media="screen,projection" />
-	<link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ; ?>acf/plugins/ajaxize/ajaxize.css" type="text/css" media="screen,projection" />
 	<link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ; ?>acf/plugins/aenoa/backend.css" type="text/css" media="screen,projection" />
 	
 	<title><?php echo $this->title ?></title>
 	</head>
 	<body class="sans-serif">
-	<header class="shadowed">
+	<header>
+	    <span><?php echo _('Aenoa Server manager for') ?></span>
 	    <h1><?php echo Config::get(App::APP_NAME) ?></h1>
-	    <span><?php echo _('Aenoa Server manager') ?></span>
 	</header>
 	<div id="nav" class="shadowed">
 	    <a href="<?php echo url() ?>" title="<?php echo _('Back to application') ?>">&laquo; <?php echo _('Back to application') ?></a>
@@ -53,7 +51,7 @@
 <?php if ( !App::isAjax() ): ?>
 	</section>
 	</div>
-	<footer>
+	<footer class="shadowed">
 	    © Aenoa Systems - 2010/2011
 	</footer>
 <?php endif; ?>

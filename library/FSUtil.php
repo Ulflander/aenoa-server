@@ -367,7 +367,8 @@ class FSUtil
 		
 		return $array ;
 	}
-	
+
+
 	
 	/**
 	 * Returns info about a file
@@ -874,7 +875,40 @@ class FSUtil
 		}
 	}
 	
-	
+
+
+	/**
+	 * Creates a path of directories
+	 *
+	 * @param string $root Root path
+	 * @param string $path Path of new directories, such as some/folders/names
+	 * @return True if directorie created, false otherwise
+	 */
+	function createDirs ( $root, $path )
+	{
+		$root = $this->getPath($root) ;
+		if ( $root === false )
+		{
+			$this->errors[] = 1002 ;
+			return false ;
+		}
+
+		$path = explode(DS,$path) ;
+
+		while ( !empty($path) )
+		{
+			$dir = array_shift($path);
+			if ( $dir == '' || !$this->createDir($root, $dir))
+			{
+				return false ;
+			}
+
+			$root = setTrailingDS($root) . $dir ;
+		}
+		return true ;
+	}
+
+
 	
 	/**
 	 * Runs the $_FILES global array and try to upload given files

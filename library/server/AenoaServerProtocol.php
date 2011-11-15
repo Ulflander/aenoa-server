@@ -234,7 +234,7 @@ class AenoaServerProtocol extends AbstractProtocol {
     public function setFailure($errorCode) {
 	if (is_array($errorCode)) {
 	    foreach ($errorCode as $code) {
-		$this->addError($code);
+			$this->addError($code);
 	    }
 	} else {
 	    $this->addError($errorCode);
