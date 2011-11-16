@@ -45,6 +45,40 @@ class EHtmlElement extends AeObject {
 		return $string ;
 	}
 	
+	function renderInnerVars ( $string , $parameters )
+	{
+		preg_match_all('/{([^}]*)}/i', $string, $matches);
+		if ( count($matches[0]) > 0 )
+		{
+			foreach ( $matches[0] as  $k => $v )
+			{
+				$string = str_replace ( $matches[0][$k] , '<?php echo ' . $matches[1][$k] . ' ?>', $string ) ;
+			}
+		}
+		return $string ;
+	}
+	
+	function solveMethodParams ( $string, $variables = array () )
+	{
+		if ( empty( $variables ) )
+		{
+			return $string ;
+		}
+		preg_match_all('/\$([0-9]{1,})/i', $string, $matches);
+		if ( count($matches[0]) > 0 )
+		{
+			foreach ( $matches[0] as  $k => $v )
+			{
+				$index = intval($matches[1][$k]) - 1 ;
+				if ( count($variables) > $index )
+				{
+					$string = str_replace ( $matches[0][$k] , trim($variables[$index], ' "'), $string ) ;
+				}
+			}
+		}
+		return $string ;
+	}
+	
 	private function renderHTML($indentation, $methods, $variables, EHtmlBase &$base) {
 		
 		$res = $indentation;
@@ -73,7 +107,13 @@ class EHtmlElement extends AeObject {
 					$param = $variables[$i-1] ;
 					$tok = substr($param, 0, 1);
 				}
+			} else {
+				$param = $this->solveMethodParams ($param, $variables ) ;
 			}
+			
+			
+			
+
 			switch ( true )
 			{
 				case in_array($tok , array('{','(','"')):
@@ -83,7 +123,7 @@ class EHtmlElement extends AeObject {
 					$val = substr($param, 1) ;
 					break;
 			}
-
+			
 			switch ( $tok )
 			{
 				// RAW value
@@ -112,7 +152,8 @@ class EHtmlElement extends AeObject {
 					break;
 				// src, action, href attribute depending on main tag (script, iframe, img, a tags)
 				case '@':
-					$url = $val ;
+					
+					
 					if ( strpos($val,'.') === 0 )
 					{
 						$val = '<?php echo url() ?>' . $this->renderInnerPHP(substr($val,1));
