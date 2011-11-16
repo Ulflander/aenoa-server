@@ -152,8 +152,6 @@ class EHtmlElement extends AeObject {
 					break;
 				// src, action, href attribute depending on main tag (script, iframe, img, a tags)
 				case '@':
-					
-					
 					if ( strpos($val,'.') === 0 )
 					{
 						$val = '<?php echo url() ?>' . $this->renderInnerPHP(substr($val,1));
@@ -164,6 +162,7 @@ class EHtmlElement extends AeObject {
 					{
 						case 'script':
 						case 'iframe':
+						case 'img':
 							$attributes .= ' src="' . $val . '"' ;
 							$closure = '</' . $this->keyword . '>' ;
 							break;
