@@ -31,7 +31,17 @@ class EHtmlElement {
 
 		return $this->renderHTML($indentation, $methods, $variables, $base);
 	}
-
+	
+	function renderInnerPHP ( $string )
+	{
+		preg_match('/^(.*){(.*)}(.*)$/i', $string, $matches);
+		if ( count($matches) == 4 )
+		{
+			$string = $matches[1] . '<?php echo ' . $matches[2] . ' ?>' . $matches[3] ;
+		}
+		return $string ;
+	}
+	
 	private function renderHTML($indentation, $methods, $variables, EHtmlBase &$base) {
 		
 		$res = $indentation;
@@ -79,7 +89,7 @@ class EHtmlElement {
 					break;
 				// CSS class
 				case '.':
-					$classes[] = $val ;
+					$classes[] = $this->renderInnerPHP($val) ;
 					break;
 				// CSS inline Style
 				case '%':
@@ -87,11 +97,11 @@ class EHtmlElement {
 					break;
 				// HTML Id
 				case '#':
-					$attributes .= ' id="' . $val . '"';
+					$attributes .= ' id="' . $this->renderInnerPHP($val) . '"';
 					break;
 				// Raw attributes
 				case '(':
-					$attributes .= ' ' . $val ;
+					$attributes .= ' ' . $this->renderInnerPHP($val) ;
 					break;
 				// PHP echo tag, will defined value (and later, closure)
 				case '{':
@@ -102,7 +112,9 @@ class EHtmlElement {
 					$url = $val ;
 					if ( strpos($val,'.') === 0 )
 					{
-						$val = '<?php echo url() ?>' . substr($val,1);
+						$val = '<?php echo url() ?>' . $this->renderInnerPHP(substr($val,1));
+					} else {
+						$val = $this->renderInnerPHP($val);
 					}
 					switch($this->keyword)
 					{
@@ -232,6 +244,7 @@ class EHtmlElement {
 				break;
 			default:
 				$custom = $base->getCustomTokenResult($this->token, $this->rawTokenContent , false , $this) ;
+				
 				if (is_null($custom) && $this->token != '' )
 				{
 					
@@ -531,6 +544,7 @@ class EHtmlBase {
 
 		$escaped = false;
 		$escapedChar = '';
+		$nested = 0 ;
 		$prev = $char = '';
 		$escapes = array(
 			'"' => '"',
@@ -549,18 +563,28 @@ class EHtmlBase {
 			$char = $line[$i];
 
 
-
 			// Escape mode, we check for escape end or we continue
 			if ( $step > 0 && $escaped )
 			{
 				$current .= $char ;
+				
+				if ( $char == $escapedChar )
+				{
+					$nested ++ ;
+				}
+				
 				// End of escape
 				if ( $escapes[$escapedChar] == $char && $prev != '\\' )
 				{
-
-					$element->addParam($current);
-					$current = '' ;
-					$escaped = false ;
+					if ( $nested == 0 )
+					{
+						$element->addParam($current);
+						$current = '' ;
+						$nested = 0 ;
+						$escaped = false ;
+					} else {
+						$nested -- ;
+					}
 				}
 				
 			} else if ($char == ' ' || $char == "\t") {
@@ -581,6 +605,7 @@ class EHtmlBase {
 						break;
 					default:
 						$current = trim($current);
+						
 						if (preg_match('/^[^a-z0-9]{1,2}/i', $current) == 1) {
 							$element->addParam($current);
 						} else {
@@ -590,7 +615,7 @@ class EHtmlBase {
 				$step++;
 				$current = '' ;
 				
-			} else if ( ake ($char,$escapes) )
+			} else if ( ake ($char,$escapes) && ( $prev == ' ' || $prev == "\t" ) )
 			{
 				$current .= $char ;
 				$escaped = true ;
@@ -605,6 +630,7 @@ class EHtmlBase {
 		{
 			$element->multiline = true ;
 		}
+		
 		return $element;
 	}
 

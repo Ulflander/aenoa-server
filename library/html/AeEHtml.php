@@ -16,7 +16,7 @@ class AeEHtml extends EHtmlBase {
 	function __construct ()
 	{
 		$this->addToken ( '*' ,'makeFormElement' ) ;
-		$this->addToken('+', 'pr');
+		$this->addToken('£', 'pr');
 	}
 
 	function pr ( $token , $value, $inline )
@@ -61,7 +61,20 @@ class AeEHtml extends EHtmlBase {
 				}
 			}
 			
-			return '<?php echo $this->getField(\'' . $ids[0] . '\',\'' . $ids[1] . '\',\'' . $ids[2] . '\', isset($baseURL) ? $baseURL : null, isset($data) ? $data : array() , '.$container.' , '.$label.' , '.$field.' , '.$desc.' );  ?>' ;
+			// Check for variables in ids
+			foreach ( $ids as &$id )
+			{
+				$len = strlen($id) ;
+				
+				if (!(substr($id, 0, 1) == '{' && substr($id, $len - 1 , 1 ) == '}') )
+				{
+					$id = '\'' . $id . '\'' ;
+				} else {
+					$id = substr ( $id , 1 , $len - 1 ) ;
+				}
+			}
+			
+			return '<?php echo $this->getField(' . $ids[0] . ',' . $ids[1] . ',' . $ids[2] . ', isset($baseURL) ? $baseURL : null, isset($data) ? $data : array() , '.$container.' , '.$label.' , '.$field.' , '.$desc.' );  ?>' ;
 		} else if ( !is_null($element) && $element->keyword == 'form' )
 		{
 			$elements = explode(' ', $value) ;
