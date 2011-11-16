@@ -105,7 +105,7 @@ class Webpage extends Template {
 		{
 			$webpage = self::solveFilename($webpage) ;
 		}
-
+		
 		parent::__construct(AE_TEMPLATES . 'html' . DS . 'webpage.' . $this->getExtension(), Config::get(App::APP_NAME));
 
 		if ($title != $this->title) {
@@ -127,6 +127,12 @@ class Webpage extends Template {
 		} else {
 			$this->setWebpage($webpage);
 		}
+		
+		if ( $webpage != 'index' && $webpage != 'index.html' )
+		{
+			$this->set ( 'is_home' , false ) ;
+		}
+		
 	}
 
 	function setWebpage($webpage) {
@@ -151,6 +157,7 @@ class Webpage extends Template {
 	}
 
 	function render($echo = true) {
+		
 		parent::render($echo);
 	}
 
@@ -164,9 +171,8 @@ class Webpage extends Template {
 
 	function renderWebpage()
 	{
-
 		extract($this->getAll());
-
+		
 		if ( preg_match('/\.ehtml$/', $this->_curWebpage ) )
 		{
 			$ehtml = new AeEHtml () ;

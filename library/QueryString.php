@@ -161,7 +161,7 @@ class QueryString extends AeObject {
 	 */
 	function reset ( $query )
 	{
-		if ( !is_string( $value ) )
+		if ( !is_string( $query ) )
 		{
 			return $this;
 		}
