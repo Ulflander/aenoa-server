@@ -1,6 +1,6 @@
 <?php
 
-class EHtmlElement {
+class EHtmlElement extends AeObject {
 
 	var $tokenized = false;
 	var $token = '';
@@ -34,10 +34,13 @@ class EHtmlElement {
 	
 	function renderInnerPHP ( $string )
 	{
-		preg_match('/^(.*){(.*)}(.*)$/i', $string, $matches);
-		if ( count($matches) == 4 )
+		preg_match_all('/{([^}]*)}/i', $string, $matches);
+		if ( count($matches[0]) > 0 )
 		{
-			$string = $matches[1] . '<?php echo ' . $matches[2] . ' ?>' . $matches[3] ;
+			foreach ( $matches[0] as  $k => $v )
+			{
+				$string = str_replace ( $matches[0][$k] , '<?php echo ' . $matches[1][$k] . ' ?>', $string ) ;
+			}
 		}
 		return $string ;
 	}
@@ -152,15 +155,10 @@ class EHtmlElement {
 		
 		$tagClosure = '>' ;
 		
-		if( $this->keyword == 'input' )
+		if( $this->keyword == 'input' || $this->keyword == 'img' )
 		{
 			$tagClosure = ' />' ;
 			$value = '' ;
-		}
-		
-		if ( $value != '' )
-		{
-			$closure = '</'.$this->keyword.'>' ;
 		}
 		
 
@@ -199,6 +197,10 @@ class EHtmlElement {
 				break;
 			// Close HTML tag
 			case '/':
+				if ( $this->keyword == 'input' || $this->keyword == 'img' )
+				{
+					break;
+				}
 				$res .= '</' . $this->keyword . '>';
 				break;
 			// HTML comment statement
@@ -258,7 +260,7 @@ class EHtmlElement {
 
 }
 
-class EHtmlBase {
+class EHtmlBase extends AeObject {
 	const STATE_INLINE = 'inline';
 
 	const STATE_MULTILINE = 'multiline';
@@ -446,8 +448,16 @@ class EHtmlBase {
 					$this->state = self::STATE_MULTILINE;
 					$multiline .= preg_replace('/(<)$/i','',$line);
 				} else {
+
+					if (!is_null($prev) ) {
+						$res['lines'][] = $prev;
+						$prev = null;
+					}
+
 					$res['lines'][] = $line;
-					if (!$this->isTokenizedLine($line)) {
+					
+					
+					if (!$this->isTokenizedLine($line) && trim($line) != '' ) {
 						$prev = '/ ' . $line;
 					} else {
 						$prev = null;
@@ -455,6 +465,10 @@ class EHtmlBase {
 				}
 			}
 			$i++;
+		}
+		
+		if (!is_null($prev) ) {
+			$res['lines'][] = $prev;
 		}
 		return $res;
 	}
@@ -568,7 +582,7 @@ class EHtmlBase {
 			{
 				$current .= $char ;
 				
-				if ( $char == $escapedChar )
+				if ( ( $escapedChar == '(' || $escapedChar == '{' ) && $char == $escapedChar )
 				{
 					$nested ++ ;
 				}
@@ -630,7 +644,6 @@ class EHtmlBase {
 		{
 			$element->multiline = true ;
 		}
-		
 		return $element;
 	}
 
