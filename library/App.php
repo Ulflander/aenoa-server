@@ -13,11 +13,6 @@
  */
 class App extends AeObject
 {
-	
-	
-	
-	
-	
 
 	/*************************************************
 	 * CONSTANTS THAT DEFINE CONFIGURATION

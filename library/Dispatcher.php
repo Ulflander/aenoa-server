@@ -65,227 +65,196 @@
  *
  * @see QueryString
  * @see App
+ * @see App::getQueryString
  * @see Controller
+ * @see Webpage
  * @see RESTGateway
  * @see Gateway
- * @see Webpage
  * @see AenoaRights
  */
 class Dispatcher {
-	
-	
-	static private $_more = array () ;
-	
-	static private $_done = false ;
-	
-	static private $_activated = true ;
-	
-	/**
-	 * Returns unidentified tokens in url
-	 */
-	static public function getMore ()
-	{
-		return self::$_more ;
-	}
-	
+
+	static private $_more = array();
+	static private $_done = false;
+	static private $_activated = true;
+
 	/**
 	 * Unactivates dispatching using Dispatcher::dispatch method
 	 */
-	static public function unactivate ()
-	{
-		self::$_activated = false ;
+	static public function unactivate() {
+		self::$_activated = false;
 	}
 
 	/**
 	 * Activates dispatching using Dispatcher::dispatch method
 	 */
-	static public function activate ()
-	{
-		self::$_activated = true ;
+	static public function activate() {
+		self::$_activated = true;
 	}
-	
+
 	/**
 	 * Force dispatch of the initial query, even if Dispatcher is unactivated
 	 */
-	static public function forceDispatch ()
-	{
-		self::_dispatch ( App::getQueryString() ) ;
+	static public function forceDispatch() {
+		self::_dispatch(App::getQueryString());
 	}
-	
+
 	/**
 	 * Dispatch the query
 	 * 
 	 * Will trigger an error if headers has been already sent
 	 * 
-	 * 
+	 * @see App::getQueryString
 	 */
-	static public function dispatch ()
-	{
-		if ( headers_sent () )
-		{
-		//	trigger_error ( 'Dispatcher::dispatch cannot be called after headers sent' , E_USER_ERROR ) ;
+	static public function dispatch() {
+		if (headers_sent() ) {
+			if ( debuggin () )
+			{
+				new ErrorException( 'Dispatcher::dispatch cannot be called after headers sent' ) ;
+			} else {
+				App::do500( _('Dispatch unavailable because of a previous error probably') ) ;
+			}
 		}
-		if ( self::$_activated )
-		{
-			self::_dispatch ( App::getQueryString() ) ;
+		
+		if (self::$_activated) {
+			self::_dispatch(App::getQueryString());
 		}
 	}
-	
+
 	/**
 	 * Dispatch the given $query query
 	 * 
 	 * Will NOT trigger any error if headers has been already sent
 	 * 
-	 * 
+	 * @param QueryString The query to dispatch, as query string
 	 */
-	static public function dispatchThis ( QueryString &$query )
-	{
-		self::_dispatch ($query , true ) ;
+	static public function dispatchThis(QueryString &$query) {
+		self::_dispatch($query, true);
 	}
-	
-	
+
 	/**
 	 * Concrete method to dispatch the query
 	 * 
 	 * @param $query QueryString The query to dispatch
 	 * @param $redispatch Dispatch even if yet dispatched another query
 	 */
-	static private function _dispatch ( QueryString &$query = null, $redispatch = false )
-	{
+	static private function _dispatch(QueryString &$query = null, $redispatch = false) {
 		// If dispatch yet done, we return
-		if ( self::$_done == false )
-		{
-			self::$_done = true ;
-		} else if ( $redispatch == false )
-		{
-			return false ;
+		if (self::$_done == false) {
+			self::$_done = true;
+		} else if ($redispatch == false) {
+			return false;
 		}
 
-		if ( $query == null )
-		{
-			$query = new QueryString('index.html') ;
+		if ($query == null) {
+			$query = new QueryString('index.html');
 		}
-		
+
 		// No query, then try to check home
-		if ( $query->count() == 0 || $query->getAt(0) == 'index.html' )
-		{
-			if ( Controller::requireController ( 'Home' , 'index' ) == true )
-			{
-				$query->reset('home/index') ;
+		if ($query->count() == 0 || $query->getAt(0) == 'index.html') {
+			if (Controller::requireController('Home', 'index') == true) {
+				$query->reset('home/index');
 			} else {
-				$query->reset('index.html') ;
+				$query->reset('index.html');
 			}
-		// Simple PHP info
-		} else if ( $query->getAt(0) == 'phpinfo' && debuggin () )
-		{
-			phpinfo() ;
-			
-			App::end () ;
-		}
-		
-		
-		// Get main token
-		$token = $query->getAt(0) ;
+			// Simple PHP info
+		} else if ($query->getAt(0) == 'phpinfo' && debuggin()) {
+			phpinfo();
 
-		$raw = $query->raw () ;
-		
-		// Number of parameters in query
-		$c = $query->count () ;
-		
-		// Check rights for this query
-		if ( AenoaRights::hasRightsOnQuery( $query->raw() ) == false )
-		{
-			App::do401 ('Permission denied') ;
+			App::end();
 		}
-		
+
+
+		// Get main token
+		$token = $query->getAt(0);
+
+		$raw = $query->raw();
+
+		// Number of parameters in query
+		$c = $query->count();
+
+		// Check rights for this query
+		if (AenoaRights::hasRightsOnQuery($query->raw()) == false) {
+			App::do401('Permission denied');
+		}
+
 		// And dispatch
-		switch ( true )
-		{
+		switch (true) {
 			// For DB access
-			case $token==QueryString::DB_TOKEN:
-				if ( $c == 3 ) {
-					$query->setAt(3, 'index' ) ;
+			case $token == QueryString::DB_TOKEN:
+				if ($c == 3) {
+					$query->setAt(3, 'index');
 				}
-				if ( $query->count() >= 4
+				if ($query->count() >= 4
 					&& App::hasDatabase($query->getAt(1))
-					&& Controller::requireController ('Database' , $query->getAt(3) ) )
-					{
-						Controller::launchController(
-							'Database',
-							$query->getAt(3),
-							$query->getAt(4),
-							array(
-								'databaseID' => $query->getAt(1),
-								'table'=> $query->getAt(2)
-							) ,
-							$query->getFrom(5)
-						) ;
-					}
-				break;
-				
-			// For REST API access
-			case $token==QueryString::REST_TOKEN:
-				if ( $c > 2 )
-				{
-					$gateway = new RESTGateway () ;
-				} else {
-					App::do404 ( 'No such service available' ) ;
+					&& Controller::requireController('Database', $query->getAt(3))) {
+					Controller::launchController(
+						'Database', $query->getAt(3), $query->getAt(4), array(
+						'databaseID' => $query->getAt(1),
+						'table' => $query->getAt(2)
+						), $query->getFrom(5)
+					);
 				}
 				break;
-				
+
+			// For REST API access
+			case $token == QueryString::REST_TOKEN:
+				if ($c > 2) {
+					$gateway = new RESTGateway ();
+				} else {
+					App::do404('No such service available');
+				}
+				break;
+
 			// For dev kit access
-			case $token==QueryString::DEV_TOKEN:
-				if(App::getUser()->isGod() && debuggin() )
-				{
-					if ( file_exists(AE_SERVER.'dev-kit'.DS.'devkit-bootstrap.php') )
-					{
-						require_once(AE_SERVER.'dev-kit'.DS.'devkit-bootstrap.php');
+			case $token == QueryString::DEV_TOKEN:
+				if (App::getUser()->isGod() && debuggin()) {
+					if (file_exists(AE_SERVER . 'dev-kit' . DS . 'devkit-bootstrap.php')) {
+						require_once(AE_SERVER . 'dev-kit' . DS . 'devkit-bootstrap.php');
 					} else {
-						App::do404 ( _('Dev Kit not installed') ) ;
+						App::do404(_('Dev Kit not installed'));
 					}
 					break;
 				}
-				App::do401 ( _('Attempt to access dev kit in Production mode') ) ;
+				App::do401(_('Attempt to access dev kit in Production mode'));
 				break;
-				
+
 			// For Services access
-			case $token==QueryString::SERVICES_TOKEN:
-				$gateway = new Gateway () ;
+			case $token == QueryString::SERVICES_TOKEN:
+				$gateway = new Gateway ();
 				break;
-				
+
 			// Controller access
-			case $c >= 1 && Controller::requireController ( $token , $query->getAt(1,'index') ) == true:
-				self::_launchController ( $token, $query->getAt(1,'index'), $query->getAt(2) , array () , $query->getFrom(3) );
+			case $c >= 1 && Controller::requireController($token, $query->getAt(1, 'index')) == true:
+				self::_launchController($token, $query->getAt(1, 'index'), $query->getAt(2), array(), $query->getFrom(3));
 				break;
-				
+
 			// Webpages access
-			case Webpage::webpageExists(str_replace('/',DS,$query->raw()))==true:
-				self::_applyWebpage(array($query->raw())) ;
+			case Webpage::webpageExists(str_replace('/', DS, $query->raw())) == true:
+				self::_applyWebpage(array($query->raw()));
 				break;
-			
+
 			// Default : no pattern found, run 404
 			default:
-				App::do404 ( _('No dispatch available') ) ;
+				App::do404(_('No dispatch available'));
 		}
-		
+
 		// All done, web app can end
-		App::end () ;
-	}
-	
-	static private function _launchController ( $controller, $action, $mainParameter = null , $controllerParams = array() , $othersParams = array () )
-	{
-		Controller::launchController($controller, $action, $mainParameter, $controllerParams, $othersParams) ;
+		App::end();
 	}
 
-	static private function _applyWebpage ( $parameters )
-	{
-		$page = new Webpage ( $parameters[0] , @$parameters[1] , false );
-		if ( $page )
-		{
-		    $page->render () ;
-		}
-		App::end () ;
+	static private function _launchController($controller, $action, $mainParameter = null, $controllerParams = array(), $othersParams = array()) {
+		Controller::launchController($controller, $action, $mainParameter, $controllerParams, $othersParams);
 	}
+
+	static private function _applyWebpage($parameters) {
+		$page = new Webpage($parameters[0], @$parameters[1], false);
+		if ($page) {
+			$page->render();
+		}
+		App::end();
+	}
+
 }
 
 ?>

@@ -1,18 +1,49 @@
 <?php
 
+/**
+ * <p>Aenoa Server santizer</p>
+ *
+ * <p>Sanitizer</p>
+ *
+ * @see App
+ * @see App::getSanitizer
+ */
+class Sanitizer extends AeObject {
 
-class Sanitizer {
-	
+	/**
+	 * Sanitized POST parameters
+	 *
+	 * @var array
+	 */
 	public $POST = array () ;
-	
+
+	/**
+	 * Sanitized GET parameters
+	 *
+	 * @var array
+	 */
 	public $GET = array () ;
-	
+
+	/**
+	 * Does sanitizer supports ':' char in GET parameters
+	 *
+	 * @var boolean
+	 */
 	public $supportArrayKeys = false ;
 
+	// Rest method
 	private $_restMethod ;
-	
+
+	// Is rest method valid
 	private $_restMethodValid ;
-	
+
+	/**
+	 * <p>Creates a new Sanitizer</p>
+	 *
+	 * <p>At construct, GET and POST values are retrieved from PHP globals, then they are sanitized</p>
+	 *
+	 * <p>Then sanitized POST and GET value are available throw common methods</p>
+	 */
 	function __construct ()
 	{
 		
@@ -27,7 +58,13 @@ class Sanitizer {
 		
 	}
 
-	
+	/**
+	 * <p>Check if a param exists in given entry (GET or POST)</p>
+	 *
+	 * @param string $prop Entry to check (GET or POST)
+	 * @param string $key Key of param to test
+	 * @return boolean True if param exists, flase otherwise
+	 */
 	function exists ( $prop , $key )
 	{
 		if(!property_exists($this, $prop))
@@ -46,8 +83,24 @@ class Sanitizer {
 		
 		return @array_key_exists($key , $this->$prop );
 	}
+
+	/**
+	 * Alias of Sanitizer::exists
+	 *
+	 * @see Sanitizer::exists
+	 */
+	function has ( $prop , $key )
+	{
+		return $this->exists($prop, $key) ;
+	}
 	
-	
+	/**
+	 * <p>Returns value of a param of an entry, if exists, false otherwise</p>
+	 *
+	 * @param string $prop Entry to check (GET or POST)
+	 * @param string $key Key of param to test
+	 * @return mixed Value of the param if exists, false otherwise
+	 */
 	function get ( $prop , $key )
 	{
 		if ( $this->exists ( $prop , $key ) == true )

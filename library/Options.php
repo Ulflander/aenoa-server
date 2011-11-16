@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Options is a very simple class to store keys and values
+ * <p>Options is a very simple class to store keys and values</p>
  *
- * It can be considered as a basic Collection.
+ * <p>It can be considered as a basic Collection.</p>
  *
  * It's used by <Config> to store static configuration values, or by <Widget> for example as classe extension.
  * 
@@ -11,7 +11,7 @@
 class Options extends AeObject {
 
 	/**
-	 *
+	 * @private 
 	 * @var array 
 	 */
 	private $_vars = array () ;
