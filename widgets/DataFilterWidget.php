@@ -10,8 +10,15 @@ class DataFilterWidget extends Widget {
 	function __construct ($options, $render, $echo)
 	{
 		parent::__construct($options, $render, $echo) ;
-	}
 
+		$this->formalize ( 
+			new DBField( 'structure',	DBField::TYPE_STRING ,	_('Structure') ,	DBValidator::NOT_EMPTY ) ,
+			new DBField( 'table',		DBField::TYPE_STRING ,	_('Table') ,		DBValidator::NOT_EMPTY ) ,
+			new DBField( 'recursivity', DBField::TYPE_INT ,		_('Recursivity') ,	DBValidator::NOT_EMPTY )
+		) ;
+
+		$this->setFile( uncamelize(get_class($this)) . '.thtml' ) ;
+	}
 }
 
 ?>

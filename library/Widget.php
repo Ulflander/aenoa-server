@@ -17,6 +17,14 @@ class Widget extends Options {
 		}
 	}
 
+	/**
+	 * Abstract to method to be overidden in concrete Widget classe
+	 */
+	function check ()
+	{
+		
+	}
+
 	function getFile ()
 	{
 		return $this->file ;

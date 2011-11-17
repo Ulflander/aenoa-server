@@ -88,6 +88,6 @@ class Options extends AeObject {
 		ksort($tvars);
 		return $tvars ;
 	}
-	
+
 }
 ?>
