@@ -64,6 +64,7 @@ class DatabaseController extends Controller {
 			if (count($id) > 3) {
 				continue;
 			}
+			
 			foreach ($this->structure[$this->table] as &$field) {
 				if (is_array($field) && array_key_exists('name', $field) && $field['name'] == $id[2]) {
 					if (array_key_exists('validation', $field)) {
@@ -850,7 +851,6 @@ class DatabaseController extends Controller {
 
 
 		if ($this->recursivity > 0) {
-// echo $this->db->findRelatives($this->table, $this->db->findAll($this->table, $this->conditions, $limit, $this->fields), $this->subFields, $this->recursivity);
 			$this->output = $this->db->findRelatives($this->table, $this->db->findAll($this->table, $this->conditions, $limit, $this->fields), $this->subFields, $this->recursivity);
 		} else {
 

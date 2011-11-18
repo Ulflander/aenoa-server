@@ -140,6 +140,8 @@ class DBField extends AeObject {
 	
 	public $validation ;
 	
+	public $errorMessage = '' ;
+	
 	public $values ;
 	
 	public $value ;
@@ -160,12 +162,21 @@ class DBField extends AeObject {
 	 * @param validation $validation Regexp to test to validate field value
 	 * @param mixed $value Value of the field
 	 */
-	public function __construct ( $name = null , $type = null , $label = null , $validation = null , $value = null )
+	public function __construct ( $name , $type = null , $label = null , $validation = null , $value = null )
 	{
-		if ( !is_null($name) )
+		if (preg_match('/[a-z]{1,}/', $name) == 0 )
 		{
-			$this->name = $name ;
+			$msg = 'Name "'.$name.'" for DBField is not valid' ;
+			
+			if ( debuggin () )
+			{
+				new ErrorException($msg) ;
+			} else {
+				App::do500($msg) ;
+			}
 		}
+		
+		$this->name = $name ;
 
 		if ( !is_null($type) )
 		{
@@ -188,9 +199,53 @@ class DBField extends AeObject {
 		}
 	}
 
+	/**
+	 * Validate the value of the field
+	 * 
+	 * <p>Validation rule may be:</p>
+	 * <ul>
+	 * <li>A string, then it is considered as a regexp</li>
+	 * <li>An int or double, then value as to be strictly equal to validation rule</li>
+	 * <li>A Callback object, then callback is applied on value, any result that is not false or 0 is considered as a validated value, any other result will lead to an unvalidated value</li>
+	 * </ul>
+	 * 
+	 * @return boolean True if value of DBField is valid, false otherwise 
+	 */
 	public function validate ()
 	{
-		// ...
+		$result = true ;
+		
+		// Requires a validation rule
+		if ( !is_null($this->validation) )
+		{
+			$type = gettype ( $this->validation ) ;
+			
+			switch ( $type )
+			{
+				// In case of string, this is a regexp
+				case 'string':
+					$result = (preg_match('/' . $this->validation . '/', $this->value ) > 0) ;
+					break;
+				case 'double':
+				case 'int':
+					$result = ($this->value === $this->validation ) ;
+					break;
+				// In case of object, we check for object type
+				case 'object':
+					switch ( get_class($this->validation) )
+					{
+						// Aenoa Server Callback object, we apply the callback
+						case 'Callback':
+							$result = ($this->validation->apply ( array ( $this->value ) ) == true) ;
+							break;
+					}
+					break;
+			}
+		}
+		
+		$this->valid = $result ;
+		
+		return $result ;
 	}
 }
 ?>

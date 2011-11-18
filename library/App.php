@@ -872,7 +872,7 @@ class App extends AeObject
 	/**
 	 * Send a 503 Service Unavailable status and show a 503 page, send an email to the administrator if required, then die.
 	 */
-	static function do500 ( $headerResponse = null , $fullResponse = null )
+	static function do500 ( $headerResponse = null , $file = null , $line = null, $info = null )
 	{
 		if ( !is_null (self::$_instance ) )
 		{
@@ -889,7 +889,10 @@ class App extends AeObject
 					'template' => array (
 						'file'=>'email'.DS.'system-error.thtml',
 						'vars'=> array (
-							'response' => $headerResponse . '<br /><br />' . $fullResponse
+							'file' => $file,
+							'line' => $line,
+							'info' => $info,
+							'response' => $headerResponse
 						)
 					) ,
 				)

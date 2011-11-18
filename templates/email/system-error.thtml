@@ -24,13 +24,30 @@
 	</p>
 	<p>
 		<?php echo sprintf(_('An error occured on your platform %s. Here is a quick report: '), Config::get(App::APP_NAME) ) ?> <br />
+		<?php echo _('System error response') ?>: <?php echo $response ?> <br />
+		
+		<?php if ( !is_null( $file ) ): ?>
+		   <?php echo _('File') ?>: <?php echo $file ?>
+		<?php endif; ?>
+		
+		<?php if ( !is_null( $line ) ): ?>
+		   <?php echo _('Line') ?>: <?php echo $line ?>
+		<?php endif; ?>
+		
+		<?php if ( !is_null( $info ) ): ?>
+		   <?php echo _('Error details') ?>:<br /><?php pr( $info ) ?>
+		<?php endif; ?>
+		
+		
+		<?php echo _('Here are more details about environment') ?>:<br /><br />
+		
 		<?php echo _('Date:') ?>: <?php echo date('Y/m/d H:i:s') ?> <br />
 		<?php echo _('URL') ?>: <?php echo url() ?> <br />
-		<?php echo _('System error response') ?>: <?php echo $response ?> <br />
 		<?php echo _('Query') ?>: <?php echo App::getQuery() ?> <br />
 		<?php echo _('Ajax mode') ?>: <?php echo (App::isAjax() ? 'Yes' : 'No') ?> <br />
+		
 		<?php echo _('Post data') ?>:<br />
-		<?php pr( $_POST ) ; ?>
+		<?php pr( App::getSanitizer()->getAll('POST') ) ; ?>
 		<?php echo _('API Key') ?>: <?php echo ServerAuthCheck::getUseReport () ?><br />
 		<?php echo _('User') ?>:<br />
 		<?php pr( App::getUser() ) ; ?>
