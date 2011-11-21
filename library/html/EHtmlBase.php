@@ -43,9 +43,13 @@ class EHtmlElement extends AeObject {
 			}
 		} else { 
 
-			preg_match_all('/\[([^}]*)\]/i', $string, $matches);
+			preg_match_all('/\[([^]]*)\]/i', $string, $matches);
+			
+			
 			if ( count($matches[0]) > 0 )
 			{
+				
+			
 				foreach ( $matches[0] as  $k => $v )
 				{
 					$string = str_replace ( $matches[0][$k] , '<?php echo _(\'' . $matches[1][$k] . '\') ?>', $string ) ;
@@ -606,6 +610,7 @@ class EHtmlBase extends AeObject {
 			'"' => '"',
 			'\'' => '\'',
 			'(' => ')',
+			'[' => ']',
 			'{' => '}',
 			'%' => ';'
 		);
