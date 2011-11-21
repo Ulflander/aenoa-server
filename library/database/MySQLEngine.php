@@ -506,13 +506,14 @@ class MySQLEngine extends AbstractDBEngine {
 				if ($name == 'created') {
 					continue;
 				}
-
+				
 				if (array_key_exists($name, $content)) {
 					$val = $content[$name];
 				} else {
 					continue;
 				}
 				$val &= DBTableSchema::applyInputBehaviors($field, $val, true, $this->getConnection());
+				
 				if ($val != '') {
 					$row[$name] = &$val;
 				}
@@ -523,7 +524,11 @@ class MySQLEngine extends AbstractDBEngine {
 					$entries[] = '`' . $name . '` = \'' . $val . '\'';
 				}
 			}
-
+			if ( empty($entries) )
+			{
+				return false;
+			}
+			
 			$q = 'UPDATE `' . $this->source['database'] . '`.`' . $table . '` SET ';
 			$q .= implode(', ', $entries);
 			$q .= $this->__getCond($cond, $table);

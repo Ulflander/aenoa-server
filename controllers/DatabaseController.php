@@ -93,7 +93,10 @@ class DatabaseController extends Controller {
 		$this->view->useLayout = true;
 
 		$this->view->layoutName = 'layout-backend';
-
+		
+		/**
+		 * @var AbstractDBEngine
+		 */
 		$this->db = App::getDatabase($this->databaseID);
 
 		if (is_null($this->db)) {
