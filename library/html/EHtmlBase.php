@@ -42,17 +42,13 @@ class EHtmlElement extends AeObject {
 				$string = str_replace ( $matches[0][$k] , '<?php echo ' . $matches[1][$k] . ' ?>', $string ) ;
 			}
 		}
-		return $string ;
-	}
-	
-	function renderInnerVars ( $string , $parameters )
-	{
-		preg_match_all('/{([^}]*)}/i', $string, $matches);
+		
+		preg_match_all('/\[([^}]*)\]/i', $string, $matches);
 		if ( count($matches[0]) > 0 )
 		{
 			foreach ( $matches[0] as  $k => $v )
 			{
-				$string = str_replace ( $matches[0][$k] , '<?php echo ' . $matches[1][$k] . ' ?>', $string ) ;
+				$string = str_replace ( $matches[0][$k] , '<?php echo _(\'' . $matches[1][$k] . '\') ?>', $string ) ;
 			}
 		}
 		return $string ;
@@ -116,7 +112,7 @@ class EHtmlElement extends AeObject {
 
 			switch ( true )
 			{
-				case in_array($tok , array('{','(','"')):
+				case in_array($tok , array('{','(','"', '[')):
 					$val = substr($param,1,  mb_strlen($param)-2);
 					break;
 				default:
@@ -149,6 +145,10 @@ class EHtmlElement extends AeObject {
 				// PHP echo tag, will defined value (and later, closure)
 				case '{':
 					$value .= '<?php echo ' . $val . ' ?>' ;
+					break;
+				// PHP echo tag, will defined value (and later, closure)
+				case '[':
+					$value .= '<?php echo _(\'' . $val . '\') ?>' ;
 					break;
 				// src, action, href attribute depending on main tag (script, iframe, img, a tags)
 				case '@':

@@ -419,6 +419,8 @@ class DatabaseController extends Controller {
 				$this->addResponse(sprintf(_('Please fill the content field before starting mass import.'), $this->table), self::RESPONSE_ERROR);
 			} else {
 				$elements = explode("\n", $data[$str . '__import']);
+				array_clean($elements);
+				
 				$search = ($data[$str . '__import/overwrite'] != '' );
 
 				unset($data[$str . '__import']);
@@ -442,16 +444,16 @@ class DatabaseController extends Controller {
 					}
 
 					if ($search) {
-						$res = $this->db->findFirst($this->table, array($searchField => $searchVal));
-
-						if (!empty($res)) {
+						$_res = $this->db->findFirst($this->table, array($searchField => $searchVal));
+						
+						if (!empty($_res)) {
 							$this->data = array();
 
 							if (!empty($pickins)) {
 								foreach ($pickins as $field) {
-									$ids = explode(',', $res[$field]);
+									$ids = explode(',', $_res[$field]);
 									if (ake($str . $field, $data) && !in_array($data[$str . $field], $ids)) {
-										$this->data [$str . $field] = ( $res[$field] == '' ? $data[$str . $field] : $res[$field] . ',' . $data[$str . $field] );
+										$this->data [$str . $field] = ( $_res[$field] == '' ? $data[$str . $field] : $_res[$field] . ',' . $data[$str . $field] );
 									}
 								}
 								if (!empty($this->data)) {
@@ -459,6 +461,8 @@ class DatabaseController extends Controller {
 										$res = false;
 									}
 								}
+							} else {
+								$finalElements[] = $row;
 							}
 						} else {
 							$finalElements[] = $row;

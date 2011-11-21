@@ -10,6 +10,7 @@ class MySQLEngine extends AbstractDBEngine {
 	private $__connection = false;
 	private $__sqlOps = array('like', 'ilike', 'or', 'not', 'in', 'between', 'regexp', 'similar to');
 	protected $__lastId;
+	protected $_queries = array () ;
 
 	/////////////////////////////////////////////////////
 	// AbstractDBEngine implementation
@@ -23,6 +24,7 @@ class MySQLEngine extends AbstractDBEngine {
 	 * Enable TRANSACTION mode : no query is sended until endTransaction is called
 	 */
 	function startTransaction() {
+		$this->_queries = array();
 		$this->_inTransaction = true;
 	}
 
@@ -32,6 +34,7 @@ class MySQLEngine extends AbstractDBEngine {
 	 * @return boolean True if transaction did not return any error, false otherwise
 	 */
 	function endTransaction() {
+		
 		mysql_query('START TRANSACTION', $this->__connection);
 		$res = true;
 		foreach ($this->_queries as $query) {
@@ -44,8 +47,6 @@ class MySQLEngine extends AbstractDBEngine {
 			}
 		}
 		mysql_query('COMMIT', $this->__connection);
-
-		$this->_queries = array();
 
 		$this->_inTransaction = false;
 
@@ -374,8 +375,11 @@ class MySQLEngine extends AbstractDBEngine {
 				$fieldname = trim($fieldname);
 
 				$escapeVal = true;
-				if ($val[0] == '(')
+				
+				if (is_string($val) && strlen($val) > 0 && $val[0] == '(')
+				{
 					$escapeVal = false;
+				}
 
 				if (@$this->struct[$table][$fieldname]['behavior'] & DBSchema::BHR_PICK_IN) {
 					$val = '\'(^' . $val . '\,)|(\,' . $val . '$)|(\,' . $val . '\,)|(^' . $val . '$)\'';
