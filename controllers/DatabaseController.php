@@ -285,8 +285,8 @@ class DatabaseController extends Controller {
 			return false;
 		}
 
-		$this->toSave = $this->model->beforeAdd($this->db->lastId(),$this->toSave);
-
+		$this->toSave = $this->model->beforeAdd($this->toSave);
+		
 		if ($this->toSave !== false && ($res = $this->db->add($this->table, $this->toSave) )) {
 			$lid = $this->db->lastId();
 
