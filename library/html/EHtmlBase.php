@@ -41,16 +41,18 @@ class EHtmlElement extends AeObject {
 			{
 				$string = str_replace ( $matches[0][$k] , '<?php echo ' . $matches[1][$k] . ' ?>', $string ) ;
 			}
-		}
-		
-		preg_match_all('/\[([^}]*)\]/i', $string, $matches);
-		if ( count($matches[0]) > 0 )
-		{
-			foreach ( $matches[0] as  $k => $v )
+		} else { 
+
+			preg_match_all('/\[([^}]*)\]/i', $string, $matches);
+			if ( count($matches[0]) > 0 )
 			{
-				$string = str_replace ( $matches[0][$k] , '<?php echo _(\'' . $matches[1][$k] . '\') ?>', $string ) ;
+				foreach ( $matches[0] as  $k => $v )
+				{
+					$string = str_replace ( $matches[0][$k] , '<?php echo _(\'' . $matches[1][$k] . '\') ?>', $string ) ;
+				}
 			}
 		}
+		
 		return $string ;
 	}
 	
