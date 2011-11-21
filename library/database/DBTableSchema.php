@@ -391,7 +391,7 @@ class DBTableSchema extends AeObject {
 					break;
 				case $b & DBSchema::BHR_TS_ON_EDIT
 				&& $t == DBSchema::TYPE_TIMESTAMP:
-				$value = self::getTimestamp() ;
+				$value = self::getTimestamp();
 				break;
 				case $b & DBSchema::BHR_DT_ON_EDIT
 				&& $t == DBSchema::TYPE_DATETIME
@@ -447,6 +447,11 @@ class DBTableSchema extends AeObject {
 		// TODO: mysql_real_escape_string must be done in MySQL engine, not here
 		if ( !is_null($mysql_connection) && ( $t == DBSchema::TYPE_STRING || $t == DBSchema::TYPE_TEXT ) )
 		{
+			if ( is_null( $value ) )
+			{
+				$value = '' ;
+			}
+			
 			if ( !is_string($value) )
 			{
 				if ( debuggin () )
