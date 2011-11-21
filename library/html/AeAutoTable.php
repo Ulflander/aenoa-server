@@ -86,7 +86,7 @@ class AeAutoTable {
 		echo implode("\n", $this->_result);
 	}
 
-	function startTable($page=1, $length= 1, $count=1, $order='asc', $dir='', $currentWidget=null, $context) {
+	function startTable($page=1, $length= 1, $count=1, $order='asc', $dir='', $currentWidget=null, $context=null) {
 		$l = 1;
 
 		if ($this->baseURL == '') {
