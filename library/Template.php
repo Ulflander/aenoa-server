@@ -624,7 +624,17 @@ class Template extends View {
 		}
 		return false ;
 	}
-	
+
+	/**
+	 * Check if template is actually a <Webpage>
+	 *
+	 *
+	 * @return boolean True if object is an instance of Webpage class, false otherwise
+	 */
+	function isWebpage ()
+	{
+		return get_class($this) === 'Webpage' ;
+	}
 	
 }
 ?>
