@@ -682,8 +682,9 @@ if ( function_exists ( 'retrieveContextURL' ) == false )
 			$prefix = 'https://' ;
 		}
 		
-		$url = $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'] ;
+		$url = $_SERVER['HTTP_HOST'] . '/' . $_SERVER['SCRIPT_NAME'] ;
 		$url = preg_split("/\//", $url, -1) ;
+		array_clean($url);
 		do {
 			unset( $url[count( $url )-1] ) ;
 		} while ( in_array ( $url[count( $url )-1] , $dirsToSkip ) ) ;

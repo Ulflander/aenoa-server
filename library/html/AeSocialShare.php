@@ -58,10 +58,10 @@ class AeSocialShare {
 				'title'=> '豆瓣',
 				'influence' => array('cn','tw')
 		),
-	    'google-buzz' => array
+	    'google-plus' => array
 		(
-	            'share_url' => 'http://www.google.com/buzz/post?url=URI&amp;title=TITLE',
-				'title' => 'Google Buzz',
+	            'share_url' => 'https://plusone.google.com/_/+1/confirm?url=URI&title=TITLE',
+				'title' => 'Google +',
 				'influence' => array ('worldwide')
 		),
 		'kaixin001' => array (

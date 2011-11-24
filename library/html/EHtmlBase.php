@@ -502,8 +502,8 @@ class EHtmlBase extends AeObject {
 
 					$res['lines'][] = $line;
 					
-					
-					if (!$this->isTokenizedLine($line) && trim($line) != '' ) {
+					array_shift(explode(' ',$line));
+					if (!$this->isTokenizedLine($line) && trim($line) != '' && !in_array(array_shift(explode(' ',trim($line))), array('img', 'input'))) {
 						$prev = '/ ' . $line;
 					} else {
 						$prev = null;

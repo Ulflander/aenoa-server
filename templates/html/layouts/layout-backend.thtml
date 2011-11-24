@@ -29,9 +29,9 @@
 	    <a href="<?php echo url() ?>" title="<?php echo _('Back to application') ?>">&laquo; <?php echo _('Back to application') ?></a>
 	    
 	    <?php if ( debuggin () ): ?>
-		<a href="<?php echo url() ?>maintenance/debug" class=" notify warning debug"><?php echo _('Debug is currently ON') ?></a>
+		<a href="<?php echo url() ?>maintenance/debug" class=" notify warning debug no-bg"><?php echo _('Debug is currently ON') ?></a>
 	    <?php else: ?>
-		<a href="<?php echo url() ?>maintenance/debug" class=" notify info debug"><?php echo _('Debug is currently OFF') ?></a>
+		<a href="<?php echo url() ?>maintenance/debug" class=" notify info debug no-bg"><?php echo _('Debug is currently OFF') ?></a>
 	    <?php endif; ?>
 	    
 	</div>
