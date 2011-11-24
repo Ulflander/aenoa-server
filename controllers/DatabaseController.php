@@ -816,7 +816,30 @@ class DatabaseController extends Controller {
 				}
 			} else {
 				App::getSession()->set('DB_TABLE_DIR_' . $this->databaseID . '_' . $this->table, $dir);
+				
 			}
+		}
+		
+		else {
+		    //App::getSession()->set('DB_PAGE_' . $this->databaseID . '_' . $this->table, $page);
+		  $this->view->set('autoTableConditions', ''); 
+		  if (is_null($order)) {
+				if (App::getSession()->has('DB_TABLE_ORDER_' . $this->databaseID . '_' . $this->table)) {
+					$order = App::getSession()->get('DB_TABLE_ORDER_' . $this->databaseID . '_' . $this->table);
+				}
+			} else {
+				App::getSession()->set('DB_TABLE_ORDER_' . $this->databaseID . '_' . $this->table, $order);
+			}
+
+			if (is_null($dir)) {
+				if (App::getSession()->has('DB_TABLE_DIR_' . $this->databaseID . '_' . $this->table)) {
+					$dir = App::getSession()->get('DB_TABLE_DIR_' . $this->databaseID . '_' . $this->table);
+				}
+			} else {
+				App::getSession()->set('DB_TABLE_DIR_' . $this->databaseID . '_' . $this->table, $dir);
+				
+			}
+		 
 		}
 
 		$length = $this->tableLength;
@@ -908,7 +931,7 @@ class DatabaseController extends Controller {
 
 		App::getSession()->set('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
 		if ($order == 'desc')
-			$order = 'created';
+			$order = 'label';
 		$this->readAll($page, $order, $dir, true, '');
 
 		if (App::isAjax()) {
@@ -917,47 +940,14 @@ class DatabaseController extends Controller {
 		}
 	}
 
-	public function readModeFilter($page = 1, $order = null, $dir = null, $currentWidget) {
-		$id = $currentWidget;
-
-		$res = $this->db->findRelatives('widgets', $this->db->findFirst('widgets', array('id' => $id)));
-		$t = '';
-		if (empty($res)) {
-			App::do404(_('Widget not found'));
-		}
-
-		foreach ($res['widget_tabs'] as &$tab) {
-			$t .= $tab['products'];
-		}
-
-		$k = $this->databaseID . '/' . $this->table . '/search';
-		if (!empty($res) && $t != '') {
-
-			$this->conditions['id IN'] = '(' . $t . ')';
-			App::getSession()->set('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $this->table, $t);
-		} else {
-			App::getSession()->uset('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $this->table);
-		}
-
-		App::getSession()->set('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
-		if ($order == 'desc')
-			$order = 'created';
-
-		$this->readAll($page, $order, $dir, true, $currentWidget);
-
-		if (App::isAjax()) {
-
-			$this->view->set('mode', 'readFilter');
-		}
-	}
-
-	public function resetFilter($page = 1, $order = null, $dir = null, $currentWidget) {
-		App::getSession()->uset('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $this->table);
-		App::getSession()->uset('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
+	
+	public function resetFilter($page = 1, $order = null, $dir = null, $currentWidget = null) {
+		//App::getSession()->uset('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $this->table);
+		//App::getSession()->uset('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
 		if (!empty($currentWidget))
-			$this->readAll($page, $order, $dir, true, $currentWidget);
+			$this->readAll($page, $order, $dir, false, $currentWidget);
 		else
-			$this->readAll($page, $order, $dir);
+			$this->readAll($page, $order, $dir,false);
 
 
 
