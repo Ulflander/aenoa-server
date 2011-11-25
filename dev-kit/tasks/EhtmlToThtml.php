@@ -50,14 +50,41 @@ class EhtmlToThtml extends Task {
 				array_push($toTransform, $file); 
 			}
 		}
+		
+		$count = $this->_convert($toTransform, 'thtml') ;
 
+		$files = array_merge($files,$this->futil->getTree(AE_APP_WEBPAGES));
+		$toTransform = array () ;
+		foreach ( $files as $file )
+		{
+			$l = strlen($file) ;
+			if ( strpos($file,'.ehtml') === $l - 6)
+			{
+				array_push($toTransform, $file); 
+			}
+		}
+		
+		$count = $this->_convert($toTransform, 'html') ;
+
+		if ( $count == count($toTransform) )
+		{
+			$this->view->setSuccess('All files have been converted.');
+		} else {
+			$this->view->setError(count($toTransform)-$count . ' files have NOT been converted. Consider write files rights.');
+		}
+	}
+	
+	
+	private function _convert ( $filetree , $extension )
+	{
+		$count = 0 ;
+		
 
 		$ehtml = new AeEHtml() ;
-		$count = 0 ;
-		foreach( $toTransform as $file )
+		foreach( $filetree as $file )
 		{
 			$l = strlen($file);
-			$res = $ehtml->fromFileToFile($file, substr($file, 0, $l - 6 ) . '.thtml' ) ;
+			$res = $ehtml->fromFileToFile($file, substr($file, 0, $l - 6 ) . '.' . $extension ) ;
 
 			if( !$res )
 			{
@@ -66,13 +93,8 @@ class EhtmlToThtml extends Task {
 				$count ++ ;
 			}
 		}
-
-		if ( $count == count($toTransform) )
-		{
-			$this->view->setSuccess('All files have been converted.');
-		} else {
-			$this->view->setError(count($toTransform)-$count . ' files have NOT been converted. Consider write files rights.');
-		}
+		
+		return $count ;
 	}
 }
 

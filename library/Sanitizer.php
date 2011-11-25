@@ -38,7 +38,7 @@ class Sanitizer extends AeObject {
 	private $_restMethodValid ;
 
 	/**
-	 * <p>Creates a new Sanitizer</p>
+	 * Creates a new Sanitizer
 	 *
 	 * <p>At construct, GET and POST values are retrieved from PHP globals, then they are sanitized</p>
 	 *

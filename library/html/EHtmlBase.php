@@ -296,7 +296,7 @@ class EHtmlElement extends AeObject {
 				if (is_null($custom) && $this->token != '' )
 				{
 					
-					echo '-- unknown token: ' . $this->token . ' in line ' . $this->source . '--';
+					// echo '-- unknown token: ' . $this->token . ' in line ' . $this->source . '--';
 				} else {
 					$res .= $custom ;
 				}

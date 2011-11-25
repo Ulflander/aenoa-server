@@ -1,6 +1,5 @@
 <?php
 /**
- * File: JavaScriptPacker
  *  
  *  9 April 2008. version 1.1
  * 
