@@ -382,10 +382,6 @@ if ( !function_exists ( 'array_clean' ) )
 		$res = array () ;
 		foreach ( $array as &$item )
 		{
-			if ( $echo )
-			{
-				pr($item);
-			}
 			if ( !empty ( $item ) || $item === 0 || $item == '0' )
 			{
 				$res[] = $item ;
