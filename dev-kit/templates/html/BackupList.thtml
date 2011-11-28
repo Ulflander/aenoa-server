@@ -1,0 +1,12 @@
+<div class="ajsf-table-container">
+	<table>
+		<thead>
+			<th><?php echo _('Tag') ; ?></th>
+			<th><?php echo _('Date') ; ?></th>
+		</thead>
+		<tbody>
+			<?php foreach ( $backups as $backup ): ?>
+			<?php endforeach ?>
+		</tbody>
+	</table>
+</div>

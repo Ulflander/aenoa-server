@@ -1,0 +1,11 @@
+div .ajsf-table-container
+	table
+		thead
+			th {_('Tag')}
+			th {_('Date')}
+		tbody
+			: foreach ( $backups as $backup ):
+				tr
+					td {$backup['tag']}
+					td {$backup['date']}
+			: endforeach ;
