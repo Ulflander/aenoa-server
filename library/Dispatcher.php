@@ -149,7 +149,7 @@ class Dispatcher {
 		if ($query == null) {
 			$query = new QueryString('index.html');
 		}
-
+		
 		// No query, then try to check home
 		if ($query->count() == 0 || $query->getAt(0) == 'index.html') {
 			if (Controller::requireController('Home', 'index') == true) {
@@ -160,7 +160,6 @@ class Dispatcher {
 			// Simple PHP info
 		} else if ($query->getAt(0) == 'phpinfo' && debuggin()) {
 			phpinfo();
-
 			App::end();
 		}
 

@@ -167,7 +167,7 @@ class QueryString extends AeObject {
 		}
 
 		$this->_tokens = explode('/',$query) ;
-
+		
 		// Clear empty tokens
 		array_clean( $this->_tokens ) ;
 
@@ -193,7 +193,7 @@ class QueryString extends AeObject {
 		}
 
 		$this->_tokens[$index] = $value ;
-
+		
 		// Clear empty tokens
 		array_clean( $this->_tokens ) ;
 
