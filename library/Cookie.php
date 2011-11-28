@@ -44,7 +44,7 @@ class Cookie extends Options {
 
 		if (Config::has(App::APP_COOKIE_DOMAIN)) {
 			$this->setDomain(Config::get(App::APP_COOKIE_DOMAIN));
-		} else if (strpo(url(), 'http://localhost') === 0) {
+		} else if (strpos(url(), 'http://localhost') === 0) {
 			$this->setDomain('localhost');
 		}
 
