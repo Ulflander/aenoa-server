@@ -493,7 +493,6 @@ class Controller extends AeObject {
 
 		$action = lcfirst(camelize($action)) ;
 		
-	
 		// Format parameters
 		$params = array () ;
 		if ( !is_null($mainParam) )

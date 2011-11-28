@@ -127,6 +127,20 @@ class App extends AeObject
 	const APP_PUBLIC_REPOSITORY = 'Application.publicRepository' ;
 	
 	/**
+	 * Login cookie name
+	 * 
+	 * @var string
+	 */
+	const APP_COOKIE_NAME = 'Application.cookieName' ;
+	
+	/**
+	 * Login cookie domain
+	 * 
+	 * @var string
+	 */
+	const APP_COOKIE_DOMAIN = 'Application.cookieDomain' ;
+	
+	/**
 	 * Main FTP connection parameters
 	 * 
 	 * @var string
@@ -533,13 +547,13 @@ class App extends AeObject
 			$query = '' ;
 		}
 
-		$route = new AeRoute () ;
+		$route = new Route () ;
 
 		self::$query =  $route->get( $query ) ;
-
+		
 		self::$queryStr = new QueryString( self::$query ) ;
 		
-		
+		// TODO: refactor this
 		// Check for install mode
 		if ( self::$query == 'maintenance/check-context' )
 		{
@@ -814,12 +828,14 @@ class App extends AeObject
 		{
 			header("Status: 301 Moved Permanently", false, 301);
 			
-			
 			self::end(false);
 
 			sleep(1);
 		
 			header("Location: " . $uri );
+		} else if ( debuggin () )
+		{
+			throw new ErrorException ( '301 redirection to '.$uri.' failed cause headers yet sent' ) ;
 		}
 		
 		self::end();

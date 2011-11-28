@@ -163,8 +163,6 @@ class UserCoreController extends Controller{
 			{
 				$userObj->login ( $this->data['usercore/login/email'], sha1($this->data['usercore/login/password'] ));
 				
-				
-				
 				if ( $userObj->isLogged () )
 				{
 					if ( App::getSession()->has('redirect') )

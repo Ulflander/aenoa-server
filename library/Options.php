@@ -65,7 +65,7 @@ class Options extends AeObject {
 	}
 
 	/**
-	 * Set a bunch of options from an array
+	 * Set a bunch of options from an associative array
 	 *
 	 * @param array $array
 	 * @return Options Current instance for chained command on this element
