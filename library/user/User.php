@@ -52,10 +52,45 @@ final class User {
 	}
 
 	/**
+	 * Static method to create a new password given its length
+	 * 
+	 * @param int $length Length of password, default: 8
+	 * @return string A brand new password 
+	 */
+	static function getClearNewPassword($length = 8) {
+		$pass = '';
+		$chr = '';
+
+		$i = 0;
+		while ($i < $length) {
+
+			switch (rand(1, 3)) {
+				case 1: $chr = chr(rand(50, 57));
+					break;	 /* 2-9 */
+				case 2: $chr = chr(rand(65, 90));
+					break;	 /* A-Z */
+				case 3: $chr = chr(rand(97, 122));
+					break;	 /* a-z */
+			}
+
+			/* To not mix up 0 (zero) and O (maj o) or 1 (one) and I (maj i) */
+			if ($chr == chr(79) || $chr == chr(73)) {
+				$i--;
+			} else {
+				$pass .= $chr;
+			}
+
+			$i++;
+		}
+
+		return $pass;
+	}
+	
+	/**
 	 * Creates a new User instance
 	 *
 	 *
-	 * @param string $identifier Identifier should be an email. If the instance if the first one (e.g. the one instanciated by Session)
+	 * @param string $identifier Identifier should be an email. If the instance is the first instance of User, (e.g. the one instanciated by Session) and if the user is logged, then this instance is stored statically, in order to use static method User::requireLogged()
 	 */
 	function __construct($identifier = null) {
 		if (is_null($identifier)) {
@@ -149,41 +184,41 @@ final class User {
 	function getFullName() {
 		return $this->_firstname . ' ' . $this->_lastname;
 	}
-
+	
 	/**
-	 * Get data from ae_users_info table associated to current user
-	 *
-	 * If user is not logged, this method returns an empty array.
-	 *
-	 * @return array Associative array of data of user
-	 */
-	function getData() {
-		return $this->_data;
-	}
-
-	/**
-	 * Get the cookie associated to the Aenoa Server User
+	 * Set a fake level to the current user (testing purpose), only if true level of user is equal to 0
 	 * 
-	 * @see Cookie
-	 * @return Cookie The Cookie object
+	 * @param int $level New level to simulate
+	 * @return User Current instance for chained command on this element
 	 */
-	function getCookie() {
-		return $this->_cookie;
-	}
-
-	function unsetFakeLevel() {
-		if ($this->_logged) {
-			$this->_level = $this->_group['level'];
-		}
-	}
-
 	function setFakeLevel($level) {
 		if ($this->getTrueLevel() == 0) {
 			$this->_level = $level;
 			App::$session->set('User.level', $this->_level);
 		}
+		
+		return $this ;
 	}
-
+	
+	/**
+	 * Reset fake level of the user to its original level
+	 * 
+	 * @see User::setFakeLevel
+	 * @return User Current instance for chained command on this element
+	 */
+	function unsetFakeLevel() {
+		if ($this->_logged) {
+			$this->_level = $this->_group['level'];
+		}
+		
+		return $this ;
+	}
+	
+	/**
+	 * Get the real level of the user, in case a fake level has been set up
+	 * 
+	 * @return int The real level of user
+	 */
 	function getTrueLevel() {
 		if ($this->_logged) {
 			return $this->_group['level'];
@@ -191,11 +226,22 @@ final class User {
 
 		return 100;
 	}
-
+	
+	/**
+	 * Checks if level of user is equal to given level
+	 * 
+	 * @param int $level Level to test 
+	 * @return boolean True if user has given level, false otherwise 
+	 */
 	function isLevel($level) {
 		return $this->_level == $level;
 	}
-
+	
+	/**
+	 * Returns the level of the user. If user is not logged, level 100 is returned
+	 * 
+	 * @return int Level of the user
+	 */
 	function getLevel() {
 		if ($this->_logged) {
 			return $this->_level;
@@ -203,7 +249,12 @@ final class User {
 
 		return 100;
 	}
-
+	
+	/**
+	 * Get the localized group label of the user. If user is not logged, label 'Visitor' is returned.
+	 * 
+	 * @return string The localized label of group of the user
+	 */
 	function getGroup() {
 		if ($this->_logged) {
 			return $this->getGroupLabelByLevel($this->_level);
@@ -211,7 +262,15 @@ final class User {
 
 		return _('Visitor');
 	}
-
+	
+	
+	/**
+	 * Get the localized real group label of the user. If user is not logged, label 'Visitor' is returned.
+	 * 
+	 * This method does not rely on fake level.
+	 * 
+	 * @return string The localized label of group of the user
+	 */
 	function getTrueGroup() {
 		if ($this->_logged) {
 			return $this->_group['label'];
@@ -219,24 +278,37 @@ final class User {
 
 		return _('Visitor');
 	}
-
-	function recheckPassword($sha1password) {
-		if ($this->_logged == true) {
-			$db = App::getDatabase('main');
-
-			$user = $db->findFirst('ae_users', array('email' => $this->_identifier, 'password' => $sha1password));
-
-			return!empty($user);
+	
+	/**
+	 * Get label of a group given a level
+	 * 
+	 * @param int $level Level of group to get label
+	 * @return string Group level if found, NULL otherwise 
+	 */
+	function getGroupLabelByLevel($level) {
+		foreach ($this->_groups as $group) {
+			if ($group['level'] == $level) {
+				return $group['label'];
+			}
 		}
-		return false;
+		return null;
+	}
+
+	/**
+	 * Get all groups
+	 * 
+	 * @return array Groups as array 
+	 */
+	function getGroupList() {
+		return $this->_groups;
 	}
 
 	/**
 	 * Log a user in the system
 	 *
 	 *
-	 * @param string $email
-	 * @param string $sha1password
+	 * @param string $email Email of the user to log in 
+	 * @param string $sha1password Password of the user to log in
 	 * @return boolean True if successfully logged, false otherwise
 	 */
 	function login($email, $sha1password) {
@@ -281,14 +353,26 @@ final class User {
 
 		return false;
 	}
-
+	
+	
+	/**
+	 * Reload infos of current user if user is logged
+	 * 
+	 * @return User Current instance for chained command on this element
+	 */
 	function reloadInfos() {
 		if ($this->isLogged()) {
 			$db = App::getDatabase();
 			$this->_loadInfos($db->findAndRelatives('ae_users', $this->_id));
 		}
+		
+		return $this ;
 	}
-
+	
+	/**
+	 * Setup loaded infos in current User instance
+	 * @private
+	 */
 	private function _loadInfos($user) {
 
 		$this->_firstname = $user['firstname'];
@@ -303,19 +387,51 @@ final class User {
 		App::$session->set('User.lastname', $user['lastname']);
 		App::$session->set('User.data', $user['user_info']);
 	}
-
+	
+	/**
+	 * Log out user from the system. Will remove session user data and will close session.
+	 * 
+	 * @see Session
+	 * @return User Current instance for chained command on this element 
+	 */
 	function logout() {
-		self::$_currentlogged = null;
+		
+		if ( $this->_logged )
+		{
+			if ( self::$_currentlogged === $this )
+			{
+				self::$_currentlogged = null;
+			}
 
-		$this->_logged = false;
+			$this->_logged = false;
+		}
 
 		App::$session->uset('User.*');
 
 		App::$session->close(false);
 
-		return false;
+		return $this ;
 	}
 
+	
+	/**
+	 * Recheck in database if current user identifier and given password correspond.
+	 * 
+	 * @param string $sha1password Password hashed using sha1 function
+	 * @return boolean True if given password is the one of the current user, false otherwise 
+	 */
+	function recheckPassword($sha1password) {
+		if ($this->_logged == true) {
+			$db = App::getDatabase('main');
+
+			$user = $db->findFirst('ae_users', array('email' => $this->_identifier, 'password' => $sha1password));
+
+			return!empty($user);
+		}
+		return false;
+	}
+	
+	
 	/**
 	 * Set or unset the value of a property.
 	 *
@@ -403,46 +519,26 @@ final class User {
 		return $this->_properties;
 	}
 
-	function getGroupLabelByLevel($level) {
-		foreach ($this->_groups as $group) {
-			if ($group['level'] == $level) {
-				return $group['label'];
-			}
-		}
-		return null;
+
+	/**
+	 * Get data from ae_users_info table associated to current user
+	 *
+	 * If user is not logged, this method returns an empty array.
+	 *
+	 * @return array Associative array of data of user
+	 */
+	function getData() {
+		return $this->_data;
 	}
 
-	function getGroupList() {
-		return $this->_groups;
-	}
-
-	static function getClearNewPassword($length = 8) {
-		$pass = '';
-		$chr = '';
-
-		$i = 0;
-		while ($i < $length) {
-
-			switch (rand(1, 3)) {
-				case 1: $chr = chr(rand(50, 57));
-					break;	 /* 2-9 */
-				case 2: $chr = chr(rand(65, 90));
-					break;	 /* A-Z */
-				case 3: $chr = chr(rand(97, 122));
-					break;	 /* a-z */
-			}
-
-			/* To not mix up 0 (zero) and O (maj o) or 1 (one) and I (maj i) */
-			if ($chr == chr(79) || $chr == chr(73)) {
-				$i--;
-			} else {
-				$pass .= $chr;
-			}
-
-			$i++;
-		}
-
-		return $pass;
+	/**
+	 * Get the cookie associated to the Aenoa Server User
+	 * 
+	 * @see Cookie
+	 * @return Cookie The Cookie object
+	 */
+	function getCookie() {
+		return $this->_cookie;
 	}
 
 }
