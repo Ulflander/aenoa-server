@@ -1,13 +1,25 @@
 <?php
 
 /**
- * This is an Aenoa Server representation of a user.
+ * This is an Aenoa Server representation of an user.
  *
  * An instance of User is created at initialization of the app session.
  *
+ * Users can store three types of data :
+ *		- properties stored in a field of table ae_users (app_properties field)
+ *			- this
+ *		- properties stored in ae_users_info table, and therefore formalized in structures
+ *			- this data is available through a <User::getData> method
+ *			-
+ *		- properties stored in core cookie
+ *			- this data is editable, through a <Cookie> instance
  *
  *
+ * @see App::getUser
  * @see Session
+ * @see Cookie
+ * @see LoginService
+ * @see UserCoreController
  */
 final class User {
 
@@ -32,7 +44,7 @@ final class User {
 	 * @return the current logged user
 	 */
 	public static function requireLogged() {
-		if (is_null(self::$_currentlogged)) {
+		if (is_null(self::$_currentlogged) ) {
 			App::do401('Require logged user');
 		}
 
@@ -40,7 +52,7 @@ final class User {
 	}
 
 	/**
-	 *
+	 * Creates a new User instance
 	 *
 	 *
 	 * @param string $identifier Identifier should be an email. If the instance if the first one (e.g. the one instanciated by Session)
@@ -75,40 +87,82 @@ final class User {
 		}
 	}
 
+	/**
+	 * Check if user is logged
+	 *
+	 * @return boolean True if user is logged, false otherwise
+	 */
 	function isLogged() {
 		return $this->_logged === 1;
 	}
 
+	/**
+	 * Check whether user level is set to 0 (god/superadmin...)
+	 *
+	 * @return boolean True if user level is set to 0, false otherwise
+	 */
 	function isGod() {
 		return $this->getTrueLevel() == 0;
 	}
 
+	/**
+	 * Get the main identifier of the user (email address)
+	 *
+	 * @return string Email address of user
+	 */
 	function getIdentifier() {
 		return $this->_identifier;
 	}
 
+	/**
+	 * Get the database id of the user data (ae_users table)
+	 *
+	 * @return int The database id of the user data (ae_users table)
+	 */
 	function getDatabaseId() {
 		return $this->_id;
 	}
 
+	/**
+	 * Get the lastname of the user
+	 *
+	 * @return string Lastname of the user
+	 */
 	function getLastname() {
 		return $this->_lastname;
 	}
 
+	/**
+	 * Get the firstname of the user
+	 *
+	 * @return string Firstname of the user
+	 */
 	function getFirstname() {
 		return $this->_firstname;
 	}
 
+	/**
+	 * Get fullname (concatenation of firstname and lastname, separated by a space)
+	 *
+	 * @return string Fullname, concatenation of firstname and lastname
+	 */
 	function getFullName() {
 		return $this->_firstname . ' ' . $this->_lastname;
 	}
 
+	/**
+	 * Get data from ae_users_info table associated to current user
+	 *
+	 * If user is not logged, this method returns an empty array.
+	 *
+	 * @return array Associative array of data of user
+	 */
 	function getData() {
 		return $this->_data;
 	}
 
 	/**
-	 * Get the cookie associated to th Aenoa Server User
+	 * Get the cookie associated to the Aenoa Server User
 	 * 
 	 * @see Cookie
 	 * @return Cookie The Cookie object
@@ -250,6 +304,18 @@ final class User {
 		App::$session->set('User.data', $user['user_info']);
 	}
 
+	function logout() {
+		self::$_currentlogged = null;
+
+		$this->_logged = false;
+
+		App::$session->uset('User.*');
+
+		App::$session->close(false);
+
+		return false;
+	}
+
 	/**
 	 * Set or unset the value of a property.
 	 *
@@ -271,7 +337,7 @@ final class User {
 	 * // Save properties
 	 * $user->flushProperties () ;
 	 *
-	 * // In chained command:
+	 * // or as chained command:
 	 * $user->setProperty('Bar', 1337)->flushProperties () ;
 	 * (end)
 	 *
@@ -348,18 +414,6 @@ final class User {
 
 	function getGroupList() {
 		return $this->_groups;
-	}
-
-	function logout() {
-		self::$_currentlogged = null;
-
-		$this->_logged = false;
-
-		App::$session->uset('User.*');
-
-		App::$session->close(false);
-
-		return false;
 	}
 
 	static function getClearNewPassword($length = 8) {
