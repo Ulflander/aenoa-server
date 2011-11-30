@@ -18,6 +18,7 @@ abstract class Service {
 			if ($this->authRequired === true) {
 				new ServerAuthCheck ();
 			}
+			
 
 			call_user_func_array(array($this, $query->serviceMethod), $arguments);
 

@@ -14,17 +14,15 @@ class TemplateRenderingService extends Service {
 
 		$this->db = App::getDatabase();
 
-		//$this->authRequired = true;
+		$this->authRequired = true;
 	}
 
 	function getElement($element, $userId = null, $vars = array() , $locale = null )
 	{
-		
 		if ( is_null( $locale ) )
 		{
 			$locale = Config::get(App::APP_DEFAULT_LANG) ;
 		}
-		
 		
 		$_i18n = new I18n ( 'default', $locale , 'UTF8', ROOT.'app'.DS.'locale' ) ;
 		
