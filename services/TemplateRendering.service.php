@@ -17,7 +17,7 @@ class TemplateRenderingService extends Service {
 		//$this->authRequired = true;
 	}
 
-	function getElement($element, $userId = null, $vars = array() , $language = null )
+	function getElement($element, $userId = null, $vars = array() , $locale = null )
 	{
 		
 		if ( is_null( $locale ) )
