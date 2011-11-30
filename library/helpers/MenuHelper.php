@@ -117,6 +117,7 @@ class MenuHelper {
 			$str .= '<li><ul id="dev-menu" class="no-list-style aemenu ' . $class . '">' . "\n";
 			$str .= '<li><a href="' . url() . 'dev/Backup" title="' . _('Backup application') . '" class="icon16 backup">' . _('Backup application') . '</a></li>' . "\n";
 			$str .= '<li><a href="' . url() . 'dev/PHPI18n" title="' . _('Extract I18n strings using xgetext utility') . '" class="icon16 i18n">' . _('Extract I18n') . '</a></li>' . "\n";
+			$str .= '<li><a href="' . url() . 'dev/CreateServiceDescription" title="' . _('Create or update service description') . '" class="icon16 service">' . _('Update service desc.') . '</a></li>' . "\n";
 			$str .= '<li><a href="' . url() . 'dev/GenerateStructureDocFile" title="' . _('Update structures documentation files by extracting structure description') . '" class="icon16 manual">' . _('Update structures doc') . '</a></li>' . "\n";
 			$str .= '<li><a href="' . url() . 'dev/GenerateDocumentation" title="' . _('Create documentation using NaturalDocs') . '" class="icon16 manual">' . _('Create documentation') . '</a></li>' . "\n";
 			$str .= '<li><a href="' . url() . 'dev/EhtmlToThtml" title="' . _('Generate templates from EHtml files to THtml files') . '" class="icon16 wizard">' . _('Generate templates') . '</a></li>' . "\n";

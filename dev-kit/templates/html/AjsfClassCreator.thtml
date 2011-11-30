@@ -1,4 +1,4 @@
-<script type="text/javascript">
+·<script type="text/javascript">
 		
     var getterIndex = 0,
     methodIndex = 0 ;
@@ -56,7 +56,7 @@
 	    .setAt('type','text') ,
 	    input4 = ajsf.create('ajsf/getter/customtype/'+getterIndex,'input')
 	    .setAt('type','text') ;
-				
+
 	    input2;
 				
 	    _('#ajsf/getters').append(
@@ -82,17 +82,73 @@
 </script>
 <div class="expanded">
 
-	<h1>Create a new AJSF class</h1>
+    <h1>Create a new AJSF class</h1>
 
 
 
-	    <form id="ajsf/signature" method="post" action="#">
+    <form id="ajsf/signature" method="post" action="#">
 
-		<fieldset class="hidden">
-		    <legend>Templates</legend>
+	<fieldset class="hidden" id="ajsf/result/container">
+	    <legend>Result</legend>
+	    <textarea id="ajsf/result"></textarea>
+	    <input type="submit" value="Update" class="margedtop icon16 reload" />
+	</fieldset>
 
-		    <label for="ajsf/templates/class">Class template</label>
-		    <textarea id="ajsf/templates/class" name="ajsf/templates/class">
+	<fieldset>
+	    <legend>Class main signature</legend>
+	    <div class="control">
+		<label for="ajsf/classname">Class name</label>
+		<input type="text" id="ajsf/classname" name="ajsf/classname" />
+	    </div>
+
+	    <div class="control">
+		<label for="ajsf/parent">Class parent</label>
+		<select id="ajsf/parent" name="ajsf/parent">
+		    <option value="ajsf.Class">ajsf.Class</option>
+		    <option value="ajsf.AbstractEvtDispatcher">ajsf.AbstractEvtDispatcher</option>
+		</select>
+	    </div>
+
+	    <div class="control">
+		<label for="ajsf/classcomment">Class comment</label>
+		<textarea id="ajsf/classcomment" name="ajsf/classcomment"></textarea>
+	    </div>
+
+	</fieldset>
+	<fieldset>
+	    <legend>Class getters/setters</legend>
+	    <div id="ajsf/getters">
+	    </div>
+	    <div class="expanded alignright margedtop">
+		<input type="button" value="Add getter/setter" class="icon16 add" id="ajsf/addgetter" />
+	    </div>
+	</fieldset>
+
+
+	<fieldset>
+	    <legend>Class methods</legend>
+
+	    <div class="expanded alignright">
+		<input type="button" value="Add method" class="icon16 add" />
+
+	    </div>
+
+	    <div class="control">
+		<label for="ajsf/method/0/name">Method name</label>
+		<input type="text" id="ajsf/method/0/name" name="ajsf/method/0/name" />
+		<label for="ajsf/method/0/type">Method return type</label>
+		<input type="text" id="ajsf/method/0/type" name="ajsf/method/0/type" />
+		<label for="ajsf/method/0/comment">Method comment</label>
+		<input type="text" id="ajsf/method/0/comment" name="ajsf/method/0/comment" />
+	    </div>
+	</fieldset>
+	
+	
+	<fieldset>
+	    <legend>Templates</legend>
+
+	    <label for="ajsf/templates/class">Class template</label>
+	    <textarea id="ajsf/templates/class" name="ajsf/templates/class">
 (function(){
 	/*
 		Class: ajsf.<%= classname %>
@@ -103,10 +159,10 @@
 		<%= body %>
 	}) ;
 })();
-		    </textarea>
+	    </textarea>
 
-		    <label for="ajsf/templates/method">Getter template</label>
-		    <textarea id="ajsf/templates/method" name="ajsf/templates/method">
+	    <label for="ajsf/templates/method">Getter template</label>
+	    <textarea id="ajsf/templates/method" name="ajsf/templates/method">
 	/*
 		<%= methodtype %>: <%= method %>
 		
@@ -119,9 +175,11 @@
 	{
 		<%= body %>
 	}</textarea>
-
-		    <label for="ajsf/templates/method">Getter template</label>
-		    <textarea id="ajsf/templates/htmlprop" name="ajsf/templates/htmlprop">
+	    
+	</fieldset>
+	<fieldset class="hidden">
+	    <label for="ajsf/templates/method">Getter template</label>
+	    <textarea id="ajsf/templates/htmlprop" name="ajsf/templates/htmlprop">
 						<hr />
 						<div class="control">
 							<label for="ajsf/prop/<%= index %>/name">Property name</label>
@@ -131,64 +189,10 @@
 							<label for="ajsf/prop/<%= index %>/comment">Property comment</label>
 							<input type="text" id="ajsf/prop/<%= index %>/comment" name="ajsf/prop/<%= index %>/comment" />
 						</div>
-		    </textarea>
+	    </textarea>
 
-		</fieldset>
-		<fieldset class="hidden" id="ajsf/result/container">
-		    <legend>Result</legend>
-		    <textarea id="ajsf/result"></textarea>
-		    <input type="submit" value="Update" class="margedtop icon16 reload" />
-		</fieldset>
-
-		<fieldset>
-		    <legend>Class main signature</legend>
-		    <div class="control">
-			<label for="ajsf/classname">Class name</label>
-			<input type="text" id="ajsf/classname" name="ajsf/classname" />
-		    </div>
-
-		    <div class="control">
-			<label for="ajsf/parent">Class parent</label>
-			<select id="ajsf/parent" name="ajsf/parent">
-			    <option value="ajsf.Class">ajsf.Class</option>
-			    <option value="ajsf.AbstractEvtDispatcher">ajsf.AbstractEvtDispatcher</option>
-			</select>
-		    </div>
-
-		    <div class="control">
-			<label for="ajsf/classcomment">Class comment</label>
-			<textarea id="ajsf/classcomment" name="ajsf/classcomment"></textarea>
-		    </div>
-
-		</fieldset>
-		<fieldset>
-		    <legend>Class getters/setters</legend>
-		    <div id="ajsf/getters">
-		    </div>
-		    <div class="expanded alignright margedtop">
-			<input type="button" value="Add getter/setter" class="icon16 add" id="ajsf/addgetter" />
-		    </div>
-		</fieldset>
-
-
-		<fieldset>
-		    <legend>Class methods</legend>
-
-		    <div class="expanded alignright">
-			<input type="button" value="Add method" class="icon16 add" />
-
-		    </div>
-
-		    <div class="control">
-			<label for="ajsf/method/0/name">Method name</label>
-			<input type="text" id="ajsf/method/0/name" name="ajsf/method/0/name" />
-			<label for="ajsf/method/0/type">Method return type</label>
-			<input type="text" id="ajsf/method/0/type" name="ajsf/method/0/type" />
-			<label for="ajsf/method/0/comment">Method comment</label>
-			<input type="text" id="ajsf/method/0/comment" name="ajsf/method/0/comment" />
-		    </div>
-		</fieldset>
-		<input type="submit" value="Submit" />
-	    </form>
+	</fieldset>
+	<input type="submit" value="Submit" />
+    </form>
 
 </div>

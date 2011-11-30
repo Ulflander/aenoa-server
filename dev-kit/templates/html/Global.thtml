@@ -1,4 +1,6 @@
 
+<div class="layout m p">
 <?php
 	$this->renderElement ( 'tasks' ) ;
 ?>
+</div>

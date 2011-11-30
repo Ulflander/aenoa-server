@@ -97,7 +97,7 @@ class LoginService extends Service {
 		
 		if ( $hash != sha1( $dbuser['email'] . $dbuser['password'] ) )
 		{
-			$this->protocol->setFailure('Invalid id');
+			$this->protocol->setFailure('Invalid hash');
 			return ;
 		}
 		

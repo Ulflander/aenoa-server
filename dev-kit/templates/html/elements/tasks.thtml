@@ -22,7 +22,7 @@
 	<hr class="hidden thin" />
 <?php endif; ?>
 
-<div id="tasks" class="p">
+<div id="tasks" class="expanded p">
 
 	<?php echo $content_for_layout ; ?>
 	
