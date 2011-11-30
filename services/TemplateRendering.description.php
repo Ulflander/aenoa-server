@@ -20,6 +20,7 @@
  * <p><b>element</b> (Optional: no) The element name, as string</p>
  * <p><b>userId</b> (Optional: yes, default value is "null" ) If given, will simulate a connected user in rendered element</p>
  * <p><b>vars</b> (Optional: yes, default value is "array()" ) Some variables to add to template rendering, as an associative array.</p>
+ * <p><b>language</b> (Optional: yes, default value is "null" ) Locale to use to render template. Available locales are the ones in your Aenoa Server application.</p>
  * 
  * 
  * 
@@ -43,7 +44,7 @@
  */
 
 class TemplateRenderingServiceDescription { 
-	public $generated = 'November 30, 2011, 12:24 pm' ;
+	public $generated = 'November 30, 2011, 1:54 pm' ;
 	public $methods = array (
 	'description' => 'Renders some elements or templates of application or server, and returns the result',
 	'methods' => array (
@@ -66,6 +67,12 @@ class TemplateRenderingServiceDescription {
 					'optional' => true,
 					'default' => 'array()',
 					'description' => 'Some variables to add to template rendering, as an associative array.',
+					),
+				3 => array (
+					'name' => 'language',
+					'optional' => true,
+					'default' => 'null',
+					'description' => 'Locale to use to render template. Available locales are the ones in your Aenoa Server application.',
 					),
 				),
 			'firstLevelReturns' => array (

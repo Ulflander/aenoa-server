@@ -14,12 +14,22 @@ class TemplateRenderingService extends Service {
 
 		$this->db = App::getDatabase();
 
-		$this->authRequired = true;
+		//$this->authRequired = true;
 	}
 
-	function getElement($element, $userId = null, $vars = array() )
+	function getElement($element, $userId = null, $vars = array() , $language = null )
 	{
-
+		
+		if ( is_null( $locale ) )
+		{
+			$locale = Config::get(App::APP_DEFAULT_LANG) ;
+		}
+		
+		if ( !App::getI18n()->switchTo( $locale ) )
+		{
+			$this->protocol->addError('Asked locale is not available') ;
+		}
+		
 		$tpl = new Template ();
 
 		$user = App::getUser();
@@ -40,7 +50,6 @@ class TemplateRenderingService extends Service {
 			'user_object' => $user,
 			'user_super' => $user->isLevel(0)
 		));
-		
 		
 		
 		if ( !is_null ( $vars ) && is_array($vars) )
