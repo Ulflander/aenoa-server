@@ -25,10 +25,8 @@ class TemplateRenderingService extends Service {
 			$locale = Config::get(App::APP_DEFAULT_LANG) ;
 		}
 		
-		if ( !App::getI18n()->switchTo( $locale ) )
-		{
-			$this->protocol->addError('Asked locale is not available') ;
-		}
+		
+		$_i18n = new I18n ( 'default', $locale , 'UTF8', ROOT.'app'.DS.'locale' ) ;
 		
 		$tpl = new Template ();
 
