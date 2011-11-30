@@ -35,7 +35,7 @@ class Options extends AeObject {
 			$msg = 'Value ' . $v . ' for option ' . $k . ' is not valid';
 
 			if (debuggin()) {
-				new ErrorException($msg);
+				throw new ErrorException($msg);
 			} else {
 				App::do500($msg);
 			}
@@ -94,7 +94,7 @@ class Options extends AeObject {
 	 * Returns an option given its key
 	 *
 	 * @param string $k The key
-	 * @return mixed The option value if exists, false otherwise
+	 * @return mixed The option value if exists, NULL otherwise
 	 */
 	function get($k) {
 		if (array_key_exists($k, $this->_vars)) {
@@ -105,7 +105,7 @@ class Options extends AeObject {
 	}
 
 	/**
-	 * Returns all options sorted by keys
+	 * Returns all options, sorted by keys
 	 *
 	 * @return array All options sorted by keys
 	 */
