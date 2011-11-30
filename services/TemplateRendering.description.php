@@ -19,20 +19,30 @@
  * 
  * <p><b>element</b> (Optional: no) The element name, as string</p>
  * <p><b>userId</b> (Optional: yes, default value is "null" ) If given, will simulate a connected user in rendered element</p>
+ * <p><b>vars</b> (Optional: yes, default value is "null" ) Some variables to add to template rendering.
+ * 
+ * Separators are ";" to delimit each pair key/value and ":" to delimit key and value.
+ * 
+ * <pre>
+ * someVarName:someValue
+ * </pre>
+ * 
+ * will add to template a variable named "someVarName" with value "someValue"
+ * 
+ * 
+ * <pre>
+ * someVarName:someValue;anotherVar:anotherValue
+ * </pre>
+ * 
+ * will add to template two differents vars with two different values.
+ * </p>
  * 
  * 
  * 
  * 
  * <h3>Returns in case of success</h3>
  * 
- * <p><b>element</b> The element HTML result  <pre>$result</pre></p>
- * 
- * 
- * 
- * 
- * <h3>Returns in case of failure</h3>
- * 
- * <p>Nothing is returned in case of failure</p>
+ * This service does not return any data or failure message.
  * 
  * 
  * 
@@ -42,7 +52,7 @@
  */
 
 class TemplateRenderingServiceDescription { 
-	public $generated = 'September 23, 2011, 12:01 pm' ;
+	public $generated = 'November 30, 2011, 12:17 pm' ;
 	public $methods = array (
 	'description' => 'Renders some elements or templates of application or server, and returns the result',
 	'methods' => array (
@@ -60,13 +70,14 @@ class TemplateRenderingServiceDescription {
 					'default' => 'null',
 					'description' => 'If given, will simulate a connected user in rendered element',
 					),
+				2 => array (
+					'name' => 'vars',
+					'optional' => true,
+					'default' => 'null',
+					'description' => 'Some variables to add to template rendering.<br /><br />Separators are ";" to delimit each pair key/value and ":" to delimit key and value.<br /><br />&lt;pre&gt;<br />someVarName:someValue<br />&lt;/pre&gt;<br /><br />will add to template a variable named "someVarName" with value "someValue"<br /><br /><br />&lt;pre&gt;<br />someVarName:someValue;anotherVar:anotherValue<br />&lt;/pre&gt;<br /><br />will add to template two differents vars with two different values.<br />',
+					),
 				),
 			'firstLevelReturns' => array (
-				0 => array (
-					'name' => 'element',
-					'value' => '$result',
-					'description' => 'The element HTML result',
-					),
 				),
 			'secondLevelReturns' => array (
 				),

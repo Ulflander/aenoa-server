@@ -354,7 +354,7 @@ class CreateServiceDescription extends Task {
 	}
 
 	private function formatStrForDoc($str) {
-		$str = str_replace('<br />', "\n * ", $str);
+		$str = str_replace(array('<br />', '\'', '&lt;','&gt;'), array("\n * ", '"' , '<', '>'), $str);
 		return $str;
 	}
 

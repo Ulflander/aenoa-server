@@ -17,7 +17,7 @@ class TemplateRenderingService extends Service {
 		$this->authRequired = true;
 	}
 
-	function getElement($element, $userId = null)
+	function getElement($element, $userId = null, $vars = null )
 	{
 
 		$tpl = new Template ();
@@ -29,6 +29,7 @@ class TemplateRenderingService extends Service {
 
 			if (!$dbuser || empty($dbuser)) {
 				$this->protocol->addError('User not valid');
+				return;
 			}
 
 			$user->login($dbuser['email'], $dbuser['password']);
@@ -39,7 +40,19 @@ class TemplateRenderingService extends Service {
 			'user_object' => $user,
 			'user_super' => $user->isLevel(0)
 		));
-
+		
+		
+		
+		if ( !is_null ( $vars ) )
+		{
+			$vars = explode(';') ;
+			foreach ( $vars as $var )
+			{
+				list ( $key , $val ) = explode(':',$var) ;
+				$tpl->set( $key , $vals ) ;
+			}
+			
+		}
 
 		ob_start();
 
