@@ -17,7 +17,7 @@ class TemplateRenderingService extends Service {
 		$this->authRequired = true;
 	}
 
-	function getElement($element, $userId = null, $vars = null )
+	function getElement($element, $userId = null, $vars = array() )
 	{
 
 		$tpl = new Template ();
@@ -43,14 +43,9 @@ class TemplateRenderingService extends Service {
 		
 		
 		
-		if ( !is_null ( $vars ) )
+		if ( !is_null ( $vars ) && is_array($vars) )
 		{
-			$vars = explode(';') ;
-			foreach ( $vars as $var )
-			{
-				list ( $key , $val ) = explode(':',$var) ;
-				$tpl->set( $key , $vals ) ;
-			}
+			$tpl->setAll($vars) ;
 			
 		}
 
