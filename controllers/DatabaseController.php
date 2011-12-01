@@ -958,7 +958,7 @@ class DatabaseController extends Controller {
 	if (is_null($flag)) :
 	     $this->conditions['has_publications']= 'IS NULL';
 	else :
-	    $this->conditions['has_publications']= 'IS NOT NULL';
+	    $this->conditions['has_publications']= '1';
 	endif;
 	 
 	App::getSession()->set('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
