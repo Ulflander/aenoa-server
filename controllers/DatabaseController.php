@@ -953,6 +953,19 @@ class DatabaseController extends Controller {
 
 		$this->view->set('mode', 'readAllUpdate');
 	}
+	
+	 function readPublication($page=1, $order = null, $dir = null,$flag = null) {
+	if (is_null($flag)) :
+	     $this->conditions['has_publications']= 'IS NULL';
+	else :
+	    $this->conditions['has_publications']= 'IS NOT NULL';
+	endif;
+	 
+	App::getSession()->set('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
+	$this->readAll($page, $order, $dir, true);
+	
+	
+    }
 
 	/**
 	 * Update read with table mode changing
