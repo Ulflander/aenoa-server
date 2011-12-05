@@ -45,7 +45,7 @@ class I18n extends ConfDriven {
 
 			if ($dir == '') {
 				if (debuggin()) {
-					App::do500('Localization initialization failed. This message is only shown in debug mode.', __CLASS__ , __LINE__ - 2 );
+					App::do500('Localization initialization failed. This message is only shown in debug mode', __FILE__ , __LINE__ - 2 );
 				} else {
 					if (!function_exists('_')) {
 

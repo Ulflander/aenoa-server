@@ -913,6 +913,7 @@ class App extends AeObject
 				'template' => array (
 					'file'=>'email'.DS.'system-error.thtml',
 					'vars'=> array (
+						'filename' => $file,
 						'line' => $line,
 						'info' => $info,
 						'response' => $headerResponse

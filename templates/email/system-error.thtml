@@ -26,8 +26,8 @@
 		<?php echo sprintf('An error occured on your platform %s. Here is a quick report: ', Config::get(App::APP_NAME) ) ?> <br />
 		System error response: <?php echo $response ?> <br />
 		
-		<?php if ( !is_null( $file ) ): ?>
-		   File: <?php echo $file ?>
+		<?php if ( !is_null( $filename ) ): ?>
+		   File: <?php echo $filename ?>
 		<?php endif; ?>
 		
 		<?php if ( !is_null( $line ) ): ?>
