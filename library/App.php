@@ -897,6 +897,8 @@ class App extends AeObject
 
 	/**
 	 * Send a 503 Service Unavailable status and show a 503 page, send an email to the administrator if required, then die.
+	 * 
+	 * @see App::alert
 	 */
 	static function do500 ( $headerResponse = null , $file = null , $line = null, $info = null )
 	{
@@ -905,25 +907,14 @@ class App extends AeObject
 			self::$_instance->beforeError ( 500 ) ;
 		}
 		
-		$mailer = new AeMail () ;
-		$mailer->sendThis (
-			array ( 
-				'to' => Config::get(App::APP_EMAIL)  ,
-				'subject' => sprintf(_('[%s] System ERROR report'), Config::get(App::APP_NAME)),
-				'template' => array (
-					'file'=>'email'.DS.'system-error.thtml',
-					'vars'=> array (
-						'filename' => $file,
-						'line' => $line,
-						'info' => $info,
-						'response' => $headerResponse
-					)
-				) ,
-			)
-		);
+		self::alert ( $headerResponse , $file , $line , $info ) ;
 		
 		self::doRespond(500, $headerResponse , true , _('System error'), _('This service has emitted an error. An email has been sent to administrators. We are sorry for any inconvenience.') ) ;
 	}
+	
+	
+	
+	
 
 	/**
 	 * Send a 404 Not Found status and show a 404 page, then die
@@ -939,7 +930,35 @@ class App extends AeObject
 	}
 	
 	
-	
+	/**
+	 * Alerts App administrator about a critic failure
+	 * 
+	 * @param string $message Message of failure
+	 * @param string $file File in which failure has been seen
+	 * @param int $line Line of file
+	 * @param array $info More info, optional
+	 */
+	static function alert ( $message  = null , $file = null , $line = null, $info = null )
+	{
+		
+		$mailer = new AeMail () ;
+		$mailer->sendThis (
+			array ( 
+				'to' => Config::get(App::APP_EMAIL)  ,
+				'subject' => sprintf(_('[%s] System ERROR report'), Config::get(App::APP_NAME)),
+				'template' => array (
+					'file'=>'email'.DS.'system-error.thtml',
+					'vars'=> array (
+						'filename' => $file,
+						'line' => $line,
+						'info' => $info,
+						'response' => $message
+					)
+				) ,
+			)
+		);
+		
+	}
 	
 	
 	/*************************************************
