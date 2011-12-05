@@ -50,8 +50,8 @@ class I18n extends ConfDriven {
 					
 				} else {
 					
-					App::alert('Localization initialization failed.', __FILE__ );
-
+					throw new ErrorException('Localization initialization failed') ;
+					
 					if (!function_exists('_')) {
 
 						function _($str) {
