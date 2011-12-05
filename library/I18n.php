@@ -38,12 +38,14 @@ class I18n extends ConfDriven {
 		
 		$dir = $this->switchTo( $locale, $domain, $codeset , $path  ) ;
 		
-		if (is_null(self::$mainInstance)) {
+		if (is_null(self::$mainInstance))
+		{
+		
 			self::$mainInstance = &$this;
 
 			if ($dir == '') {
 				if (debuggin()) {
-					App::do500('Localization initialization failed', __FILE__ , __LINE__ - 2 );
+					App::do500('Localization initialization failed. This message is only shown in debug mode.', __CLASS__ , __LINE__ - 2 );
 				} else {
 					if (!function_exists('_')) {
 
@@ -155,7 +157,9 @@ class I18n extends ConfDriven {
 	protected function parseConf ( $values = array () )
 	{
 		foreach ($values as $val ) {
-			if (strpos($val, '>') === false) {
+			
+			if (strpos($val, '>') === false)
+			{
 				continue;
 			}
 
