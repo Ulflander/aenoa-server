@@ -132,6 +132,7 @@ sub ParseComment #(commentLines, isJavaDoc, lineNumber, parsedTopics)
     my ($newKeyword, $newTitle, $newLine);
 
     my $index = 0;
+	my $isPrivate = undef ;
 
     my $bodyStart = 0;
     my $bodyEnd = 0;  # Not inclusive.
@@ -157,6 +158,12 @@ sub ParseComment #(commentLines, isJavaDoc, lineNumber, parsedTopics)
 
             if ($topicCount)
                 {  $bodyEnd++;  };
+            }
+
+        # If the is private
+        elsif ($commentLines->[$index] eq ' @private' )
+            {
+				$isPrivate = 1 ;
             }
 
         # If the line has a recognized header and the previous line is blank...
@@ -238,7 +245,7 @@ sub ParseComment #(commentLines, isJavaDoc, lineNumber, parsedTopics)
             {  $package = undef;  };
 
         my $body = $self->FormatBody($commentLines, $bodyStart, $bodyEnd, $type, $isPlural);
-        my $newTopic = $self->MakeParsedTopic($type, $title, $package, $body, $lineNumber + $bodyStart - 1, $isPlural);
+        my $newTopic = $self->MakeParsedTopic($type, $title, $package, $body, $lineNumber + $bodyStart - 1, $isPlural, $isPrivate);
         push @$parsedTopics, $newTopic;
         $topicCount++;
 
