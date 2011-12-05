@@ -962,7 +962,7 @@ class DatabaseController extends Controller {
 	endif;
 	 
 	App::getSession()->set('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
-	$this->readAll($page, $order, $dir, true);
+	$this->readAll($page, $order, $dir, false);
 	
 	
     }
