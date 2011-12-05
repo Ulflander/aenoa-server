@@ -80,6 +80,14 @@ class I18n extends ConfDriven {
 		return setlocale(LC_MESSAGES, $lang);
 	}
 
+	private function __getLocale($lang) {
+		putenv('LC_MESSAGES=' . $lang);
+
+		_bindtextdomain($this->_domain, $this->_localePath);
+
+		return _setlocale(LC_MESSAGES, $lang);
+	}
+
 	function getCurrent() {
 		return $this->_currentLanguage;
 	}
@@ -104,6 +112,12 @@ class I18n extends ConfDriven {
 
 			if ($dir == '') {
 				$dir = $this->_getLocale($locale . '.' . $codeset);
+			}
+		} else if ( function_exists('_bindtextdomain') ) {
+			$dir = $this->__getLocale($locale);
+
+			if ($dir == '') {
+				$dir = $this->__getLocale($locale . '.' . $codeset);
 			}
 		}
 		
