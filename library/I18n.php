@@ -50,7 +50,7 @@ class I18n extends ConfDriven {
 					
 				} else {
 					
-					throw new ErrorException('Localization initialization failed') ;
+					trigger_error ('Localization initialization failed') ;
 					
 					if (!function_exists('_')) {
 
