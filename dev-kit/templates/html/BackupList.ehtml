@@ -1,11 +1,18 @@
-div .ajsf-table-container
+form .ajsf-table-container @.dev/RestoreBackup (method="POST")
 	table
 		thead
+			th "&nbsp;"
 			th {_('Tag')}
 			th {_('Date')}
 		tbody
-			: foreach ( $backups as $backup ):
+			? foreach ( $backups as $backup ):
 				tr
+					td 
+						input (type="radio" name="backups" value="backup-{$backup['name']}")
 					td {$backup['tag']}
 					td {$backup['date']}
-			: endforeach ;
+			? endforeach ;
+		tfoot
+			tr
+				td (colspan="3") 
+					input .m (type="submit" value="[Restore selected backup]") 

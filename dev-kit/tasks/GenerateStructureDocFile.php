@@ -58,7 +58,7 @@ class GenerateStructureDocFile extends Task {
 		{
 			$this->view->setStatus ( 'Starting structure doc generation with language: ' . $this->params['language'] ) ;
 
-			$_i18n = new I18n ( 'default', $this->params['language'] , 'UTF8', ROOT.'app'.DS.'locale' ) ;
+			$_i18n = new I18n ( $this->params['language'] ,'default', 'UTF8', ROOT.'app'.DS.'locale' ) ;
 		} else {
 			$this->view->setStatus ( 'Starting structure doc generation with core language' ) ;
 		}

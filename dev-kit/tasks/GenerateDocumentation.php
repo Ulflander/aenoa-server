@@ -57,13 +57,19 @@ class GenerateDocumentation extends Task {
 		$cmd = DK_NDF . 'NaturalDocs -s natural-aenoa -at ' . $n . ' -r -oft -i ' . $this->project->path . ' -o HTML ' . $root . 'docs' . DS . $this->project->name . '/ -p ' . $root . 'docs' . DS . $this->project->name . '-nd/';
 
 		$this->view->setStatus('Running command: ' . $cmd);
+		
+		$this->view->render() ;
+		
+		$this->view->setProgressBar('Generating documentation...', 'doc-progress') ;
+		
+		$this->view->updateProgressBar('doc-progress', 10) ;
 
 		exec($cmd, $output, $ret);
 
-		$this->view->setStatus('<ul><li>' . implode('</li><li>', $output) . '</li></ul>');
+		$this->view->updateProgressBar('doc-progress', 100) ;
 
 		if ($ret == 0) {
-			$this->view->setSuccess('Documentation generated: <a href="' . url() . 'docs/' . $this->project->name . '/">' . $this->project->name . ' documentation</a>');
+			$this->view->setSuccess('Documentation generated: <a href="' . url() . 'docs/' . $this->project->name . '/" target="_blank">' . $this->project->name . ' documentation</a> - <a href="'.url().'dev/GenerateDocumentation">Generate another documentation</a>');
 		} else {
 			$this->view->setError('Documentation NOT generated: ' . $this->project->name . ' / Returned: ' . $ret);
 		}

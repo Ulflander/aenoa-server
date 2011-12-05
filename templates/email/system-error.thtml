@@ -38,7 +38,7 @@
 		   <?php echo _('Error details') ?>:<br /><?php pr( $info ) ?>
 		<?php endif; ?>
 		
-		
+		<br /><br />
 		<?php echo _('Here are more details about environment') ?>:<br /><br />
 		
 		<?php echo _('Date:') ?>: <?php echo date('Y/m/d H:i:s') ?> <br />

@@ -7,25 +7,15 @@
  * @see App::initialize
  * @see Dispatcher
  */
-class Route {
-
-	private $_routes = array();
+class Route extends ConfDriven {
 
 	function __construct() {
-		// Here will be APC process for routes
-		$f = new File(AE_APP . 'routes', true);
-		$routes = explode("\n", $f->read());
-		$f->close();
-
-		foreach ($routes as $route) {
-			if (strpos($route, '>') === false) {
-				continue;
-			}
-
-			$r = explode('>', $route);
-			$this->_routes[trim($r[0])] = trim($r[1]);
-		}
+		
+		$this->file = AE_APP . 'routes' ;
+		
+		parent::__construct() ;
 	}
+	
 	
 	/**
 	 * Get a route given a query
@@ -34,7 +24,7 @@ class Route {
 	 * @return string Routed query
 	 */
 	function get($query) {
-		foreach ($this->_routes as $fromRoute => &$toRoute) {
+		foreach ($this->conf as $fromRoute => &$toRoute) {
 			preg_match_all('|^' . str_replace('\\*', '[a-z0-9\_]{1,}', preg_quote($fromRoute)) . '$|i', $query, $m);
 			if ($m && !empty($m[0])) {
 				$tokenQuerys = explode('/', $query);
@@ -70,7 +60,20 @@ class Route {
 	 */
 	function set ( $from, $to )
 	{
+		$this->conf[$from] = $to ;
+		
 		return $this ;
+	}
+	
+	/**
+	 * Check if a custom route exists for a query
+	 * 
+	 * @param string $query
+	 * @return boolean True if a custom route has been defined for the query, false if generated query is equal to given query 
+	 */
+	function has ( $query )
+	{
+		return $this->get($query) !== $query ;
 	}
 
 }

@@ -1,12 +1,10 @@
 <?php
 
-// Multilingual initialization
-// USes 
 /**
  * Internationalization class for Aenoa Server
  *
  */
-class I18n {
+class I18n extends ConfDriven {
 
 	private $_dir = '';
 	private $_localePath = '';
@@ -19,45 +17,33 @@ class I18n {
 	 * @var I18n
 	 */
 	private static $mainInstance = null;
+	
 	private static $locales = null;
 
-	function __construct($domain = 'default', $lang = null, $codeset = 'UTF8', $path = null) {
-		if (is_null($lang)) {
+	function __construct($locale = null, $domain = 'default', $codeset = 'UTF8', $path = null) {
+		
+		$this->file = AE_APP . 'transliterations' ;
+		
+		parent::__construct() ;
+		
+		if (is_null($locale)) {
 			if (App::getSession() && App::getSession()->has('I18n.lang')) {
-				$lang = App::getSession()->get('I18n.lang');
+				$locale = App::getSession()->get('I18n.lang');
 			} else if (App::getUser()->hasProperty('Webkupi.locale')) {
-				$lang = App::getUser()->getProperty('Webkupi.locale');
+				$locale = App::getUser()->getProperty('Webkupi.locale');
 			} else {
-				$lang = Config::get(App::APP_LANG);
+				$locale = Config::get(App::APP_LANG);
 			}
 		}
-
-		$dir = '';
-
-		$this->_currentLanguage = $lang;
-
-		$this->_domain = $domain;
-
-		if (is_null($path)) {
-			$this->_localePath = ROOT . 'app' . DS . 'locale' . DS;
-		} else {
-			$this->_localePath = $path;
-		}
-
-		if (function_exists('bindtextdomain')) {
-			$dir = $this->_getLocale($lang);
-
-			if ($dir == '') {
-				$dir = $this->_getLocale($lang . '.' . $codeset);
-			}
-		}
-
+		
+		$dir = $this->switchTo( $locale, $domain, $codeset , $path  ) ;
+		
 		if (is_null(self::$mainInstance)) {
 			self::$mainInstance = &$this;
 
 			if ($dir == '') {
-				if (!debuggin()) {
-					App::do500('Localization initialization failed');
+				if (debuggin()) {
+					App::do500('Localization initialization failed', __FILE__ , __LINE__ - 2 );
 				} else {
 					if (!function_exists('_')) {
 
@@ -95,8 +81,36 @@ class I18n {
 	function getCurrent() {
 		return $this->_currentLanguage;
 	}
+	
+	
+	function switchTo ( $locale , $domain = 'default', $codeset = 'UTF8', $path = null )
+	{
+		$dir = '';
 
-	function switchTo($newlang) {
+		$this->_currentLanguage = $locale;
+
+		$this->_domain = $domain;
+
+		if (is_null($path)) {
+			$this->_localePath = ROOT . 'app' . DS . 'locale' . DS;
+		} else {
+			$this->_localePath = $path;
+		}
+
+		if (function_exists('bindtextdomain')){
+			$dir = $this->_getLocale($locale);
+
+			if ($dir == '') {
+				$dir = $this->_getLocale($locale . '.' . $codeset);
+			}
+		}
+		
+		return $dir ;
+		
+	}
+	
+
+	function switchSessionTo( $locale ) {
 		if (in_array($newlang, $this->getLangList())) {
 			App::getSession()->set('I18n.lang', $newlang);
 
@@ -124,15 +138,41 @@ class I18n {
 
 		return $locales;
 	}
-
+	
 	static function getCurrentLanguage() {
 		return self::$mainInstance->getCurrent();
 	}
-
+	
 	static function defined() {
 		return!is_null(self::$mainInstance);
 	}
 
+	/**
+	 * Override of ConfDriven::parseConf
+	 * 
+	 * @private
+	 */
+	protected function parseConf ( $values = array () )
+	{
+		foreach ($values as $val ) {
+			if (strpos($val, '>') === false) {
+				continue;
+			}
+
+			$v = explode('>', $val);
+			
+			$from = trim($v[0]);
+			$to = trim($v[1]);
+			
+			if (mb_strlen($from , 'UTF-8') == 1)
+			{
+				tl_set ( $from , $to ) ;
+			} else {
+				tl_add ( $from , $to ) ;
+			}
+		}
+	}
+	
 }
 
 ?>

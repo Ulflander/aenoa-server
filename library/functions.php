@@ -220,6 +220,8 @@ if ( function_exists( 'tl_get' ) == false )
 	$tl_rules = array () ;
 	$tl__from = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿŔŕ';
 	$tl__to = 'aaaaaaaceeeeiiiidnoooooouuuuybsaaaaaaaceeeeiiiidnoooooouuuyybyRr';
+	
+	
 	function tl_get ( $str = null , $separator = '-' ) {
 
 		global $tl__to;
@@ -244,6 +246,8 @@ if ( function_exists( 'tl_get' ) == false )
 		}
 		return '' ;
 	}
+	
+	
 	function tl_add ( $rules, $replaces )
 	{
 		global $tl__to;
@@ -251,10 +255,10 @@ if ( function_exists( 'tl_get' ) == false )
 		$tl__from = $rules . $tl__from;
 		$tl__to = $replaces . $tl__to ;
 	}
+	
 	function tl_set ( $rule, $replace ) {
 		$tl_rules[$rule] = $replace ;
 	}
-	
 	
 	function replace_unicode_escape_sequence($match) {
 	    return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
@@ -351,7 +355,7 @@ if ( function_exists( 'lcfirst' ) == false )
  *
  * get a clean string without any accent
  * @param $str String to clean
- * @return urlized string
+ * @return string
  */
 if ( function_exists( 'deaccent' ) == false )
 {

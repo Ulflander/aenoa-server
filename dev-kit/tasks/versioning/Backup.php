@@ -51,7 +51,15 @@ class Backup extends Task {
 
 		// Set the backup tag
 		$f = new File ( $path .DS . $tag_filename , true ) ;
+		$f->write ( $this->params['tag'] ) ;
+		$f->close () ;
+		
 
+		$this->view->render() ;
+		
+		$this->view->setProgressBar('Backuping application...', 'doc-progress') ;
+		
+		$this->view->updateProgressBar('doc-progress', 10) ;
 
 		// Copy "app"
 		if ( !$this->futil->createDir($path, 'app') )
@@ -64,8 +72,10 @@ class Backup extends Task {
 			$this->view->setError(_('Backup not done: copy of files failed'));
 			return;
 		} else {
-			$this->view->setStatus(_('Copying app folder...'), true);
+			$this->view->setStatus(_('Copying app folder...'));
 		}
+		
+		$this->view->updateProgressBar('doc-progress', 30) ;
 
 		// Check for some custom backup folders for this application
 		// This should be store in a "backup" file in "app" folder, as others conf files
@@ -82,6 +92,10 @@ class Backup extends Task {
 			$f->close () ;
 		}
 
+		$progress = 40 ;
+		
+		$progressIncr = intval(59 / count($path)) ;
+		
 		// We backup each path
 		foreach ( $paths as $p )
 		{
@@ -101,12 +115,21 @@ class Backup extends Task {
 					$this->view->setError(sprintf(_('Backup of custom folder %s failed'), $p) ) ;
 					$all_ok = false ;
 				} else {
-					$this->view->setStatus(sprintf(_('Copying %s...'), $p), true);
+					$this->view->setStatus(sprintf(_('Copying %s...'), $p) );
 				}
 
 			}
+			
+			if ( $progress < 90 )
+			{
+				$progress += 10 ;
+			}
+			
+			$this->view->updateProgressBar('doc-progress', $progress) ;
 		}
 
+		
+		$this->view->updateProgressBar('doc-progress', 100) ;
 
 		switch ( $all_ok )
 		{

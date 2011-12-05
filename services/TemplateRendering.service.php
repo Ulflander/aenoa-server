@@ -24,7 +24,7 @@ class TemplateRenderingService extends Service {
 			$locale = Config::get(App::APP_DEFAULT_LANG) ;
 		}
 		
-		$_i18n = new I18n ( 'default', $locale , 'UTF8', ROOT.'app'.DS.'locale' ) ;
+		$_i18n = new I18n ( $locale ,'default',  'UTF8', ROOT.'app'.DS.'locale' ) ;
 		
 		$tpl = new Template ();
 

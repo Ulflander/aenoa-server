@@ -13,7 +13,7 @@ class DoController extends Controller{
 			App::do401 ('This method can not be called through Ajax') ;
 		}
 		
-		if ( App::getI18n()->switchTo($newlang) )
+		if ( App::getI18n()->switchSessionTo($newlang) )
 		{
 			App::getUser()->setProperty('Webkupi.locale',$newlang)->flushProperties() ;
 			

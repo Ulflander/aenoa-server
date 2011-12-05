@@ -146,7 +146,9 @@ class TaskView {
 				$this->template->appendScript ( 'tasks' , 'document.getElementById("status-'.$id.'").innerHTML = "'. $status .'" ;' ) ;
 				$this->template->appendScript ('tasks' , ' document.getElementById("'.$id.'").innerHTML = "'. ceil ( $percent ) . '%" ;') ;
 			} else {
-				$this->template->appendScript ('tasks' , ' document.getElementById("container-'.$id.'").style.display = "none" ;') ;
+				$this->template->appendScript ('tasks' , ' document.getElementById("'.$id.'").innerHTML = "100%" ;') ;
+				$this->template->appendScript ( 'tasks' , 'document.getElementById("'.$id.'").style.width = "100%" ;' ) ;
+				$this->template->appendScript ('tasks' , ' document.getElementById("'.$id.'").className = "done" ;') ;
 				$this->template->appendScript ( 'tasks' , 'document.getElementById("status-'.$id.'").style.display = "none" ;' ) ;
 			}
 		}

@@ -537,7 +537,10 @@ class App extends AeObject
 			
 		}
 		
-		self::$_i18n = new I18n () ;
+		if ( is_null ( self::$_i18n ) )
+		{
+			self::$_i18n = new I18n () ;
+		}
 		
 		// Get the query
 		if ( self::$sanitizer->exists ( 'GET' , 'query' )) 
@@ -618,6 +621,13 @@ class App extends AeObject
 		
 		// Initialize session and databases
 		self::initialize () ;
+		
+		// If debuggin, we avoid browser cache
+		if ( debuggin () && !headers_sent() )
+		{
+			header('Cache-Control: no-cache');
+			header('Pragma: no-cache');
+		}
 		
 		if ( !is_null($mainClass) && class_exists( $mainClass ) && $mainClass !== false )
 		{
@@ -895,25 +905,21 @@ class App extends AeObject
 			self::$_instance->beforeError ( 500 ) ;
 		}
 		
-		if ( !debuggin() )
-		{
-			$mailer = new AeMail () ;
-			$mailer->sendThis (
-				array ( 
-					'to' => Config::get(App::APP_EMAIL)  ,
-					'subject' => sprintf(_('[%s] System ERROR report'), Config::get(App::APP_NAME)),
-					'template' => array (
-						'file'=>'email'.DS.'system-error.thtml',
-						'vars'=> array (
-							'file' => $file,
-							'line' => $line,
-							'info' => $info,
-							'response' => $headerResponse
-						)
-					) ,
-				)
-			);
-		}
+		$mailer = new AeMail () ;
+		$mailer->sendThis (
+			array ( 
+				'to' => Config::get(App::APP_EMAIL)  ,
+				'subject' => sprintf(_('[%s] System ERROR report'), Config::get(App::APP_NAME)),
+				'template' => array (
+					'file'=>'email'.DS.'system-error.thtml',
+					'vars'=> array (
+						'line' => $line,
+						'info' => $info,
+						'response' => $headerResponse
+					)
+				) ,
+			)
+		);
 		
 		self::doRespond(500, $headerResponse , true , _('System error'), _('This service has emitted an error. An email has been sent to administrators. We are sorry for any inconvenience.') ) ;
 	}

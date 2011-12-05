@@ -571,9 +571,10 @@ class Template extends View {
 					include AE_TMP . $f3 ;
 
 					return;
-					}
+				}
 			}
 		}
+		
 		include $file ;
 	}
 	

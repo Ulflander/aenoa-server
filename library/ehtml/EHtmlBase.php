@@ -59,7 +59,7 @@ class EHtmlBase extends AeObject {
 		$lines = $this->parseScope($lines);
 
 		$lines = $this->extractMethods($lines);
-
+		
 		$res = $this->renderScope($lines);
 
 		return implode("\n", $res) . "\n";
