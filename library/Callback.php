@@ -2,17 +2,74 @@
 
 
 /**
- * Callback is a little utility to quickly create callbacks to static or instance methods, defined or anonymous functions
+ * Callback is a little utility to quickly create callbacks to static or instance methods, defined or anonymous functions.
+ *
  * 
  * 
- * It basically uses the php call_user_func_array.
+ * It basically uses the php call_user_func_array function, adding a simple API.
  * 
- * 
+ * Examples of use:
  * (start code)
- *	Code test 
+ * // Create a callback to an anonymous function
+ * $cb = new Callback ( function ( $someString ) {
+ *		return ucfirst ( $someString ) ;
+ * } ) ;
+ *
+ * // Apply the callback
+ *
+ * echo $cb->apply ( 'some_string' ) ;
+ * // Some_string
  * (end)
+ *
+ * (start code)
+ * // Create a callback to a defined function
+ * $cb = new Callback ( 'ucfirst' ) ;
  * 
- * 
+ * // Apply the callback
+ *
+ * echo $cb->apply ( 'some_string' ) ;
+ * // Some_string
+ * (end)
+ *
+ *
+ * (start code)
+ * // Create a class and a static method in it
+ * class Foo {
+ *		static function someFunc ( $string )
+ *		{
+ *			return ucfirst ( $string ) ;
+ *		}
+ * }
+ *
+ * // Create a callback to a static method
+ * $cb = new Callback ( 'someFunc' , 'Foo' ) ;
+ *
+ * // Apply the callback
+ *
+ * echo $cb->apply ( 'some_string' ) ;
+ * // Some_string
+ * (end)
+ *
+ *
+ * (start code)
+ * // Create a class and a method in it
+ * class Foo {
+ *		function someFunc ( $string )
+ *		{
+ *			return ucfirst ( $string ) ;
+ *		}
+ * }
+ *
+ * $foo = new Foo () ;
+ *
+ * // Create a callback to a static method
+ * $cb = new Callback ( 'someFunc' , $foo ) ;
+ *
+ * // Apply the callback
+ *
+ * echo $cb->apply ( 'some_string' ) ;
+ * // Some_string
+ * (end)
  * 
  */
 class Callback {
