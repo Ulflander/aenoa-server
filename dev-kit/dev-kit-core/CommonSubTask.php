@@ -92,7 +92,7 @@ class CommonSubTask {
 	
 		self::$_task->view->setProgressBar ( 'Deleting folder ' . basename ( $target ) . '...' , self::$_pid ) ;
 		
-		$cb = new Callback ( 'update' , new stdClass () , 'CommonSubTask' ) ;
+		$cb = new Callback ( 'update' , 'CommonSubTask' ) ;
 		
 		if ( self::$_task->futil->removeDir ( $target , $cb ) )
 		{	
@@ -130,7 +130,7 @@ class CommonSubTask {
 	
 		self::$_task->view->setProgressBar ( 'Copying folder ' . basename ( $from ) . '...' , self::$_pid ) ;
 		
-		$cb = new Callback ( 'update' , new stdClass () , 'CommonSubTask' ) ;
+		$cb = new Callback ( 'update' , 'CommonSubTask' ) ;
 		
 		if ( self::$_task->futil->copy ( $from , $to , $cb ) )
 		{	
