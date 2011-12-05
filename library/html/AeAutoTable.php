@@ -400,6 +400,12 @@ class AeAutoTable {
 				}
 			}
 		}
+		
+		if ( ake ( 'auto_table_callback' , $field ) )
+		{
+			$val = $field['auto_table_callback']->apply ( array ( $val ) ) ;
+		}
+		
 		return $val;
 	}
 
