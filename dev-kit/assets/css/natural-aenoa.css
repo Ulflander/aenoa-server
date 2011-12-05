@@ -1,12 +1,16 @@
 body {
      color: #000000;
-     font: 9pt Verdana,Arial,sans-serif;
+     font: 11px Verdana,Arial,sans-serif;
      margin: 0pt;
      padding: 0pt;
 }
 
 .ContentPage, .IndexPage, .FramedMenuPage {
      background-color: #FFFFFF;
+     width: 980px;
+     display: block;
+     margin-left: auto;
+     margin-right: auto;
 }
 
 .FramedContentPage, .FramedIndexPage, .FramedSearchResultsPage, .PopupSearchResultsPage {
@@ -16,13 +20,12 @@ body {
 
 .AppTitle {
      background: -moz-linear-gradient(center bottom , #D9D9D9 0%, #FAFAFA 100%) repeat scroll 0% 0% #FFFFFF;
-     font-size: 10pt;
      font-weight: bold;
      height: 20px;
      padding: 10px;
-     position: fixed;
      width: 100%;
      z-index: 30;
+     margin-top: 5px;
 }
 
 a:link, a:visited {
@@ -73,37 +76,51 @@ blockquote {
 }
 
 #Menu {
-     font-size: 8.5pt;
      padding: 0pt;
 }
 
 .ContentPage #Menu, .IndexPage #Menu {
      border-right: 1px dotted #AAAAAA;
-     bottom: 5px;
-     left: 5px;
-     overflow: auto;
      padding-top: 10px;
-     position: fixed;
-     top: 45px;
      width: 220px;
+     position: absolute;
+     top: 50px;
+     height: auto;
+}
+
+
+#Content {
+     padding-bottom: 15px;
+     padding-top: 5px;
+}
+
+
+.ContentPage #Content {
+	right: 10px;
+     margin-left: 250px;
 }
 
 .ContentPage .Firefox #Menu, .IndexPage .Firefox #Menu {
      width: 250px;
 }
 
+.ContentPage #Footer {
+	right: 10px;
+     margin-left: 250px;
+     text-align: right;
+}
+
+
 .MTitle {
      border-bottom: 1px dotted #000000;
-     font-size: 11pt;
-     margin-bottom: 15px;
-     padding: 5px 10px 15px;
+     margin-bottom: 0px;
+     padding: 5px 10px 5px;
      text-align: center;
 }
 
 .MSubTitle {
-     font-size: 8.5pt;
      font-weight: normal;
-     margin-bottom: 5px;
+     margin-bottom: 2px;
      margin-top: 1ex;
 }
 
@@ -120,7 +137,7 @@ blockquote {
 .MGroup {
      font-variant: small-caps;
      font-weight: bold;
-     margin: 1em 0pt 1em 10px;
+     margin: 1em 0pt 0em 10px;
 }
 
 .MGroupContent {
@@ -144,7 +161,6 @@ blockquote {
 }
 
 .MText {
-     font-size: 8pt;
      font-style: italic;
 }
 
@@ -251,7 +267,6 @@ iframe#MSearchResults {
 
 #MSearchResultsWindowClose {
      display: block;
-     font-size: 8pt;
      font-weight: bold;
      padding: 2px 5px;
 }
@@ -267,29 +282,17 @@ iframe#MSearchResults {
      text-decoration: none;
 }
 
-#Content {
-     padding-bottom: 15px;
-     padding-top: 35px;
-}
-
-.ContentPage #Content {
-     background-color: #FFFFFF;
-     font-size: 8pt;
-     margin-left: 250px;
-}
 
 .ContentPage .Firefox #Content {
      margin-left: 250px;
 }
 
 .CTopic {
-     font-size: 8pt;
      margin-bottom: 3em;
 }
 
 .CTitle {
      border-bottom: 1px dotted #AAAAAA;
-     font-size: 10pt;
      font-weight: bold;
      margin: 0pt 15px 0.5em;
 }
@@ -297,7 +300,6 @@ iframe#MSearchResults {
 .CGroup .CTitle {
      border-color: #FAFAFA;
      border-width: 0pt 0pt 2px;
-     font-size: 9pt;
      margin-left: 0pt;
      margin-right: 0pt;
      padding-left: 15px;
@@ -306,20 +308,18 @@ iframe#MSearchResults {
 
 .CClass .CTitle, .CInterface .CTitle, .CDatabase .CTitle, .CDatabaseTable .CTitle, .CSection .CTitle {
      border: medium none;
-     font-size: 14pt;
      margin-left: 0pt;
      margin-right: 0pt;
      padding: 10px 15px;
 }
 
 .CFunction, .CTodo, .CVariable, .CDatabaseField, .CConstant {
-     margin-left: 150px;
+     margin-left: 25px;
 }
 
 #MainTopic .CTitle {
      border-color: #FAFAFA;
      border-width: 0pt 0pt 3px;
-     font-size: 16pt;
      margin-left: 0pt;
      margin-right: 0pt;
      padding: 10px 15px;
@@ -335,7 +335,6 @@ iframe#MSearchResults {
      border-color: #FAFAFA;
      border-style: solid;
      border-width: 1px 2px 2px 1px;
-     font-size: 8pt;
      left: 0pt;
      padding: 5px;
      position: absolute;
@@ -356,7 +355,6 @@ iframe#MSearchResults {
 }
 
 .CHeading {
-     font-size: 10pt;
      font-weight: bold;
      margin: 1.5em 0pt 0.5em;
 }
@@ -389,7 +387,6 @@ iframe#MSearchResults {
 }
 
 .CDLDescription {
-     font-size: 10pt;
      padding-bottom: 0.5em;
      padding-left: 5ex;
 }
@@ -402,7 +399,6 @@ iframe#MSearchResults {
 
 .CImageCaption {
      color: #808080;
-     font-size: 8pt;
      font-variant: small-caps;
      position: relative;
      text-align: center;
@@ -422,12 +418,13 @@ a.CImageLink:link, a.CImageLink:visited, a.CImageLink:hover {
      border-style: solid;
      border-width: 1px;
      font: 10pt "Courier New",Courier,monospace;
-     margin: 0pt 5ex 1.5em;
+	 width: 100%;
      padding: 5px 3ex;
+     margin-bottom: 5px;
 }
 
 .Prototype td {
-     font-size: 10pt;
+
 }
 
 .PDefaultValue, .PDefaultValuePrefix, .PTypePrefix {
@@ -496,13 +493,15 @@ a.CImageLink:link, a.CImageLink:visited, a.CImageLink:hover {
 }
 
 .Summary {
-     margin: 1.5em 5ex 0pt 0ex;
+	padding: 0;
+     margin: 10px 0 10px 0;
+     width: 100%;
 }
 
 .STitle {
-     font-size: 11pt;
+
      font-weight: bold;
-     margin-bottom: 0.5em;
+     margin-bottom: 0.2em;
 }
 
 .SBorder {
@@ -520,7 +519,7 @@ a.CImageLink:link, a.CImageLink:visited, a.CImageLink:hover {
 }
 
 .STable {
-     font-size: 9pt;
+
      width: 100%;
 }
 
@@ -590,7 +589,7 @@ a.CImageLink:link, a.CImageLink:visited, a.CImageLink:hover {
 
 .SGroup td {
      padding-bottom: 0.25em;
-     padding-top: 0.5em;
+     padding-top: 0.25em;
 }
 
 .SGroup .SEntry {
@@ -607,7 +606,6 @@ a.CImageLink:link, a.CImageLink:visited, a.CImageLink:hover {
 }
 
 .SMain td, .SClass td, .SDatabase td, .SDatabaseTable td, .SSection td {
-     font-size: 10pt;
      padding-bottom: 0.25em;
 }
 
@@ -639,7 +637,6 @@ a.CImageLink:link, a.CImageLink:visited, a.CImageLink:hover {
      border-style: solid;
      border-width: 1px 2px 2px 1px;
      color: #606060;
-     font-size: 8pt;
      margin-right: 3px;
      margin-bottom: 3px;
      padding: 2px 2ex;
@@ -658,7 +655,7 @@ a.CImageLink:link, a.CImageLink:visited, a.CImageLink:hover {
 }
 
 .CHChildNote .CHEntry {
-     font-size: 8pt;
+
      font-style: italic;
 }
 
@@ -686,13 +683,11 @@ a.CImageLink:link, a.CImageLink:visited, a.CImageLink:hover {
      border-color: #FAFAFA;
      border-style: solid;
      border-width: 0pt 0pt 1px 1px;
-     font-size: 9pt;
      margin-left: 250px;
 }
 
 .IPageTitle {
      border: medium none;
-     font-size: 20pt;
      font-weight: bold;
      margin: -15px -15px 0pt;
      padding: 10px 15px;
@@ -705,7 +700,6 @@ a.CImageLink:link, a.CImageLink:visited, a.CImageLink:hover {
 .INavigationBar {
      background-color: #FFFFF0;
      border-bottom: 1px solid black;
-     font-size: 10pt;
      margin: 0pt -15px 15px;
      padding: 5px;
      text-align: center;
@@ -716,7 +710,7 @@ a.CImageLink:link, a.CImageLink:visited, a.CImageLink:hover {
 }
 
 .IHeading {
-     font-size: 13pt;
+
      font-weight: bold;
      padding: 2.5em 0pt 0.5em;
      text-align: center;
@@ -728,12 +722,11 @@ a.CImageLink:link, a.CImageLink:visited, a.CImageLink:hover {
 }
 
 .IEntry {
-     font-size: 10pt;
      padding-left: 1ex;
 }
 
 .PopupSearchResultsPage .IEntry {
-     font-size: 8pt;
+
      padding: 1px 5px;
 }
 
@@ -764,7 +757,6 @@ a.CImageLink:link, a.CImageLink:visited, a.CImageLink:hover {
      border-left: 1px solid #E0E0E0;
      border-right: 3px solid #E0E0E0;
      color: #C47C7C;
-     font-size: 10pt;
      padding: 0pt 1px 0pt 2px;
      text-align: right;
 }
@@ -774,7 +766,7 @@ a.CImageLink:link, a.CImageLink:visited, a.CImageLink:hover {
 }
 
 .PopupSearchResultsPage .ISymbolPrefix {
-     font-size: 8pt;
+
 }
 
 .IndexPage #IFirstSymbolPrefix, .FramedIndexPage #IFirstSymbolPrefix {
@@ -795,13 +787,13 @@ a.IParent, a.IFile {
 }
 
 .PopupSearchResultsPage .SRStatus {
-     font-size: 8pt;
+
      font-style: italic;
      padding: 2px 5px;
 }
 
 .FramedSearchResultsPage .SRStatus {
-     font-size: 10pt;
+
      font-style: italic;
 }
 
@@ -811,8 +803,7 @@ a.IParent, a.IFile {
 
 #Footer {
      color: #989898;
-     font-size: 8pt;
-     text-align: right;
+     text-align: center;
 }
 
 #Footer p {
@@ -822,7 +813,6 @@ a.IParent, a.IFile {
 
 .ContentPage #Footer, .IndexPage #Footer {
      margin: 2px;
-     text-align: right;
 }
 
 .FramedMenuPage #Footer {

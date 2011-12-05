@@ -1,4 +1,4 @@
-###############################################################################
+F###############################################################################
 #
 #   Package: NaturalDocs::Parser::JavaDoc
 #
@@ -19,11 +19,11 @@
 #       - @since
 #       - @value (shown as link instead of replacement)
 #       - @version
+#		- @var
 #
 #	Supported tag to avoid JavaDoc to be rendered:
 #
 #		- @private
-#
 #
 #
 #   Stripped tags:
@@ -42,7 +42,7 @@
 #   Supported HTML:
 #
 #       - p
-#       - b, i, u
+#       - b, i, u, h1, h2, h3
 #       - pre
 #       - a href
 #       - ol, ul, li (ol gets converted to ul)
@@ -80,7 +80,7 @@ package NaturalDocs::Parser::JavaDoc;
 #   hash: blockTags
 #   An existence hash of the all-lowercase JavaDoc block tags, not including the @.
 #
-my %blockTags = ( 'param' => 1, 'author' => 1, 'deprecated' => 1, 'exception' => 1, 'return' => 1, 'see' => 1,
+my %blockTags = ( 'param' => 1, 'var' => 1 , 'author' => 1, 'deprecated' => 1, 'exception' => 1, 'return' => 1, 'see' => 1,
                              'serial' => 1, 'serialfield' => 1, 'serialdata' => 1, 'since' => 1, 'throws' => 1, 'version' => 1,
                              'returns' => 1, 'private' => 1 );
 
@@ -230,7 +230,7 @@ sub ParseComment #(string[] commentLines, bool isJavaDoc, int lineNumber, Parsed
     # Stage two: Block level tags.
 
     my ($keyword, $value, $unformattedTextPtr, $unformattedTextCloser);
-    my ($params, $authors, $deprecation, $throws, $returns, $seeAlso, $since, $version, $isPrivate);
+    my ($params, $authors, $deprecation, $throws, $returns, $seeAlso, $since, $version,$type,$private);
 
 
     while ($i < scalar @$commentLines)
@@ -238,15 +238,10 @@ sub ParseComment #(string[] commentLines, bool isJavaDoc, int lineNumber, Parsed
         my $line = $self->ConvertAmpChars($commentLines->[$i]);
         $line =~ s/^ +//;
 
-			if ( $line eq '@private' )
-				{
-					$isPrivate = 1 ;
-				};
-
         if ($line =~ /^@([a-z]+) ?(.*)$/i)
             {
-            ($keyword, $value) = (lc($1), $2);
 
+            ($keyword, $value) = (lc($1), $2);
 
             # Process the previous one, if any.
             if ($unformattedText)
@@ -255,7 +250,22 @@ sub ParseComment #(string[] commentLines, bool isJavaDoc, int lineNumber, Parsed
                 $unformattedText = undef;
                 };
 
-            if ($keyword eq 'param')
+			if ($line eq '@private' )
+				{
+					print ' !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'."\n" ;
+					$private = 'private' ;
+					last;
+					
+
+				}
+			elsif ($keyword eq 'var')
+                {
+                $type .= '<pre>' . $2 . '</pre>';
+                $unformattedText = undef;
+                $unformattedTextPtr = \$type;
+                $unformattedTextCloser = undef;
+                }
+            elsif ($keyword eq 'param')
                 {
                 $value =~ /^([a-z0-9_]+) *(.*)$/i;
 
@@ -349,6 +359,7 @@ sub ParseComment #(string[] commentLines, bool isJavaDoc, int lineNumber, Parsed
         $unformattedText = undef;
         };
 
+
     if ($params)
         {  $output .= '<h>Parameters</h><dl>' . $params . '</dl>';  };
     if ($returns)
@@ -365,14 +376,19 @@ sub ParseComment #(string[] commentLines, bool isJavaDoc, int lineNumber, Parsed
         {  $output .= '<h>Author</h><p>' . $authors . '</p>';  };
     if ($seeAlso)
         {  $output .= '<h>See Also</h><p>' . $seeAlso . '</p>';  };
-
+    if ($type)
+        {  $output .= '<h>Type</h><p>' . $type . '</p>';  };
+	if($private)
+		{
+			print ($output ."\n");
+		};
 
     # Stage three: Build the parsed topic.
 
     my $summary = NaturalDocs::Parser->GetSummaryFromBody($output);
 
     push @$parsedTopics, NaturalDocs::Parser::ParsedTopic->New(undef, undef, undef, undef, undef, $summary,
-                                                                                                $output, $lineNumber, undef, $isPrivate);
+                                                                                                $output, $lineNumber, undef);
     return 1;
     };
 
@@ -400,6 +416,9 @@ sub FormatText #(string text, bool inParagraph)
     $text =~ s/&lt;ul.*?&gt;(.*?)&lt;\/ul&gt;/<ul>$1<\/ul>/gi;
     $text =~ s/&lt;ol.*?&gt;(.*?)&lt;\/ol&gt;/<ul>$1<\/ul>/gi;
     $text =~ s/&lt;li.*?&gt;(.*?)&lt;\/li&gt;/<li>$1<\/li>/gi;
+    $text =~ s/&lt;h2.*?&gt;(.*?)&lt;\/h2&gt;/<h2>$1<\/h2>/gi;
+    $text =~ s/&lt;h3.*?&gt;(.*?)&lt;\/h3&gt;/<h3>$1<\/h3>/gi;
+    $text =~ s/&lt;h4.*?&gt;(.*?)&lt;\/h4&gt;/<h4>$1<\/h4>/gi;
 
     $text =~ s/&lt;!--.*?--&gt;//gi;
 

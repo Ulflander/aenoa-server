@@ -38,7 +38,7 @@ package NaturalDocs::Parser::ParsedTopic;
 #       LINE_NUMBER  - The line number the topic appears at in the file.
 #       IS_LIST - Whether the topic is a list.
 #
-use NaturalDocs::DefineMembers 'TYPE', 'TITLE', 'PACKAGE', 'USING', 'PROTOTYPE', 'SUMMARY', 'BODY', 'LINE_NUMBER', 'IS_LIST';
+use NaturalDocs::DefineMembers 'TYPE', 'TITLE', 'PACKAGE', 'USING', 'PROTOTYPE', 'SUMMARY', 'BODY', 'LINE_NUMBER', 'IS_LIST', 'IS_PRIVATE';
 # DEPENDENCY: New() depends on the order of these constants, and that this class is not inheriting any members.
 
 
@@ -103,7 +103,7 @@ use NaturalDocs::DefineMembers 'TYPE', 'TITLE', 'PACKAGE', 'USING', 'PROTOTYPE',
 #
 #       The new object.
 #
-sub New #(type, title, package, using, prototype, summary, body, lineNumber, isList)
+sub New #(type, title, package, using, prototype, summary, body, lineNumber, isList, isPrivate)
     {
     # DEPENDENCY: This depends on the order of the parameter list being the same as the constants, and that there are no
     # members inherited from a base class.
@@ -139,6 +139,16 @@ sub IsList
 # Sets whether the topic is a list.
 sub SetIsList
     {  $_[0]->[IS_LIST] = $_[1];  };
+
+# Function: IsPrivate
+# Returns a boolean if the topic is private
+sub IsPrivate
+	{ return $_[0]->[IS_PRIVATE] eq 1; };
+
+# Function: SetIsPrivate
+# Sets whether the topic is private.
+sub SetIsPrivate
+    {  $_[0]->[IS_PRIVATE] = $_[1];  };
 
 # Function: Title
 # Returns the title of the topic.
@@ -205,6 +215,7 @@ sub Package
 # to <Package()> will still be generated according to its type-specific behavior.
 sub SetPackage #(package)
     {  $_[0]->[PACKAGE] = $_[1];  };
+
 
 # Function: Using
 # Returns an arrayref of additional scope <SymbolStrings> available to the topic via "using" statements, or undef if none.

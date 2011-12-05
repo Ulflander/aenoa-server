@@ -1190,7 +1190,9 @@ sub BuildSummary #(sourceFile, parsedFile, index)
 
             $output .=
              '<tr class="S' . ($index == 0 ? 'Main' : NaturalDocs::Topics->NameOfType($topic->Type(), 0, 1))
-                . ($indent ? ' SIndent' . $indent : '') . ($isMarked ? ' SMarked' : '') .'">'
+                . ($indent ? ' SIndent' . $indent : '') . ($isMarked ? ' SMarked' : '')
+				. ($topic->IsPrivate() ? ' SPrivate' : '' )
+				.'">'
                 . '<td class=SEntry>';
 
            # Add the entry itself.

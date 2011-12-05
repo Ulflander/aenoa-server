@@ -488,7 +488,9 @@ class FSUtil
 		return true ;
 	}
 	
-	
+	/**
+	 * @private
+	 */
 	private function __applyCallback ( $callback , $thisObj , $value )
 	{
 		$thisObj->$callback ( $value ) ;
@@ -542,12 +544,9 @@ class FSUtil
 			$this->errors[] = 1002 ;
 			return false ;
 		}
-		if ( is_dir ( $path ) )
-		{
-			return true ;
-		}
 		
-		return false ;
+		return @is_dir ( $path ) ;
+		
 	}
 	
 	
@@ -565,23 +564,13 @@ class FSUtil
 			$this->errors[] = 1002 ;
 			return false ;
 		}
-		if ( file_exists ( $path ) && is_file ( realpath ( $path ) ) )
-		{
-			return true ;
-		}
-		
-		return false ;
+
+		return file_exists ( $path ) && is_file ( realpath ( $path ) ) ;
 	}
 	
 	
 	/**
 	 * Creates a symbolic link to a target (directory or file)
-	 * 
-	 * @param string $path
-	 * 
-	 * @return True if $path is a file, false otherwise
-	 */
-	/**
 	 * 
 	 * @param string $path Path to the link to create
 	 * @param string $target Path to the target (the target must exists and must be a dir or a file)
@@ -590,20 +579,13 @@ class FSUtil
 	function createLink ( $path , $target )
 	{
 		$path = $this->getPath($path, false) ;
+		
 		if ( $path === false )
 		{
 			$this->errors[] = 1002 ;
 			return false ;
 		}
-		
-		
-		
-		if ( (@is_dir ( $target ) || @is_file ( $target ) ) && @symlink ( $target , $path ) )
-		{
-			return true ;
-		}
-		
-		return false ;
+		return (@is_dir ( $target ) || @is_file ( $target ) ) && @symlink ( $target , $path ) ;
 	}
 	
 	/**
