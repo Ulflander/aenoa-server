@@ -117,10 +117,11 @@ class I18n extends ConfDriven {
 	
 
 	function switchSessionTo( $locale ) {
-		if (in_array($newlang, $this->getLangList())) {
-			App::getSession()->set('I18n.lang', $newlang);
+		
+		if (in_array($locale, $this->getLangList())) {
+			App::getSession()->set('I18n.lang', $locale);
 
-			$this->_currentLanguage = $newlang;
+			$this->_currentLanguage = $locale;
 
 			return true;
 		}
