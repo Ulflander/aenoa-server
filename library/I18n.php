@@ -46,8 +46,24 @@ class I18n extends ConfDriven {
 			if ($dir == '') {
 				if ( !debuggin() ) {
 					
-					App::do500('Localization initialization failed. This message is only shown in production mode.', __FILE__ );
+				//	App::do500('Localization initialization failed. This message is only shown in production mode.', __FILE__ );
 					
+				//	trigger_error ('Localization initialization failed') ;
+					
+					if (!function_exists('_')) {
+
+						function _($str) {
+							return $str;
+						}
+
+						function ngettext($str1, $str2, $c) {
+							if ($c == 1) {
+								return $str1;
+							}
+							return $str2;
+						}
+
+					}
 				} else {
 					
 					trigger_error ('Localization initialization failed') ;
