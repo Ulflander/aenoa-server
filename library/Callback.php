@@ -8,7 +8,7 @@
  * 
  * It basically uses the php call_user_func_array function, adding a simple API.
  * 
- * Examples of use:
+ * Example of use with an anonymous function:
  * (start code)
  * // Create a callback to an anonymous function
  * $cb = new Callback ( function ( $someString ) {
@@ -21,6 +21,7 @@
  * // Some_string
  * (end)
  *
+ * Example of use with a defined function:
  * (start code)
  * // Create a callback to a defined function
  * $cb = new Callback ( 'ucfirst' ) ;
@@ -31,7 +32,7 @@
  * // Some_string
  * (end)
  *
- *
+ * Example of use with a static method:
  * (start code)
  * // Create a class and a static method in it
  * class Foo {
@@ -50,7 +51,7 @@
  * // Some_string
  * (end)
  *
- *
+ * Example of use with an instance method:
  * (start code)
  * // Create a class and a method in it
  * class Foo {
@@ -73,10 +74,18 @@
  * 
  */
 class Callback {
-	
-	var $method ;
-	
-	var $object ;
+
+	/**
+	 * @private
+	 * @var mixed
+	 */
+	private $method ;
+
+	/**
+	 * @private
+	 * @var mixed
+	 */
+	private $object ;
 	
 	/**
 	 * Creates a new callback

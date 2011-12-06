@@ -9,11 +9,16 @@
  */
 class Route extends ConfDriven {
 
-	function __construct() {
-		
-		$this->file = AE_APP . 'routes' ;
-		
-		parent::__construct() ;
+	/**
+	 * Create a new Route instance
+	 *
+	 * Conf file is located by default in AE_APP folder and is named "routes"
+	 *
+	 *
+	 * @param string $file Optional, only if Route instance doesn't use default conf file 
+	 */
+	function __construct( $file = null ) {
+		parent::__construct( AE_APP . 'routes' ) ;
 	}
 	
 	
