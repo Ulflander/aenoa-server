@@ -80,13 +80,13 @@ class LoginService extends Service {
 			return ;
 		}
 		
-		if ( strpos($idAndHash, 'id.') )
+		if ( strpos($idAndHash, 'id.') === 0 )
 		{
 			$idAndHash = substr($idAndHash, 3) ;
 		}
 		
 		list ( $id, $hash ) = explode ( '-' , $idAndHash ) ;
-		
+			
 		$dbuser = $this->db->findFirst ('ae_users', array ('id'=>$id) ) ;
 		
 		if ( empty ($dbuser) )
