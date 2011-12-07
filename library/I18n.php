@@ -80,7 +80,11 @@ class I18n extends ConfDriven {
 
 	private function _getLocale($locale) {
 		
-		putenv('LC_MESSAGES='.$locale);
+		if ( !putenv('LC_MESSAGES='.$locale) && debuggin () )
+		{
+			trigger_error('Localization initialization failed: env var not set');
+
+		}
 		
 		bindtextdomain($this->_domain, $this->_localePath) ;
 		
