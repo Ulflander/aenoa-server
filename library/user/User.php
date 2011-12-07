@@ -24,18 +24,30 @@
 final class User {
 
 	private $_data = array();
+	
 	private $_id = null;
+	
 	// This MUST be an email address.
 	private $_identifier = null;
+	
 	private $_group = null;
+	
 	private $_firstname = null;
+	
 	private $_lastname = null;
+	
 	private $_properties = array();
+	
 	private $_logged = 0;
+	
 	private $_level = 100;
+	
 	private $_groups = array();
+	
 	private static $_currentlogged = null;
+	
 	private $_cookieName = 'AEUSER';
+	
 	private $_cookie;
 
 	/**
@@ -102,7 +114,8 @@ final class User {
 			$this->_cookieName = Config::get(App::APP_COOKIE_NAME) ;
 		}
 
-		if (!is_null(App::$session) && App::$session->get('User.logged') === 1 && is_null(self::$_currentlogged)) {
+		if (!is_null(App::$session) && App::$session->get('User.logged') === 1 && is_null(self::$_currentlogged))
+		{
 			
 			$this->_cookie = new Cookie($this->_cookieName);
 

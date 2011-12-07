@@ -62,7 +62,7 @@ class I18n extends ConfDriven {
 
 				} else {
 
-					trigger_error('Localization initialization failed');
+				//	trigger_error('Localization initialization failed');
 
 					
 				}
