@@ -845,7 +845,7 @@ class DatabaseController extends Controller {
 		$length = $this->tableLength;
 		$this->view->set('currentWidget', $id);
 		$this->view->set('mode', 'readAll');
-
+		
 		$this->view->set('structure', $this->structure[$this->table]);
 
 		$count = $this->db->count($this->table, $this->conditions);
@@ -949,7 +949,10 @@ class DatabaseController extends Controller {
 		else
 			$this->readAll($page, $order, $dir,false);
 
+if (App::isAjax()) {
 
+			$this->view->set('mode', 'readAll');
+		}
 
 		$this->view->set('mode', 'readAllUpdate');
 	}
@@ -957,6 +960,7 @@ class DatabaseController extends Controller {
 	 function readPublication($page=1, $order = null, $dir = null,$flag = null) {
 	if (is_null($flag)) :
 	     $this->conditions['has_publications']= 'IS NULL';
+	$this->conditions['has_publications']= '0';
 	else :
 	    $this->conditions['has_publications']= '1';
 	endif;

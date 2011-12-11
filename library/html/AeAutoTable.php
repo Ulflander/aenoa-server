@@ -81,7 +81,7 @@ class AeAutoTable {
 			}
 		}
 
-		$this->endTable($page, $length, $count, $order, $dir, $cols);
+		$this->endTable($page, $length, $count, $order, $dir, $cols,$currentWidget, $context);
 
 		echo implode("\n", $this->_result);
 	}
@@ -122,10 +122,10 @@ class AeAutoTable {
 
 		$this->_result[] = '<ul class="right inline no-list-style table-options">';
 		if ($context != 'readFilter' && isset($currentWidget)) {
-			$this->_result[] = '<li><a href="' . $this->getURL() . 'read-mode-filter/inline/desc/created/' . $currentWidget . '" class="icon16 rows-list unlabeled inline" title="' . _('Show widget product content') . '"></a></li>';
+			$this->_result[] = '<li><a href="' . $this->getURL() . 'read-mode-filter/inline/desc/created/true/' . $currentWidget . '" class="icon16 rows-list unlabeled inline" title="' . _('Show widget product content') . '"></a></li>';
 		}
 		else {
-			$this->_result[] = '<li><a href="' . $this->getURL() . 'reset-filter/inline/' . (!is_null($order) ? 'created/' . $dir . '/' . $currentWidget : '' ) . '" class="icon16 rows-list unlabeled inline" title="' . _('Reset result') . '"></a></li>';
+			$this->_result[] = '<li><a href="' . $this->getURL() . 'reset-filter/inline' . (!is_null($order) ? '/'.$order.'/' . $dir  .'/true/' . $currentWidget : '' ) . '" class="icon16 rows-list unlabeled inline" title="' . _('Reset result') . '"></a></li>';
 		}
 		$this->_result[] = '<li><a href="' . $this->getURL() . 'read-mode-switch/inline/' . $page . (!is_null($order) ? '/' . $order . '/' . $dir : '' ) . '" class="icon16 rows-list unlabeled ' . ($this->getMode() == 'inline' ? 'current' : '') . '" title="' . _('Show results inline') . '">' . _('Show results inline') . '</a></li>';
 
@@ -189,15 +189,15 @@ class AeAutoTable {
 		return $cols;
 	}
 
-	function endTable($page=1, $length= 1, $count=1, $order, $dir, $cols) {
+	function endTable($page=1, $length= 1, $count=1, $order, $dir, $cols,$currentWidget, $context) {
 
 		$this->_result[] = '<tfoot>';
 		$this->_result[] = '<tr>';
 		$this->_result[] = '<td colspan="' . $cols . '" class="aligncenter"><ul class="no-list-style inline">';
 
-		$this->getPreviousPageLink($page, $length, $count, $order, $dir);
-		$this->getPageInfo($page, $length, $count, $order, $dir);
-		$this->getNextPageLink($page, $length, $count, $order, $dir);
+		$this->getPreviousPageLink($page, $length, $count, $order, $dir,$currentWidget, $context);
+		$this->getPageInfo($page, $length, $count, $order, $dir,$currentWidget, $context);
+		$this->getNextPageLink($page, $length, $count, $order, $dir,$currentWidget, $context);
 
 		$this->_result[] = '</ul></td>';
 		$this->_result[] = '</tr>';
@@ -334,20 +334,23 @@ class AeAutoTable {
 		$this->_odd = !$this->_odd;
 	}
 
-	function getNextPageLink($page, $length, $count, $order, $dir) {
+	function getNextPageLink($page, $length, $count, $order, $dir,$currentWidget,$context) {
 
 		if ($page < $length) {
-			$this->_result[] = '<li><a class="bold" href="' . $this->getURL() . 'readAll/' . ($page + 1) . (!is_null($order) ? '/' . $order . '/' . $dir : '' ) . '">' . _('Next page') . '</a></li>';
+		if ($context != 'readFilter' && isset($currentWidget)) {
+		    $this->_result[] = '<li><a class="bold" href="' . $this->getURL() . 'readAll/' . ($page + 1) . (!is_null($order) ? '/' . $order . '/' . $dir  .'/true': '' ) . '">' . _('Next page') . '</a></li>';
+		}	
+		    else $this->_result[] = '<li><a class="bold" href="' . $this->getURL() . 'readAll/' . ($page + 1) . (!is_null($order) ? '/' . $order . '/' . $dir  .'/false': '' ) . '">' . _('Next page') . '</a></li>';
 		}
 	}
 
-	function getPreviousPageLink($page, $length, $count, $order, $dir) {
+	function getPreviousPageLink($page, $length, $count, $order, $dir,$currentWidget,$context) {
 		if ($page > 1) {
-			$this->_result[] = '<li><a class="bold" href="' . $this->getURL() . 'readAll/' . ($page - 1) . (!is_null($order) ? '/' . $order . '/' . $dir : '' ) . '">' . _('Previous page') . '</a></li>';
+			$this->_result[] = '<li><a class="bold" href="' . $this->getURL() . 'readAll/' . ($page - 1) . (!is_null($order) ? '/' . $order . '/' . $dir .'/false' : '' ) . '">' . _('Previous page') . '</a></li>';
 		}
 	}
 
-	function getPageInfo($page, $length, $count, $order, $dir) {
+	function getPageInfo($page, $length, $count, $order, $dir,$currentWidget,$context) {
 		$this->_result[] = '<li>' . sprintf(ngettext('There is one element', 'There are %d elements', $count), $count) . '</li>';
 
 		if ($length > 1) {
