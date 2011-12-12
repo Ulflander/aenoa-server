@@ -125,7 +125,7 @@ class AeAutoTable {
 			$this->_result[] = '<li><a href="' . $this->getURL() . 'read-mode-filter/inline/desc/created/true/' . $currentWidget . '" class="icon16 rows-list unlabeled inline" title="' . _('Show widget product content') . '"></a></li>';
 		}
 		else {
-			$this->_result[] = '<li><a href="' . $this->getURL() . 'reset-filter/inline' . (!is_null($order) ? '/'.$order.'/' . $dir  .'/true/' . $currentWidget : '' ) . '" class="icon16 rows-list unlabeled inline" title="' . _('Reset result') . '"></a></li>';
+			$this->_result[] = '<li><a href="' . $this->getURL() . 'reset-filter/inline' . (!is_null($order) ? '/'.$order.'/' . $dir  .'/false/' . $currentWidget : '' ) . '" class="icon16 rows-list unlabeled inline" title="' . _('Reset result') . '"></a></li>';
 		}
 		$this->_result[] = '<li><a href="' . $this->getURL() . 'read-mode-switch/inline/' . $page . (!is_null($order) ? '/' . $order . '/' . $dir : '' ) . '" class="icon16 rows-list unlabeled ' . ($this->getMode() == 'inline' ? 'current' : '') . '" title="' . _('Show results inline') . '">' . _('Show results inline') . '</a></li>';
 
@@ -337,16 +337,16 @@ class AeAutoTable {
 	function getNextPageLink($page, $length, $count, $order, $dir,$currentWidget,$context) {
 
 		if ($page < $length) {
-		if ($context != 'readFilter' && isset($currentWidget)) {
-		    $this->_result[] = '<li><a class="bold" href="' . $this->getURL() . 'readAll/' . ($page + 1) . (!is_null($order) ? '/' . $order . '/' . $dir  .'/true': '' ) . '">' . _('Next page') . '</a></li>';
+		if ($context == 'readFilter' && isset($currentWidget)) {
+		    $this->_result[] = '<li><a id="next" class="bold" href="' . $this->getURL() . 'readAll/' . ($page + 1) . (!is_null($order) ? '/' . $order . '/' . $dir  .'/true': '' ) . '">' . _('Next page') . '</a></li>';
 		}	
-		    else $this->_result[] = '<li><a class="bold" href="' . $this->getURL() . 'readAll/' . ($page + 1) . (!is_null($order) ? '/' . $order . '/' . $dir  .'/false': '' ) . '">' . _('Next page') . '</a></li>';
+		    else $this->_result[] = '<li><a id="next" class="bold" href="' . $this->getURL() . 'readAll/' . ($page + 1) . (!is_null($order) ? '/' . $order . '/' . $dir .'/false': '' ) . '">' . _('Next page') . '</a></li>';
 		}
 	}
 
 	function getPreviousPageLink($page, $length, $count, $order, $dir,$currentWidget,$context) {
 		if ($page > 1) {
-			$this->_result[] = '<li><a class="bold" href="' . $this->getURL() . 'readAll/' . ($page - 1) . (!is_null($order) ? '/' . $order . '/' . $dir .'/false' : '' ) . '">' . _('Previous page') . '</a></li>';
+			$this->_result[] = '<li><a id="prev" class="bold" href="' . $this->getURL() . 'readAll/' . ($page - 1) . (!is_null($order) ? '/' . $order . '/' . $dir .'/false' : '' ) . '">' . _('Previous page') . '</a></li>';
 		}
 	}
 
