@@ -48,9 +48,7 @@ $users = array(
 				'rule' => DBValidator::PASSWORD,
 				'message' => _('Your password cannot remain empty')
 			),
-			'uneditable' => true,
-			'hide-from-table' => true
-		),
+					),
 		array(
 			'name' => 'group',
 			'label' => _('Group'),
