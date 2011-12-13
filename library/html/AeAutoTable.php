@@ -287,7 +287,7 @@ class AeAutoTable {
 					break;
 
 				case DBSchema::TYPE_DATETIME:
-					$res = '<td class="datetime ' . $class . '" data-field="' . $field['name'] . '">' . $this->getVal($val, $field) . '</td>';
+					$res = '<td class="datetime ' . $class . '" data-field="' . $field['name'] . '">' .$this->getVal( date("d-m-Y H:i:s",strtotime($val)), $field) . '</td>';
 					break;
 
 				case DBSchema::TYPE_ENUM:
