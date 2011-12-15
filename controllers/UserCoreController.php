@@ -1076,7 +1076,44 @@ class UserCoreController extends Controller{
 		) ) ;
 		
 	}
+	function regeneratePassword($id,$label,$pw_length = 9, $use_caps = true, $use_numeric = true, $use_specials = false) {
+	$caps = array();
+	$numbers = array();
+	$num_specials = 0;
+	$reg_length = 8;
+	$pws = array();
+	$chars = range(97, 122); // create a-z
+	if ($use_caps) $caps = range(65, 90); // create A-Z
+	if ($use_numeric) $numbers = range(48, 57); // create 0-9
+	$all = array_merge($chars, $caps, $numbers);
+	if ($use_specials) {
+		$reg_length =  ceil($pw_length*0.75);
+		$num_specials = $pw_length - $reg_length;
+		if ($num_specials > 5) $num_specials = 5;
+		$signs = range(33, 47);
+		$rs_keys = array_rand($signs, $num_specials);	
+		foreach ($rs_keys as $rs) {
+			$pws[] = chr($signs[$rs]);
+		}
+	} 
 	
+	$rand_keys = array_rand($all, $reg_length);
+	foreach ($rand_keys as $rand) {
+		$pw[] = chr($all[$rand]);
+	}	
+	$compl = array_merge($pw, $pws);	
+	shuffle($compl);
+	$pass =  implode('', $compl);
+	$usr = $this->db->findFirst('ae_users', array('id'=>$id));
+	if ( $this->db->edit('ae_users', $id, array ( 'password' => $pass ) ) ) {
+	$this->view->set('pass',$pass);
+	$this->view->set('label', $label);
+	$this->view->set('user', $usr['email']);
+	}
+	else {
+	    $this->view->set('error', 'New password has failed contact your system administrator');
+	}
+}
 
 	
 }
