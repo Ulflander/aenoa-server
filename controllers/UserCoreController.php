@@ -1076,7 +1076,7 @@ class UserCoreController extends Controller{
 		) ) ;
 		
 	}
-	function regeneratePassword($id,$label,$pw_length = 9, $use_caps = true, $use_numeric = true, $use_specials = false) {
+	function regeneratePassword($id,$group,$label,$pw_length = 9, $use_caps = true, $use_numeric = true, $use_specials = false) {
 	$caps = array();
 	$numbers = array();
 	$num_specials = 0;
@@ -1105,7 +1105,15 @@ class UserCoreController extends Controller{
 	shuffle($compl);
 	$pass =  implode('', $compl);
 	$usr = $this->db->findFirst('ae_users', array('id'=>$id));
-	if ( $this->db->edit('ae_users', $id, array ( 'password' => $pass ) ) ) {
+	if ($usr['group']=='2') {
+	    
+	    
+	    $edit= array ( 'password' => $pass,'group' =>$group );
+	}
+	else {
+	      $edit=array ( 'password' => $pass ) ;
+	}
+	if ( $this->db->edit('ae_users', $id, $edit )) {
 	$this->view->set('pass',$pass);
 	$this->view->set('label', $label);
 	$this->view->set('user', $usr['email']);
