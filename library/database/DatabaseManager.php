@@ -55,11 +55,11 @@ class DatabaseManager extends Object {
 	 * @param type $id
 	 * @param type $engine
 	 * @param type $config
-	 * @param type $structure
+	 * @param mixed $structure 
 	 * @param type $connect
 	 * @return type
 	 */
-	static function connect($id, $engine, $config, $structure = null, $connect = true ) {
+	static function connect($id, $engine, $config, $structure = false, $connect = true ) {
 		if (is_null(self::$_dbs)) {
 			self::$_dbs = new Collection ();
 		}
@@ -67,77 +67,33 @@ class DatabaseManager extends Object {
 		if (self::get($id) != null) {
 			App::do500('Database yet declared: ' . $id);
 		}
-
-		if (is_null($structureFile) && Config::get(App::USER_CORE_SYSTEM) !== true) {
-			App::do500('No structure file given for database ' . $id . '.');
+		
+		$tables = self::_getStructure($id, $structure) ;
+		
+		if (empty($tables)) {
+			App::do500('No table found for database ' . $id . '.');
 		}
-
-		if (!is_null($structureFile)) {
-			if (is_array($structureFile)) {
-				if (empty($structureFile)) {
-					App::do500('Structure for database ' . $id . ' is empty.');
-				}
-
-				$tables = $structureFile;
-			} else {
-
-				if (self::$futil->fileExists(AE_APP_STRUCTURES . $structureFile) == false) {
-					App::do500('Structure file for database ' . $id . ' not found.');
-				}
-
-				include ( AE_APP_STRUCTURES . $structureFile);
-
-				if (!isset($tables) || empty($tables)) {
-					App::do500('Structure file for DB ' . $id . ' is not valid.');
-				}
-			}
-		}
-
-		if ($id == 'main') {
-			if (Config::get(App::USER_CORE_SYSTEM) === true) {
-				include( AE_STRUCTURES . 'users.php' );
-
-				if (!empty($tables)) {
-					$tables = array_merge($users, $tables);
-				} else {
-					$tables = $users;
-				}
-			}
-
-			if (Config::get(App::API_REQUIRE_KEY) === true) {
-				include( AE_STRUCTURES . 'api.php' );
-
-				if (!empty($tables)) {
-					$tables = array_merge($tables, $api);
-				} else {
-					$tables = $api;
-				}
-			}
-		}
-
+		
+		
+		
 		$db = new $engine($id, $tables);
 
-		if ($db->sourceExists($source, true)) {
-			if (!$db->setSource($source)) {
+		if ($db->sourceExists($config, true)) {
+			if (!$db->setSource($config)) {
 				App::do500('Connection to DB ' . $id . ' failed.');
 			}
 		} else {
 			App::do500('Source for DB ' . $id . ' does not exist.');
 		}
-
-		if (empty($tables)) {
-			App::do500('No table found for database ' . $id . '.');
-		}
-
-		self::$_dbs[$id]['engine'] = $db;
-		self::$_dbs[$id]['structure'] = $tables;
-
-		if ($db->setStructure($tables, true) == false && strpos(self::$query, 'maintenance/check-context') !== 0) {
+		
+		self::$_dbs->set ( $id , $db ) ;
+		
+		if ($db->setStructure($tables, true) == false ) {
 			App::do500('Database ' . $id . ' requires to be deployed.');
 		}
 
 
-		return self::$_dbs->get($id);
+		return $db ;
 	}
 
 	/**
@@ -147,7 +103,7 @@ class DatabaseManager extends Object {
 	 * @return AbstractDBEngine Database object if found, null otherwise
 	 */
 	static function get($key = 'main') {
-		return self::$_dbs->get($key);
+		return is_null(self::$_dbs) ? null : self::$_dbs->get($key);
 	}
 
 	/**
@@ -157,7 +113,7 @@ class DatabaseManager extends Object {
 	 * @return boolean True if engine exists, false otherwise
 	 */
 	static function has($key = 'main') {
-		return self::$_dbs->has($key);
+		return is_null(self::$_dbs) ? false : self::$_dbs->has($key);
 	}
 
 	/**
@@ -166,19 +122,95 @@ class DatabaseManager extends Object {
 	 * @return array Array of all database engines
 	 */
 	static function getAll() {
-		return self::$_dbs->getAll();
+		return is_null(self::$_dbs) ? array() : self::$_dbs->getAll();
 	}
 
 	/**
-	 * Retrieve tables data
-	 *
-	 * @private
+	 * Retrieve database structure
+	 * 
 	 * @param type $id
-	 * @return array
+	 * @param type $structure
+	 * @return array 
 	 */
-	private function _getTables($id) {
-		$tables = array();
+	private function _getStructure($id, $structure = false ) {
 
+		$structureFile = null ;
+		
+		$futil = new FSUtil(ROOT);
+		
+		// Get the structure file
+		// if structure is a string, it's the structure filename+extension
+		if ( is_string ($structure) )
+		{
+			$structureFile = $structure ;
+		// If structure is an array, consider that it's the structure
+		} else if ( is_array($structure) )
+		{
+			$tables = $structure ;
+		// If structure is FALSE, we consider that structure file is named {structure_id}.php
+		} else if ( $structure === false )
+		{
+			$structureFile = $id . '.php' ;
+		// If structure us null, we consider starting with an empty structure
+		} else if ( is_null($structure) )
+		{
+			$structure = array () ;
+		} else {
+			
+		}
+		
+		
+		if ( !is_null($structureFile) )
+		{
+			
+			global $FILE_UTIL ;
+			
+			if ($futil->fileExists(AE_APP_STRUCTURES . $structureFile) == false) {
+				App::do500('Structure file for database ' . $id . ' not found.');
+			}
+
+			include ( AE_APP_STRUCTURES . $structureFile);
+
+			if (!isset($tables) || empty($tables)) {
+				App::do500('Structure file for DB ' . $id . ' is not valid.');
+			}
+		}
+		
+		
+		if ( !isset ( $tables ) )
+		{
+			App::do500 ( sprintf (_('Structure for database "%s" not found'),$id) ) ;
+		}
+		
+		
+		if ( $id == 'main' )
+		{
+			if ( Config::get(App::USER_CORE_SYSTEM) === true)
+			{
+				include( AE_STRUCTURES . 'users.php' ) ;
+				
+				if ( !empty( $tables ) )
+				{
+					$tables = array_merge ($users, $tables ) ;
+				} else {
+					$tables = $users ;
+				}
+			}
+		
+			if ( Config::get(App::API_REQUIRE_KEY) === true )
+			{
+				include( AE_STRUCTURES . 'api.php' ) ;
+				
+				if ( !empty( $tables ) )
+				{
+					$tables = array_merge ( $tables, $api ) ;
+				} else {
+					$tables = $api ;
+				}
+			}
+		}
+		
+		
 		return $tables;
 	}
 

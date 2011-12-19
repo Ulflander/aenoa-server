@@ -36,13 +36,17 @@ class Model extends Object {
 					trigger_error ( 'Model error' ) ;
 				}
 			} else {
-				$this->structure = $db->getTableStructure();
+				
+				
+				$this->setTable ( $table ) ;
+				
+				$this->structure = $db->getTableStructure( $table );
 			}
 		}	
 	}
 	
 	
-	function setTable ( $table )
+	final function setTable ( $table )
 	{
 		$this->table = $table ;
 	}

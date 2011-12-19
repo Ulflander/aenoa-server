@@ -143,8 +143,7 @@ class Controller extends Object {
 		
 		if ( App::getSession()->has('Controller.responses') )
 		{
-			$this->responses = App::getSession()->get('Controller.responses');
-			App::getSession()->uset('Controller.responses');
+			$this->responses = App::getSession()->uget('Controller.responses');
 		}
 	}
 	
@@ -298,7 +297,9 @@ class Controller extends Object {
 		{
 			require_once($model);
 		}
-				
+	
+		
+		
 		// Create model
 		if ( class_exists($_m) )
 		{

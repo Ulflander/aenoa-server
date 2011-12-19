@@ -766,15 +766,13 @@ class DatabaseController extends Controller {
 	}
 
 	/**
-	 * Read entries
+	 * Read entries of a table
 	 *
-	 *
-	 *
-	 *
-	 *
-	 *
-	 * @param mixed $id A string or an int depending of the type of the primary field
-	 * @param string $child_table In case of child edition, providen id should be id of the parent, and child_table the name of
+	 * @param int $page 
+	 * @param string $order
+	 * @param string $dir
+	 * @param boolean $useSession
+	 * @param int $id 
 	 */
 	public function readAll($page = null, $order = null, $dir = null, $useSession = true, $id=null) {
 		if (intval($page) < 1 || is_null($page)) {
@@ -867,7 +865,7 @@ class DatabaseController extends Controller {
 			$limit[3] = $dir = (!is_null($dir) ? $dir : 'asc' );
 			$baseURL .= '/' . $order . '/' . $dir;
 		}
-
+		
 		$this->view->set('order', $order);
 		$this->view->set('dir', $dir);
 

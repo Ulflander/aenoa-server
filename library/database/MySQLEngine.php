@@ -428,7 +428,9 @@ class MySQLEngine extends AbstractDBEngine {
 		if (is_int($limit)) {
 			return ' LIMIT 0,' . $limit;
 		} else if (is_array($limit)) {
+			
 			$c = count($limit);
+			
 			if ($c == 2 && is_int($limit[0])) {
 				return ' LIMIT ' . $limit[1] . ', ' . $limit[0];
 			} else if (($c == 2 || $c == 1) && is_string($limit[0])) {

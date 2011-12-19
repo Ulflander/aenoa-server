@@ -5,9 +5,8 @@
  * 
  * <p>It initializes everything required to run a webapp.</p>
  * 
- * <p>It stores Session, Databases and main tools.</p>
+ * <p>It stores Session, Sanitizer and main tools.</p>
  * 
- * @see Database
  * @see Session
  * 
  */
@@ -975,144 +974,47 @@ class App extends Object
 	
 	
 	/**
-	 * Tests if a database exists
+	 * [DEPRECATED] Tests if a database exists - You should now use DatabaseManager API.
 	 * 
+	 * @see DatabaseManager::has
 	 * @param string $id
 	 * @return AbstractDBEngine
 	 */
 	static public function hasDatabase ( $id = 'main' )
 	{
-		return array_key_exists($id, self::$_dbs ) ;
+		return DatabaseManager::has($id) ;
 	}
 	
 	/**
+	 * [DEPRECATED] Returns all databases - You should now use DatabaseManager API.
+	 * 
+	 * @see DatabaseManager::getAll
 	 * @return array
 	 */
 	static public function getAllDBs ()
 	{
-		return self::$_dbs ;
+		return DatabaseManager::getAll() ;
 	}
 	
 	/**
-	 * A part of this process should be integrated into db engine classes  
+	 * [DEPRECATED] A part of this process should be integrated into db engine classes   - You should now use DatabaseManager API.
 	 * 
-	 * @param string $id
-	 * @param string $engine
-	 * @param mixed $source
-	 * @param string $structureFile
-	 * @param boolean $connect Do connect directly to database (default: true)
-	 * @return
+	 * @see DatabaseManager::connect
 	 */
 	static public function declareDatabase ( $id , $engine , $source, $structureFile= null, $connect = true ) 
 	{
-		self::initialize () ;
-		
-		if ( self::getDatabase ( $id ) != null )
-		{
-			self::do500 ( 'Database yet declared: ' . $id ) ;
-		}
-		
-		if( is_null($structureFile) && Config::get(self::USER_CORE_SYSTEM) !== true )
-		{
-			self::do500 ( 'No structure file given for database ' . $id . '.' ) ;
-		}
-		
-		if( !is_null($structureFile) )
-		{
-		    if ( is_array ($structureFile ) )
-		    {
-			if( empty ($structureFile) )
-			{
-			    self::do500 ( 'Structure for database ' . $id . ' is empty.' ) ;
-			}
-			
-			$tables = $structureFile ;
-		    } else {
-		    
-			if ( self::$futil->fileExists( AE_APP_STRUCTURES .$structureFile ) == false )
-			{
-				self::do500 ( 'Structure file for database ' . $id . ' not found.' ) ;
-			}
-			
-			include ( AE_APP_STRUCTURES.$structureFile);
-			
-			if ( !isset($tables) || empty($tables) ) 
-			{
-				self::do500 ( 'Structure file for DB ' . $id . ' is not valid.' ) ;
-			}
-		    }
-		}
-		
-		if ( $id == 'main' )
-		{
-			if ( Config::get(self::USER_CORE_SYSTEM) === true)
-			{
-				include( AE_STRUCTURES . 'users.php' ) ;
-				
-				if ( !empty( $tables ) )
-				{
-					$tables = array_merge ($users, $tables ) ;
-				} else {
-					$tables = $users ;
-				}
-			}
-		
-			if ( Config::get(self::API_REQUIRE_KEY) === true )
-			{
-				include( AE_STRUCTURES . 'api.php' ) ;
-				
-				if ( !empty( $tables ) )
-				{
-					$tables = array_merge ( $tables, $api ) ;
-				} else {
-					$tables = $api ;
-				}
-			}
-		}
-		
-		$db = new $engine ( $id , $tables ) ;
-		
-		if ( $db->sourceExists ( $source, true ) )
-		{
-			if ( !$db->setSource ( $source ) )
-			{
-				self::do500 ( 'Connection to DB ' . $id . ' failed.' ) ;
-			}
-		} else {
-			self::do500 ( 'Source for DB ' . $id . ' does not exist.' ) ;
-		}
-		
-		if ( empty($tables) )
-		{
-			self::do500 ( 'No table found for database ' . $id . '.' ) ;
-		}
-		
-		self::$_dbs[$id]['engine'] = $db ;
-		self::$_dbs[$id]['structure'] = $tables ;
-		
-		if ( $db->setStructure ( $tables , true ) == false && strpos(self::$query , 'maintenance/check-context') !== 0 )
-		{
-		    self::do500 ( 'Database ' . $id . ' requires to be deployed.' ) ;
-		}
-		
-		return self::getDatabase($id) ;
+		return DatabaseManager::connect($id, $engine, $source, $structureFile, $connect) ;
 	}
 
 	/**
-	 * Returns a database by ID
+	 * [DEPRECATED] Returns a database by ID - You should now use DatabaseManager API.
 	 *
-	 * By default, will try to return 'main' database if no database structure ID given
-	 *
-	 * @param string $id Structure ID of db to return
-	 * @return AbstractDBEngine
+	 * @see DatabaseManager::get
 	 */
 	static public function getDatabase ( $id = 'main' )
 	{
-		if ( array_key_exists( $id, self::$_dbs ) )
-		{
-			return self::$_dbs[$id]['engine'] ;
-		}
-		return null ;
+		
+		return DatabaseManager::get($id) ;
 	}
 	
 	

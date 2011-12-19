@@ -482,6 +482,7 @@ class AbstractDBEngine extends DBSchema {
 	/**
 	 * Returns structure of a table
 	 *
+	 * @param string $table Table name
 	 * @return array The structure (fields list) of a table, false if table is not found or if concrete engine
 	 * has no structure capability.
 	 *

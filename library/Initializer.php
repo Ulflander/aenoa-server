@@ -4,7 +4,17 @@
 /*
  * Class: Initializer
  *
- * Initializer runs a set of
+ * Initializer runs a check-list on current Aenoa Server and application environment.
+ * 
+ * Initializer is called by <App::start>.
+ * 
+ * Actions:
+ * - create required folders
+ * - set mode on file/folders
+ * - setup Apache protections and url-rewriting (htaccess...)
+ * - check some required PHP or modules features
+ * 
+ * 
  */
 class Initializer extends Object {
 	
@@ -21,8 +31,8 @@ class Initializer extends Object {
 			if ($db['engine']->setStructure($db['structure'], true) == false) {
 				$result = false;
 
-				$this->log('Deployment of ' . count($db['structure']) . ' table(s) in database ' . $id . ' failed.', 'error');
-				$this->log(implode('<br />', $db['engine']->getLog()), 'error');
+				$this->log('Deployment of ' . count($db['structure']) . ' table(s) in database ' . $id . ' failed.');
+				$this->log(implode('<br />', $db['engine']->getLog()));
 			} else {
 				$this->log('Deployment of ' . count($db['structure']) . ' table(s) in database ' . $id . ' done.', 'info');
 			}
@@ -149,7 +159,7 @@ class Initializer extends Object {
 
 
 
-		/**
+		/*
 		 * Adding favicon if no one :)
 		 */
 		if ($futil->fileExists('favicon.ico') == false && $futil->fileExists('favicon.ico') == false) {
@@ -203,7 +213,7 @@ class Initializer extends Object {
 					$this->log('A first group has been created. It is the super administrator group.', 'success');
 				} else {
 					$result = false;
-					$this->log('First group (super administrators, level:0) has not been created. Please create it manually.', 'error');
+					$this->log('First group (super administrators, level:0) has not been created. Please create it manually.');
 				}
 			}
 
@@ -219,7 +229,7 @@ class Initializer extends Object {
 					$this->log('A second group has been created. It is the registrated users group.', 'success');
 				} else {
 					$result = false;
-					$this->log('Second group (registrated users, level:99) has not been created. Please create it manually.', 'error');
+					$this->log('Second group (registrated users, level:99) has not been created. Please create it manually.');
 				}
 			}
 
@@ -261,7 +271,7 @@ class Initializer extends Object {
 					$this->log('A first administrator has been created. An email has been send to the contact address, containing identifiers to log in the application.', 'success');
 				} else {
 					$result = false;
-					$this->log('First administrator has not been created. Please create it manually.', 'error');
+					$this->log('First administrator has not been created. Please create it manually.');
 				}
 			} else {
 				$this->log('Application does not require any new user.', 'info');
@@ -274,7 +284,7 @@ class Initializer extends Object {
 		 * CHECK FOR GPC QUOTES
 		 */
 		if (get_magic_quotes_gpc() == 1) {
-			$this->log('System detected that ini.php "magic_quotes_gpc" directive is set to on. It should be set to off. Please correct ini.php.', 'warning');
+			$this->log('System detected that ini.php "magic_quotes_gpc" directive is set to on. It should be set to off. Please correct ini.php.');
 			$warning = true;
 		}
 
@@ -283,7 +293,7 @@ class Initializer extends Object {
 		 * CHECK FOR GD PHP Extension
 		 */
 		if (!function_exists('imagecreate')) {
-			$this->log('Aenoa Server requires GD library for captcha feature. It seems that GD library is not deployed in this PHP install.', 'warning');
+			$this->log('Aenoa Server requires GD library for captcha feature. It seems that GD library is not deployed in this PHP install.');
 			$warning = true;
 		}
 
@@ -291,7 +301,7 @@ class Initializer extends Object {
 		 * CHECK FOR PHP-gettext
 		 */
 		if (_('en_US') == 'en_US') {
-			$this->log('Aenoa Server requires PHP-Gettext. It seems that PHP-Gettext is not deployed in this PHP install, or base local "en_US" is not available.', 'warning');
+			$this->log('Aenoa Server requires PHP-Gettext. It seems that PHP-Gettext is not deployed in this PHP install, or base local "en_US" is not available.');
 			$warning = true;
 		}
 
@@ -304,11 +314,9 @@ class Initializer extends Object {
 		
 		/*
 		 * END
-		 */
-
 		if ($result) {
 			if ($warning) {
-				$this->log('Deployment of application done, but warnings have been triggered. Please check.', 'warning');
+				$this->log('Deployment of application done, but warnings have been triggered. Please check.');
 			} else if ($setDatabase) {
 				$this->log('Deployment of application almost done.', 'success');
 			} else {
@@ -317,6 +325,8 @@ class Initializer extends Object {
 		} else {
 			$this->log('We are sorry to notice that some failures occured during deployement of application. Check messages below to identify reasons of failure, and solve problems before running application.', 'critic');
 		}
+		 */
+
 	}
 
 
