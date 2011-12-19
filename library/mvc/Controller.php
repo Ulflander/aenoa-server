@@ -11,7 +11,7 @@
  * @author xavier
  *
  */
-class Controller extends AeObject {
+class Controller extends Object {
 	
 	/**
 	 * Title of page

@@ -11,7 +11,7 @@
  * @see DBValidator
  * @see Widget
  */
-class DBField extends AeObject {
+class DBField extends Object {
 
 
 	/////////////////////////////////////////////////////

@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Class: AbstractDBEngine
+ *
  * AbstractDBEngine describe how all DB engines work.
  *
  * All DB engines must extend AbstractDBEngine.
@@ -219,10 +221,8 @@
  * > // This will search for all entries which name is foo and password is different than bar
  * > $conditions = array ( 'datetime' => '< NOW()' , 'password' => '!= bar' );
  *
- * @see DBSchema
- * @see DBTableSchema
- * @see MySQLEngine
- * @see DBValidator
+ * See also:
+ * <DBSchema>, <DBTableSchema>, <MySQLEngine>, <DBValidator>, <Database>
  */
 class AbstractDBEngine extends DBSchema {
 

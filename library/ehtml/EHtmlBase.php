@@ -4,7 +4,7 @@
  * EHtmlBase parses an EHtml string and returns an HTML/PHP string
  * 
  */
-class EHtmlBase extends AeObject {
+class EHtmlBase extends Object {
 	
 	/**
 	 * 

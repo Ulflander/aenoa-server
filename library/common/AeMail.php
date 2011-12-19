@@ -184,7 +184,6 @@ class AeMail
 	
 	var $degradedMsg = null ;
 	
-	// All email adresses are validated by the CakePHP Validation class.
 	// The 'email' function of Validation class lets check email host.
 	// You can set here if you want to check host.
 	var $checkEmailHost = false ;

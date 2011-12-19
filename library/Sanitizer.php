@@ -1,14 +1,13 @@
 <?php
 
 /**
- * <p>Aenoa Server santizer</p>
+ * Sanitizer class
  *
- * <p>Sanitizer</p>
  *
- * @see App
- * @see App::getSanitizer
+ * See Also:
+ * <App>, <App::getSanitizer>
  */
-class Sanitizer extends AeObject {
+class Sanitizer extends Object {
 
 	/**
 	 * Sanitized POST parameters
@@ -43,6 +42,8 @@ class Sanitizer extends AeObject {
 	 * <p>At construct, GET and POST values are retrieved from PHP globals, then they are sanitized</p>
 	 *
 	 * <p>Then sanitized POST and GET value are available throw common methods</p>
+	 *
+	 * 
 	 */
 	function __construct ()
 	{
@@ -112,7 +113,12 @@ class Sanitizer extends AeObject {
 		return false ;
 	}
 	
-	
+	/**
+	 * Reset data of Sanitizer instance with 
+	 *
+	 * @param type $key
+	 * @param type $arr
+	 */
 	function reset ( $key, $arr )
 	{
 		$this->retrieveParams( $arr, $this->{$key} ) ;

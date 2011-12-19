@@ -3,22 +3,37 @@
 /**
  * Internationalization class for Aenoa Server
  *
+ *
+ * It inits PHP_gettext module and offers methods to quickly change language.
+ *
+ * It loads transliteration file if this file exists
+ *
  */
 class I18n extends ConfDriven {
 
-	private $_dir = '';
+
 	private $_localePath = '';
+	
 	private $_domain;
+
 	private $_currentLanguage = '';
-	private $_langs = '';
 
 	/**
 	 * 
 	 * @var I18n
 	 */
 	private static $mainInstance = null;
+
 	private static $locales = null;
 
+	/**
+	 * Create a new I18n instance
+	 *
+	 * @param type $locale
+	 * @param type $domain
+	 * @param type $codeset
+	 * @param type $path
+	 */
 	function __construct($locale = null, $domain = 'default', $codeset = 'UTF8', $path = null) {
 
 		parent::__construct(AE_APP . 'transliterations');
@@ -32,15 +47,15 @@ class I18n extends ConfDriven {
 				$locale = Config::get(App::APP_LANG);
 			}
 		}
-		
+
 		$dir = $this->switchTo($locale, $domain, $codeset, $path);
 
 		if (is_null(self::$mainInstance)) {
 
 			self::$mainInstance = &$this;
-			
+
 			if ($dir == '') {
-				
+
 				if (!function_exists('_')) {
 
 					function _($str) {
@@ -55,39 +70,34 @@ class I18n extends ConfDriven {
 					}
 
 				}
-				
-				if (!debuggin()) {
-					
-				//	App::do500('Localization initialization failed. This message is only shown in production mode.', __FILE__ );
 
+				if (!debuggin()) {
+
+					//	App::do500('Localization initialization failed. This message is only shown in production mode.', __FILE__ );
 				} else {
 
-				//	trigger_error('Localization initialization failed');
-
-					
+					//	trigger_error('Localization initialization failed');
 				}
 
-				
+
 				return;
 			}
 		}
-		
+
 
 		bind_textdomain_codeset($this->_domain, 'UTF8');
-		
+
 		textdomain($this->_domain);
 	}
 
 	private function _getLocale($locale) {
-		
-		if ( !putenv('LC_MESSAGES='.$locale) && debuggin () )
-		{
-			trigger_error('Localization initialization failed: env var not set');
 
+		if (!putenv('LC_MESSAGES=' . $locale) && debuggin()) {
+			trigger_error('Localization initialization failed: env var not set');
 		}
-		
-		bindtextdomain($this->_domain, $this->_localePath) ;
-		
+
+		bindtextdomain($this->_domain, $this->_localePath);
+
 		return setlocale(LC_MESSAGES, $locale);
 	}
 
@@ -97,7 +107,7 @@ class I18n extends ConfDriven {
 
 	function switchTo($locale, $domain = 'default', $codeset = 'UTF8', $path = null) {
 		$dir = '';
-		
+
 		$this->_currentLanguage = $locale;
 
 		$this->_domain = $domain;
@@ -107,7 +117,7 @@ class I18n extends ConfDriven {
 		} else {
 			$this->_localePath = $path;
 		}
-		
+
 		if (function_exists('bindtextdomain')) {
 			$dir = $this->_getLocale($locale);
 
@@ -174,7 +184,7 @@ class I18n extends ConfDriven {
 
 			$from = trim($v[0]);
 			$to = trim($v[1]);
-			
+
 			if (mb_strlen($from, 'UTF-8') == 1) {
 				tl_set($from, $to);
 			} else {

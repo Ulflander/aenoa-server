@@ -64,7 +64,7 @@ class DatabaseController extends Controller {
 			if (count($id) > 3) {
 				continue;
 			}
-			
+
 			foreach ($this->structure[$this->table] as &$field) {
 				if (is_array($field) && array_key_exists('name', $field) && $field['name'] == $id[2]) {
 					if (array_key_exists('validation', $field)) {
@@ -93,7 +93,7 @@ class DatabaseController extends Controller {
 		$this->view->useLayout = true;
 
 		$this->view->layoutName = 'layout-backend';
-		
+
 		/**
 		 * @var AbstractDBEngine
 		 */
@@ -131,7 +131,7 @@ class DatabaseController extends Controller {
 		}
 
 		if (!is_null(App::getSession()->get('DB_DELETION_DONE'))) {
-			$this->addResponse(sprintf(_('Element %s of %s has been deleted'), App::getSession()->getAndDestroy('DB_DELETION_DONE'), $this->table), self::RESPONSE_SUCCESS);
+			$this->addResponse(sprintf(_('Element %s of %s has been deleted'), App::getSession()->uget('DB_DELETION_DONE'), $this->table), self::RESPONSE_SUCCESS);
 		}
 
 		if (is_null($this->baseURL)) {
@@ -289,7 +289,7 @@ class DatabaseController extends Controller {
 		}
 
 		$this->toSave = $this->model->beforeAdd($this->toSave);
-		
+
 		if ($this->toSave !== false && ($res = $this->db->add($this->table, $this->toSave) )) {
 			$lid = $this->db->lastId();
 
@@ -420,7 +420,7 @@ class DatabaseController extends Controller {
 			} else {
 				$elements = explode("\n", $data[$str . '__import']);
 				array_clean($elements);
-				
+
 				$search = ($data[$str . '__import/overwrite'] != '' );
 
 				unset($data[$str . '__import']);
@@ -445,7 +445,7 @@ class DatabaseController extends Controller {
 
 					if ($search) {
 						$_res = $this->db->findFirst($this->table, array($searchField => $searchVal));
-						
+
 						if (!empty($_res)) {
 							$this->data = array();
 
@@ -816,14 +816,11 @@ class DatabaseController extends Controller {
 				}
 			} else {
 				App::getSession()->set('DB_TABLE_DIR_' . $this->databaseID . '_' . $this->table, $dir);
-				
 			}
-		}
-		
-		else {
-		    //App::getSession()->set('DB_PAGE_' . $this->databaseID . '_' . $this->table, $page);
-		  $this->view->set('autoTableConditions', ''); 
-		  if (is_null($order)) {
+		} else {
+			//App::getSession()->set('DB_PAGE_' . $this->databaseID . '_' . $this->table, $page);
+			$this->view->set('autoTableConditions', '');
+			if (is_null($order)) {
 				if (App::getSession()->has('DB_TABLE_ORDER_' . $this->databaseID . '_' . $this->table)) {
 					$order = App::getSession()->get('DB_TABLE_ORDER_' . $this->databaseID . '_' . $this->table);
 				}
@@ -837,20 +834,19 @@ class DatabaseController extends Controller {
 				}
 			} else {
 				App::getSession()->set('DB_TABLE_DIR_' . $this->databaseID . '_' . $this->table, $dir);
-				
 			}
-		 
 		}
 
 		$length = $this->tableLength;
 		$this->view->set('currentWidget', $id);
 		$this->view->set('mode', 'readAll');
-		
+
 		$this->view->set('structure', $this->structure[$this->table]);
 
 		$count = $this->db->count($this->table, $this->conditions);
 
-		$pageLength = ceil($count / $length);
+
+		$pageLength = $length > 0 ? ceil($count / $length) : 0;
 
 		if ($page > $pageLength) {
 			$page = $pageLength;
@@ -940,36 +936,33 @@ class DatabaseController extends Controller {
 		}
 	}
 
-	
 	public function resetFilter($page = 1, $order = null, $dir = null, $currentWidget = null) {
 		//App::getSession()->uset('DB_CONDITIONS_KEY_' . $this->databaseID . '_' . $this->table);
 		//App::getSession()->uset('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
 		if (!empty($currentWidget))
 			$this->readAll($page, $order, $dir, false, $currentWidget);
 		else
-			$this->readAll($page, $order, $dir,false);
+			$this->readAll($page, $order, $dir, false);
 
-if (App::isAjax()) {
+		if (App::isAjax()) {
 
 			$this->view->set('mode', 'readAll');
 		}
 
 		$this->view->set('mode', 'readAllUpdate');
 	}
-	
-	 function readPublication($page=1, $order = null, $dir = null,$flag = null) {
-	if (is_null($flag)) :
-	     $this->conditions['has_publications']= 'IS NULL';
-	$this->conditions['has_publications']= '0';
-	else :
-	    $this->conditions['has_publications']= '1';
-	endif;
-	 
-	App::getSession()->set('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
-	$this->readAll($page, $order, $dir, false);
-	
-	
-    }
+
+	function readPublication($page=1, $order = null, $dir = null, $flag = null) {
+		if (is_null($flag)) :
+			$this->conditions['has_publications'] = 'IS NULL';
+			$this->conditions['has_publications'] = '0';
+		else :
+			$this->conditions['has_publications'] = '1';
+		endif;
+
+		App::getSession()->set('DB_CONDITIONS_' . $this->databaseID . '_' . $this->table, $this->conditions);
+		$this->readAll($page, $order, $dir, false);
+	}
 
 	/**
 	 * Update read with table mode changing

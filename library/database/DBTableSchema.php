@@ -4,7 +4,7 @@
  * The DBTableSchema validates and stores a table schema, offering methods to easily access to fields descriptions
  *
  */
-class DBTableSchema extends AeObject {
+class DBTableSchema extends Object {
 
 	protected $_name = '' ;
 
@@ -191,9 +191,9 @@ class DBTableSchema extends AeObject {
 	}
 
 	/**
-	 * Validates schema of a field
+	 * Validates schema of a field. Made for dev purpose only.
 	 *
-	 * If field is not valid, result is sended to <AeObject.debug> method
+	 * If field is not valid, result is sended to <Object.debug> method
 	 *
 	 * @param string $description
 	 * @return boolean True if field schema is valid

@@ -10,7 +10,7 @@
  *
  * @see DBTableSchema
  */
-class DBSchema extends AeObject {
+class DBSchema extends Object {
 
 
 	/**

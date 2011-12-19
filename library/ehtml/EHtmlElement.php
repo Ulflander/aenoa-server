@@ -1,6 +1,6 @@
 <?php
 
-class EHtmlElement extends AeObject {
+class EHtmlElement extends Object {
 
 	var $tokenized = false;
 	var $token = '';

@@ -5,7 +5,7 @@
  * 
  * @see Behavior
  */
-class Behaviorable extends AeObject {
+class Behaviorable extends Object {
 
 	private $_behaviors = array();
 

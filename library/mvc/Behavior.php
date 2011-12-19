@@ -1,12 +1,12 @@
 <?php
 
-class Behavior extends AeObject {
+class Behavior extends Object {
 
-    protected $_parent = null;
-
-    final public function __construct(&$parent) {
-	$this->_parent = $parent;
-    }
+	protected $_parent = null;
+	
+	final public function __construct(&$parent) {
+		$this->_parent = $parent;
+	}
 
 }
 

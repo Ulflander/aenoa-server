@@ -1,7 +1,15 @@
 <?php
 
-
-class Session {
+/**
+ * Class: Session
+ *
+ * Session class extends <Collection> so the <Collection> API must be used to set and get session stored items.
+ *
+ * A session is automatically created by <App> at initialization of Aenoa Server.
+ *
+ * A <User> is created when <Session::connect> is called by <App>
+ */
+class Session extends Collection {
 	
 	const SECURE_HIGH = 'high' ;
 	
@@ -45,30 +53,35 @@ class Session {
 	
 	private $_state ;
 	
-	private $_sessData = array () ;
-	
 	private $_oldData = array () ;
 	
 	private $_sessKey = false ;
 	
-	private $_cookieLifetime = 1800 ;
-	
 	private $_isNew = true ;
-	
-	private $_log = array () ;
 	
 	private $_lastError = '' ;
 	
 	private $user ;
 	
-	
+	/**
+	 * Creates a new instance of Session
+	 *
+	 * @see User
+	 * @see App::getSession
+	 */
 	function __construct ()
 	{
 		$this->__setSessionKey () ;
 		
 		$this->_state = self::STATE_INIT ;
 	}
-	
+
+
+	/**
+	 * Connect to the existing session, or create a new one
+	 *
+	 * @return type
+	 */
 	function connect ()
 	{
 		if ( $this->__canStart () == false )
@@ -80,7 +93,7 @@ class Session {
 		
 		session_name ('AESESS') ;
 		
-		$this->_log[] = 'Session connection' ;
+		$this->log( 'Session connection' ) ;
 	
 		if ( !is_dir(ROOT.'.private'.DS.'sessions'))
 		{
@@ -112,7 +125,7 @@ class Session {
 		
 		$this->_prevSid = session_id ()  ;
 		
-		$this->_log[] = 'Session connection / Current id : ' . session_id () ;
+		$this->log( 'Session connection / Current id : ' . session_id () );
 		
 		if ( function_exists ( 'apache_request_headers' ) )
 		{
@@ -146,13 +159,13 @@ class Session {
 				
 				
 				$this->_state = self::STATE_UNLOGGED ;
-				$this->_sessData = $tdata['data'] ;
+				$this->setAll ( $tdata['data'] ) ;
 				
 				$this->_getPersistentHeaders () ;
 			break;
 			case self::CHECK_NEW:
 				
-				$this->_sessData = array () ;
+				$this->setAll( array () ) ;
 				$_SESSION = array () ;
 				
 				$this->__regenerateID () ;
@@ -212,72 +225,24 @@ class Session {
 	{
 		return ( $this->_state != self::STATE_FATAL && $this->_state != self::STATE_INIT ) ;
 	}
-	
-	function get ( $key ) 
-	{
-		if ( array_key_exists( $key, $this->_sessData ) )
-		{
-			return $this->_sessData[$key] ;
-		}
-		
-		return null ;
-	}
-	
-	function has ( $key ) 
-	{
-		return array_key_exists( $key, $this->_sessData ) ;
-	}
-	
-	
-	function getAndDestroy ( $key ) 
-	{
-		if ( $this->started () == true && array_key_exists( $key, $this->_sessData ) )
-		{
-			$v = $this->_sessData[$key] ;
-			unset ( $this->_sessData[$key] ) ;
-			return $v;
-		}
-		
-		return null ;
-	}
-	
-	function set ( $key , $value )
-	{
-		if ( $this->started () == true )
-		{
-			$this->_sessData[$key] = $value ;
-		}
-	}
-	function uset ( $key )
-	{
-		if ( $this->started () == true )
-		{
-			if ( strpos($key, '*') === false )
-			{
-				unset ($this->_sessData[$key] ) ;
-			} else {
-				foreach ( $this->_sessData as $k => $val )
-				{
-					preg_match_all('|^' . str_replace('\\*','[a-z0-9\_\/]{1,}',preg_quote($key)) . '$|i', $k, $m );
-					
-					if ( $m && !empty($m[0]) )
-					{
-						unset ($this->_sessData[$k] ) ;
-					}
-				}
-			}
-		}
-	}
-	
-	function getData ()
-	{
-		return $this->_sessData ;
-	}
+
 	
 	function close ( $write = true )
 	{
 		if ( $this->started () == true )
 		{
+
+			/**
+			 * Hook: SessionClose
+			 *
+			 * Hook dispatched when a <Session> is closed
+			 *
+			 * Parameters:
+			 *		- $args[0] Session object reference
+			 *
+			 * See also:
+			 * <Hook>, <Session>
+			 */
 			new Hook ( 'SessionClose' , $this ) ;
 			
 			if ( $write === true )
@@ -286,7 +251,7 @@ class Session {
 				
 				$_SESSION['sid'] = $this->_sid ;
 				
-				$_SESSION['data'] = $this->_sessData ;
+				$_SESSION['data'] = $this->getAll() ;
 			} else {
 				$_SESSION = array () ;
 			}
@@ -328,7 +293,7 @@ class Session {
 			$this->_sid = session_id() ;
 		}
 		
-		$this->_log[] = 'SID regeneration: prev: ' . $this->_prevSid . ' / New: ' . $this->_sid ;
+		$this->log ( 'SID regeneration: prev: ' . $this->_prevSid . ' / New: ' . $this->_sid ) ;
 	}
 	
 	function regenerate ()
@@ -371,6 +336,76 @@ class Session {
 	{
 		return $this->user ;
 	}
+
+
+	/**
+	 * Get and unset a value, only if session is started
+	 *
+	 * @see Collection::uget
+	 * @param string $key Key of option
+	 * @return mixed Value if session started and key exists, null otherwise
+	 */
+	function uget ( $key )
+	{
+		if ( $this->started () == true )
+		{
+			return parent::uget( $key ) ;
+		}
+
+		return null ;
+	}
+
+	/**
+	 * Set a new value, only if session is started
+	 *
+	 * @see Collection::set
+	 * @param string $key Key of item
+	 * @param mixed $value Value of item
+	 * @return Session Current instance for chained command on this element
+	 */
+	function set ( $key , $value )
+	{
+		if ( $this->started () == true )
+		{
+			parent::set( $key, $value );
+		}
+
+		return $this ;
+	}
+
+	/**
+	 * Unset an item of collection, only if session is started
+	 *
+	 * @see Collection::uset
+	 * @param string $key Key of item to unset
+	 * @return Session Current instance for chained command on this element
+	 */
+	function uset ( $key )
+	{
+		if ( $this->started () == true )
+		{
+			parent::uset( $key ) ;
+		}
+
+		return $this ;
+	}
+
+	/**
+	 * Empty the collection, only if session is started
+	 *
+	 * @see Collection::usetAll
+	 * @return Session Current instance for chained command on this element
+	 */
+	function usetAll ()
+	{
+		if ( $this->started() == true )
+		{
+			parent::usetAll() ;
+		}
+
+		return $this ;
+	}
+
 	
 	
 	private function _getPersistentHeaders ()

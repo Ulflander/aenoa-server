@@ -1,13 +1,16 @@
 <?php
 
 /**
- * Util classe to manage cookie
+ * Class: Cookie
+ *
+ * Util classe to manage cookies
  * 
- * Cookie is an extension of <Options> classe, so data of cookie is available using the Options API
+ * Cookie is an extension of <Collection> classe, so data of cookie is available through the <Collection> API
  * 
- * @see Options
+ * See also:
+ * <Collection>, <User>
  */
-class Cookie extends Options {
+class Cookie extends Collection {
 	// 60 days : (60 * 60 * 24 * 60)
 
 	/**
@@ -145,7 +148,7 @@ class Cookie extends Options {
 	/**
 	 * Set a new pair key/value in the cookie
 	 * 
-	 * @see Options::set
+	 * @see Collection::set
 	 * @param string $k Key of option
 	 * @param mixed $v Value of option
 	 * @return Cookie Current instance for chained command on this element
@@ -163,7 +166,7 @@ class Cookie extends Options {
 	/**
 	 * Set a bunch of keys/values pairs from an associative array
 	 *
-	 * @see Options::setAll
+	 * @see Collection::setAll
 	 * @param array $array
 	 * @return Cookie Current instance for chained command on this element
 	 */

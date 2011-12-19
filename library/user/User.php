@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Class: User
+ *
  * This is an Aenoa Server representation of an user.
  *
  * An instance of User is created at initialization of the app session.
@@ -100,16 +102,20 @@ final class User {
 	
 	/**
 	 * Creates a new User instance
-	 *
+	 * 
 	 *
 	 * @param string $identifier Identifier should be an email. If the instance is the first instance of User, (e.g. the one instanciated by Session) and if the user is logged, then this instance is stored statically, in order to use static method User::requireLogged()
+	 * @param string $cookieName Name of created cookie when user logs in
 	 */
-	function __construct($identifier = null) {
+	function __construct($identifier = null , $cookieName = null ) {
 		if (is_null($identifier)) {
 			$this->_identifier = $identifier;
 		}
 		
-		if ( Config::has(App::APP_COOKIE_NAME) )
+		if ( !is_null ( $cookieName ) )
+		{
+			$this->_cookieName = $cookieName ;
+		} else if ( Config::has(App::APP_COOKIE_NAME) )
 		{
 			$this->_cookieName = Config::get(App::APP_COOKIE_NAME) ;
 		}
@@ -318,6 +324,8 @@ final class User {
 
 	/**
 	 * Log a user in the system
+	 *
+	 * A cookie is created, and then available using <User.>
 	 *
 	 *
 	 * @param string $email Email of the user to log in 

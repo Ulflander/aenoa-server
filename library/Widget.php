@@ -1,6 +1,6 @@
 <?php
 
-class Widget extends Options {
+class Widget extends Collection {
 
 	protected $file = null;
 

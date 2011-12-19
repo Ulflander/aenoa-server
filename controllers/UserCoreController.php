@@ -167,7 +167,7 @@ class UserCoreController extends Controller{
 				{
 					if ( App::getSession()->has('redirect') )
 					{
-						$redirect = App::getSession()->getAndDestroy('redirect') ;
+						$redirect = App::getSession()->uget('redirect') ;
 					}
 					
 					/*

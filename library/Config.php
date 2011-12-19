@@ -3,17 +3,17 @@
 /**
  * Config is a very simple class to store configuration values.
  *
- * It uses an <Options> instance to store data.
+ * It uses an <Collection> instance to store data.
  *
  *
- * @see Options
+ * @see Collection
  * @see App
  */
-class Config extends AeObject {
+class Config extends Object {
 
 	/**
 	 * @private
-	 * @var Options
+	 * @var Collection
 	 */
 	private static $_vars ;
 	
@@ -78,7 +78,7 @@ class Config extends AeObject {
 	{
 		if ( is_null( self::$_vars ) )
 		{
-			self::$_vars = new Options () ;
+			self::$_vars = new Collection () ;
 		}
 	}
 	

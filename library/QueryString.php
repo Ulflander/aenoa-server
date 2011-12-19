@@ -10,7 +10,7 @@
  * @see App
  * @see Dispatcher
  */
-class QueryString extends AeObject {
+class QueryString extends Object {
 
 
 	/**

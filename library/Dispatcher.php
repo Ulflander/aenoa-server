@@ -1,76 +1,66 @@
 <?php
 
 /**
- * <p>The dispatcher class will automatically try to dispatch the good url to the good action. It's fully automatic. However you can reroute some URLs to others URLs</p>
+ * The dispatcher class will automatically try to dispatch the good url to the good action. It's fully automatic. However you can reroute some URLs to others URLs
  * 
- * <p>For the following examples, we will assume a query coming to our application located at "http://www.example.com/".</p> 
+ * For the following examples, we will assume a query coming to our application located at "http://www.example.com/". 
  * 
- * <h3>Pre-dispatch</h3>
+ * Pre-dispatch:
  * 
- * <ul>
- * <li>Let's consider a query "http://www.example.com/token1/token2/token3"</li>
- * <li>Using the .htaccess directives, the query is rewritten to index.php?query=token1/token2/token3</li>
- * <li>index.php loads configuration and call App::start () ;</li>
- * <li>App::start () initializes application depending on configuration, then call Dispatcher::dispatch ()</li>
- * <li>Dispatcher::dispatch () breaks query into simple tokens, in this first example the tokens will be "token1", "token2", "token3"</li>
- * <li>Dispatcher will dispatch depending on the first token:</li>
- * <li>If token is "rest" then it will load the REST system</li>
- * <li>If token is "api" then it will load the Aenoa API system</li>
- * <li>If token is "dev" then it will load the Aenoa Dev Kit system</li>
- * <li>If any other token, Dispatcher will check controllers and pages</li>
- * </ul>
  * 
- * <h3>Controller dispatch</h3>
+ * 	- Let's consider a query "http://www.example.com/token1/token2/token3"
+ * 	- Using the .htaccess directives, the query is rewritten to index.php?query=token1/token2/token3
+ * 	- index.php loads configuration and call App::start () ;
+ * 	- <App::start> () initializes application depending on configuration, then call <Dispatcher::dispatch> ()
+ * 	- <Dispatcher::dispatch> () breaks query into simple tokens, in this first example the tokens will be "token1", "token2", "token3"
+ * 	- Dispatcher will dispatch depending on the first token:
+ * 	- If token is "rest" then it will load the REST system
+ * 	- If token is "api" then it will load the Aenoa API system
+ * 	- If token is "dev" then it will load the Aenoa Dev Kit system
+ * 	- If any other token, Dispatcher will check controllers and pages
  * 
- * <p>The full query is "http://www.example.com/catalog/product/23".</p>
  * 
- * <ul>
- * <li>For our query we will have these three tokens:</li>
- * <li>"catalog" — the first one</li>
- * <li>"product" — the second one</li>
- * <li>"23" — the last one</li>
- * <li>We found a CatalogController class in app/controllers folder. Let's try to dispatch it</li>
- * <li>Dispatcher::dispatch calls Controller::requireController and give to this method our broken query : a controller name (catalog), an action name (product), and a parameter (23)</li>
- * <li>Controller::requireController check in "CatalogController" if a method exists with the name "product", and if this method is public. (A method is considered to be public if it is really public in class, and if name does not start by an underscore (e.g. catalog/_product would not be dispatched, even is "_product" method is declared as public in "CatalogController")</li>
- * <li>Controller::requireController () then checks for a corresponding model (should be "CatalogModel" class) in your custom models</li>
- * <li>The controller method "product" is then executed, and a view is automatically or manually created depending on the will of the programmer</li>
- * <li>The following controller names must not be used in any of app custom controllers, as they are system controllers : </li>
- * </ul>
+ * <Controller> dispatch:
  * 
- * <p>Database, Maintenance, File, UserCore, Do, Common. Consider extending these controllers to have the benefit of pre-packaged actions for data, users, system management.</p>
+ * The full query is "http://www.example.com/catalog/product/23".
  * 
- * <h3>Webpage dispatch</h3>
  * 
- * <ul>
- * <li>If first token is unknown and a webpage can be found, then this webpage will be loaded</li>
- * <li>Let's assume a query "catalog/services/terms.html" that is a webpage</li>
- * <li>if a file exists in folder "/app/webpages/catalog/services" and is named "terms.html", this webpage will be rendered</li>
- * <li>If token is not found, a 404 error is sent</li>
- * </ul>
+ * 	- For our query we will have these three tokens:
+ * 	- "catalog" — the first one
+ * 	- "product" — the second one
+ * 	- "23" — the last one
+ * 	- We found a CatalogController class in app/controllers folder. Let's try to dispatch it
+ * 	- Dispatcher::dispatch calls Controller::requireController and give to this method our broken query : a controller name (catalog), an action name (product), and a parameter (23)
+ * 	- Controller::requireController check in "CatalogController" if a method exists with the name "product", and if this method is public. (A method is considered to be public if it is really public in class, and if name does not start by an underscore (e.g. catalog/_product would not be dispatched, even is "_product" method is declared as public in "CatalogController")
+ * 	- Controller::requireController () then checks for a corresponding model (should be "CatalogModel" class) in your custom models
+ * 	- The controller method "product" is then executed, and a view is automatically or manually created depending on the will of the programmer
+ * 	- The following controller names must not be used in any of app custom controllers, as they are system controllers: Database, Maintenance, File, UserCore, Do, Common. Consider extending these controllers to have the benefit of pre-packaged actions for data, users, system management.
+ * 
+ * <Webpage> dispatch:
+ * 
+ * 
+ * 	- If first token is unknown and a webpage can be found, then this webpage will be loaded
+ * 	- Let's assume a query "catalog/services/terms.html" that is a webpage
+ * 	- if a file exists in folder "/app/webpages/catalog/services" and is named "terms.html", this webpage will be rendered
+ * 	- If token is not found, a 404 error is sent
+ * 
  *  
- * <h3>Special queries</h3>
+ * Special queries:
  * 
- * <ul>
- * <li>The following queries: "index.html" and "" (empty) will always route to "HomeController::index" if existing, to a "app/webpages/index.html" webpage otherwise, and if this last one is not found, to a 404 error message</li>
- * <li>The query "phpinfo" will display the php_info result (only in debuggin mode)</li>
- * </ul>
  * 
- * <h3>Manual dispatch</h3>
+ * 	- The following queries: "index.html" and "" (empty) will always route to "HomeController::index" if existing, to a "app/webpages/index.html" webpage otherwise, and if this last one is not found, to a 404 error message
+ * 	- The query "phpinfo" will display the <php_info> result (only in debuggin mode)
  * 
- * <p>If you want to manage yourself dispatching of urls, 
+ * 
+ * Manual dispatch:
+ * 
+ * If you want to manage yourself dispatching of urls, 
  * disable auto dispatching using Dispatcher::unactivate () ;
- * This operation is definitive, but if you have to use later the Dispatcher::dispatch method,
- * then use the forceDispatch method or the dispatchThis method.</p>
- * 
+ * This operation is definitive, but if you have to use later the <Dispatcher::dispatch> method,
+ * then use the <Dispatcher::forceDispatch> method or the <Dispatcher::dispatchThis> method.
  *
- * @see QueryString
- * @see App
- * @see App::getQueryString
- * @see Controller
- * @see Webpage
- * @see RESTGateway
- * @see Gateway
- * @see AenoaRights
+ * See Also:
+ * <QueryString>, <App>, <App::getQueryString>, <Controller>, <Webpage>, <RESTGateway>, <Gateway>, <AenoaRights>
  */
 class Dispatcher {
 

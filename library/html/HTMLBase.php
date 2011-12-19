@@ -1,6 +1,6 @@
 <?php
 
-class HTMLBase extends AeObject {
+class HTMLBase extends Object {
 
 	/**
 	 * Renders an array into an HTML list

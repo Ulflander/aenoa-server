@@ -28,7 +28,8 @@
  * // We create a new class that extends ConfDriven
  * class Foo extends ConfDriven {
  *
- *		// We give to our class the path to the simple conf file we created juste below
+ *		// We give to our class the path to the simple conf
+ *		// file we created juste below
  *		function __construct ()
  *		{
  *			parent::__construct ( 'path/to/simple/conf' ) ;
@@ -54,10 +55,11 @@
  * // We create a new class that extends ConfDriven
  * class Bar extends ConfDriven {
  *
- *		// We give to our class the path to the simple conf file we created juste below
+ *		// We give to our class the path to the associative conf
+ *		// file we created juste below
  *		function __construct ()
  *		{
- *			parent::__construct ( 'path/to/ssociative/conf' ) ;
+ *			parent::__construct ( 'path/to/associative/conf' ) ;
  *		}
  *
  *		// tests whether a value is in conf
@@ -95,20 +97,19 @@
  * (end)
  * 
  */
-class ConfDriven extends AeObject {
+class ConfDriven extends Object {
 
 	/**
-	 * Conf file location
+	 * Variable: Conf file location
 	 *
 	 * This property is protected so usable in extended classes
 	 *
-	 * @protected
 	 * @var string
 	 */
 	protected $file = '' ;
 
 	/**
-	 * Array of configuration values or keys/values
+	 * Variable: Array of configuration values or keys/values
 	 *
 	 * This property is protected so usable in extended classes
 	 *

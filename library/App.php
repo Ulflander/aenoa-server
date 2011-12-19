@@ -11,7 +11,7 @@
  * @see Session
  * 
  */
-class App extends AeObject
+class App extends Object
 {
 
 	/*************************************************
@@ -611,6 +611,11 @@ class App extends AeObject
 	 */
 	static final function start ( $mainClass = null )
 	{
+		if ( debuggin () )
+		{
+			new Initializer () ;
+		}
+
 		// Trigger error if App has been called yet
 		if ( is_null ( self::$_instance ) )
 		{
@@ -996,6 +1001,7 @@ class App extends AeObject
 	 * @param mixed $source
 	 * @param string $structureFile
 	 * @param boolean $connect Do connect directly to database (default: true)
+	 * @return
 	 */
 	static public function declareDatabase ( $id , $engine , $source, $structureFile= null, $connect = true ) 
 	{
@@ -1091,6 +1097,23 @@ class App extends AeObject
 		
 		return self::getDatabase($id) ;
 	}
+
+	/**
+	 * Returns a database by ID
+	 *
+	 * By default, will try to return 'main' database if no database structure ID given
+	 *
+	 * @param string $id Structure ID of db to return
+	 * @return AbstractDBEngine
+	 */
+	static public function getDatabase ( $id = 'main' )
+	{
+		if ( array_key_exists( $id, self::$_dbs ) )
+		{
+			return self::$_dbs[$id]['engine'] ;
+		}
+		return null ;
+	}
 	
 	
 	static public function setInitErrorCallback ( $method )
@@ -1120,23 +1143,6 @@ class App extends AeObject
 	 * 
 	 *************************************************/
 	
-	/**
-	 * Returns a database by ID
-	 * 
-	 * By default, will try to return 'main' database if no database structure ID given
-	 * 
-	 * @param string $id Structure ID of db to return
-	 * @return AbstractDBEngine
-	 */
-	static public function getDatabase ( $id = 'main' )
-	{
-		if ( array_key_exists( $id, self::$_dbs ) )
-		{
-			return self::$_dbs[$id]['engine'] ;
-		}
-		return null ;
-	}
-
 
 	/**
 	 * Set HTTP Cache Control header to no-cache value
