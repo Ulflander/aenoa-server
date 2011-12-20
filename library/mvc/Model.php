@@ -51,6 +51,9 @@ class Model extends Object {
 		$this->table = $table ;
 	}
 
+
+
+	
 	function beforeAdd ( $data )
 	{
 		return $data ;

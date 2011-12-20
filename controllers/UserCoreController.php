@@ -3,7 +3,8 @@
 class UserCoreController extends Controller{
 	
 	private $user ;
-	
+
+
 	/**
 	 * In hours
 	 */
@@ -11,6 +12,49 @@ class UserCoreController extends Controller{
 	
 	function beforeAction( $action )
 	{
+		//
+		// class FooController extends Controller {
+		//		public $models = array (
+		//			'main/ae_users',
+		//			'main/categories',
+		//			'main/widgets',
+		//			'main/widget_templates',
+		//			'json_structure/table',
+		//			'json_structure/other',
+		//			'cassandra/tablename'
+		//		) ;
+		//
+		//		function action_name ()
+		//		{
+		//			$usersNb = $this->AeUsers->count () ;
+		//		}
+		// }
+		//
+		//
+		//
+		// methods for now are
+		// $this->db for main engine
+		// $this->db->findAll('ae_users', array('some'=>'cond'));
+		// $cassandra = DatabaseManager::get('cassandra');
+		// $cassandra->count('tablename') ;
+
+		// New way to use in controllers
+		// 
+
+		// main structure is implicit
+		// $this->AeUsers->count() ;
+		// $this->Categories->count() ;
+
+		// others structures are explicit
+		// $this->JsonStructure->Table->findAll() ;
+		// $this->Cassandra->Tablename->count() ;
+
+		// Before declaring models, change implicit structure
+		// $this->implicit ('cassandra') ;
+		// so:
+		// $this->Tablename->count () ;
+		// and therefore:
+		// $this->Main->AeUsers->count() ;
 		
 		if ( Config::get(App::USER_CORE_SYSTEM) !== true )
 		{
