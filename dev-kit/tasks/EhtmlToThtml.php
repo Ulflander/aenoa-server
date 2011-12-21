@@ -53,7 +53,7 @@ class EhtmlToThtml extends Task {
 		
 		$count = $this->_convert($toTransform, 'thtml') ;
 
-		$files = array_merge($files,$this->futil->getTree(AE_APP_WEBPAGES));
+		$files = $this->futil->getTree(AE_APP_WEBPAGES);
 		$toTransform = array () ;
 		foreach ( $files as $file )
 		{

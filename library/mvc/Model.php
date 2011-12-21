@@ -1,7 +1,44 @@
 <?php
 
-
+/*
+ * Class: Model
+ *
+ * <Model> is
+ * 
+ */
 class Model extends Object {
+
+	static private $methods = array (
+		'find',
+		'findAll',
+		'findFirst',
+		'findAndOrder',
+		'findRandom',
+		'findAscendants',
+		'findAndRelatives',
+		'findRelatives',
+		'edit',
+		'editAll',
+		'add',
+		'addAll',
+		'count',
+		'lastId',
+		'newId',
+		'delete',
+		'deleteAll'
+	) ;
+
+	final function __call($name, $arguments) {
+
+		if ( in_array ( $name , self::$methods) )
+		{
+			array_unshift( $arguments , $this->table ) ;
+
+			return call_user_method_array($name, $this->db, $arguments ) ;
+		}
+
+		throw new ErrorException('Method ' . $name . ' does not exist in class ' . get_class($this) );
+	}
 	
 	/**
 	 * 
@@ -50,9 +87,6 @@ class Model extends Object {
 	{
 		$this->table = $table ;
 	}
-
-
-
 	
 	function beforeAdd ( $data )
 	{

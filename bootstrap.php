@@ -168,6 +168,20 @@ define ( 'AE_APP_HOOKS', AE_APP . 'hooks' . DS ) ;
 define ( 'AE_APP_PLUGINS', AE_APP . 'plugins' . DS ) ;
 
 /**
+ * Constant: AE_APP_CONTROLLERS
+ *
+ * Application MVC controllers folder path
+ */
+define ( 'AE_APP_CONTROLLERS', AE_APP . 'controllers' . DS ) ;
+
+/**
+ * Constant: AE_APP_MODELS
+ *
+ * Application MVC models folder path
+ */
+define ( 'AE_APP_MODELS', AE_APP . 'models' . DS ) ;
+
+/**
  * Constant: AE_APP_TEMPLATES
  *
  * Application dedicated templates folder path

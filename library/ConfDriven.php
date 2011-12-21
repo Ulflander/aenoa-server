@@ -1,10 +1,14 @@
 <?php
 
 
-/**
+/*
+ * Class: ConfDriven
+ *
  * ConfDriven is an extensible class with some data parsed from given configuration file.
  * 
- * Conf file should generate an indexed or an associative array of configuration values.
+ * Conf file will generate an indexed or an associative array of configuration values.
+ *
+ * Conf is protected, so only extended classes have access to it.
  *
  * Example of basic conf file:
  * The following example will create an indexed array of configuration values when parsed.
