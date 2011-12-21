@@ -8,15 +8,7 @@
  */
 class Model extends Object {
 
-	static private $methods = array (
-		'find',
-		'findAll',
-		'findFirst',
-		'findAndOrder',
-		'findRandom',
-		'findAscendants',
-		'findAndRelatives',
-		'findRelatives',
+	static private $_mWrite = array (
 		'edit',
 		'editAll',
 		'add',
@@ -27,14 +19,36 @@ class Model extends Object {
 		'delete',
 		'deleteAll'
 	) ;
+	
+	static private $_mRead = array (
+		'find',
+		'findAll',
+		'findFirst',
+		'findAndOrder',
+		'findRandom',
+		'findAscendants',
+		'findAndRelatives',
+		'findRelatives'
+	) ;
+	
+	public $selection = array () ;
 
 	final function __call($name, $arguments) {
 
-		if ( in_array ( $name , self::$methods) )
+		array_unshift( $arguments , $this->table ) ;
+			
+		if ( in_array ( $name , self::$_mWrite) )
 		{
-			array_unshift( $arguments , $this->table ) ;
-
-			return call_user_method_array($name, $this->db, $arguments ) ;
+			pr($arguments);
+			
+			return call_user_func_array(array($this->db, $name), $arguments ) ;
+		} else if ( in_array($name, self::$_mRead) )
+		{
+			$result = call_user_func_array(array($this->db, $name), $arguments ) ;
+			
+			$this->selection = $result ;
+			
+			return $result ;
 		}
 
 		throw new ErrorException('Method ' . $name . ' does not exist in class ' . get_class($this) );

@@ -171,26 +171,27 @@ class Controller extends Object {
 		// First clean array of models, applying implicit database ids when required
 		foreach ($models as $model) {
 			if (strpos($model, '/') !== false) {
-				list($id, $table) = array_map('camelize', explode('/', $model));
+				list($id, $table) = explode('/', $model);
 			} else {
-				$id = camelize($this->_implicit);
-				$table = camelize($model);
+				$id = $this->_implicit;
+				$table = $model;
 			}
+			
+			$id = camelize($id) ;
 
-			if (!ake($id, $this->_models)) {
+			if (!ake($id, $_models)) {
 				$_models[$id] = array();
 			}
 
 			$_models[$id][] = $table;
 		}
-
+		
 		// Then actually load models
 		foreach ($_models as $database => $models) {
 			$tables = array();
 			foreach ($models as $model) {
-				$tables[$model] = $this->_loadModel($model);
+				$tables[camelize($model)] = $this->_loadModel($model);
 			}
-
 			$this->_models[$database] = new DatabaseModel($tables);
 		}
 
@@ -201,19 +202,23 @@ class Controller extends Object {
 	}
 
 	private function _loadModel($model) {
-		$model .= 'Model';
+		
+		$table = $model ;
+		$model = camelize($model).'Model';
 
 		$path = AE_APP_MODELS . $model . '.php';
 
 		if (is_file($path)) {
 			require_once($path);
 		}
+		
+		
 
 		// Create model
 		if (class_exists($model)) {
-			return new $model($this, $this->getDB());
+			return new $model($this, $this->getDB(), $table);
 		} else {
-			return new Model($this, $this->getDB());
+			return new Model($this, $this->getDB(), $table);
 		}
 	}
 

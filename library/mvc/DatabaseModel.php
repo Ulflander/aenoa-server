@@ -50,7 +50,15 @@ class DatabaseModel extends Object {
 	{
 		return array_key_exists($name, $this->_models) ;
 	}
-
+	
+	/**
+	 * Returns a list of all models names
+	 */
+	
+	function inventory ()
+	{
+		return array_keys($this->_models) ;
+	}
 }
 
 ?>
