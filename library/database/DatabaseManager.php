@@ -50,14 +50,15 @@ class DatabaseManager extends Object {
 	/**
 	 * Creates a new database engine and connects it
 	 *
+	 * In case connection fails for any reaon, a 500 error HTTP status is sent to client.
 	 *
-	 *
-	 * @param type $id
-	 * @param type $engine
-	 * @param type $config
-	 * @param mixed $structure 
-	 * @param type $connect
-	 * @return type
+	 * @see App::do500
+	 * @param string $id Database identifier
+	 * @param string $engine Name of DB engine to use
+	 * @param mixed $config Configuration of connection (checkout DB engines doc for format)
+	 * @param mixed $structure [Optional] In case structure must not be loaded
+	 * @param boolean $connect [Optional] True to connect (default), false otherwise
+	 * @return AbstractDBEngine DB engine of connection successfull
 	 */
 	static function connect($id, $engine, $config, $structure = false, $connect = true ) {
 		if (is_null(self::$_dbs)) {

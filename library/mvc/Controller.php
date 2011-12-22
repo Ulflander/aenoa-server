@@ -154,13 +154,55 @@ class Controller extends Object {
 	///// START NEW WAY TO USE MODELS
 
 
-
+	/**
+	 * Get a model or a database model
+	 *
+	 *
+	 *
+	 * <p>How to use:</p>
+	 * <pre>
+	 * class FooController extends Controller {
+	 *
+	 *		// Declaring models
+	 *		public $models = array (
+	 *			'products',			// A Model from implicit database (main, by default)
+	 *			'main/categories',  // A Model from explicit database Main
+	 *			'remote/table'		// A Model from an explicit remote database
+	 *		) ;
+	 *
+	 *		function bar ()
+	 *		{
+	 *
+	 *
+	 *			// Get a random entry of products
+	 *			$this->Products->findRandom () ;
+	 *
+	 *			// Implicit database is main, so doing this is the same as upper
+	 *			$this->Main->Products->findRandom () ;
+	 *
+	 *			// Call 
+	 *			$this->Remote->Table->findAll () ;
+	 *
+	 * 		}
+	 *
+	 * }
+	 * </pre>
+	 *
+	 *
+	 * @see Model
+	 * @see DatabaseModel
+	 * @param string $name Name of Model or DatabaseModel to get
+	 * @return Model
+	 */
 	final function __get($name) {
+		
 		if ( $this->_models[$this->_implicit]->has($name) ) {
 			return $this->_models[$this->_implicit]->$name ;
 		} else if (ake($name, $this->_models)) {
 			return $this->_models[$name];
 		}
+
+		throw new ErrorException('Trying to get unknown database or model ' . $name );
 
 		return null ;
 	}
@@ -177,7 +219,7 @@ class Controller extends Object {
 				$table = $model;
 			}
 			
-			$id = camelize($id) ;
+			$id = camelize($id,'_') ;
 
 			if (!ake($id, $_models)) {
 				$_models[$id] = array();
@@ -190,7 +232,7 @@ class Controller extends Object {
 		foreach ($_models as $database => $models) {
 			$tables = array();
 			foreach ($models as $model) {
-				$tables[camelize($model)] = $this->_loadModel($model);
+				$tables[camelize($model,'_')] = $this->_loadModel($model);
 			}
 			$this->_models[$database] = new DatabaseModel($tables);
 		}
@@ -222,12 +264,22 @@ class Controller extends Object {
 		}
 	}
 
-	function implicit($id) {
+	/**
+	 * Set implicit database
+	 *
+	 * @param string $id Implicit database identifier
+	 * @return Controller
+	 */
+	function implicit($id = null ) {
 		if (is_string($id)) {
 			$this->_implicit = $id;
-		}
-	}
 
+			return $this ;
+		}
+
+		return null ;
+	}
+	
 	function isImplicit($id) {
 		return $id == $this->_implicit;
 	}

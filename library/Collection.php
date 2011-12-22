@@ -25,7 +25,17 @@ class Collection extends Object {
 	 * @var array
 	 */
 	private $_formal = array();
-
+	
+	/**
+	 * Create a new Collection
+	 *
+	 * @param array $vars [Optional] Associative array of items names/values
+	 */
+	function __construct ( $vars = array() )
+	{
+		$this->setAll ( $vars ) ;
+	}
+	
 	/**
 	 * Empty all items
 	 *
@@ -158,6 +168,16 @@ class Collection extends Object {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Returns a list of all items names
+	 *
+	 * @return array List of items names
+	 */
+	function inventory ()
+	{
+		return array_keys($this->_vars) ;
 	}
 
 	/**

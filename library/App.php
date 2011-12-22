@@ -761,7 +761,7 @@ class App extends Object
 		$code = strval($code) ;
 		if ( !ake($code, self::$headers ) ) $code = '200' ;
 		
-		self::sendHeaderCode ( $code ) ;
+		new HTTPStatus ( $code ) ;
 		
 		if ( is_null( $title ) )
 		{
@@ -818,7 +818,14 @@ class App extends Object
 			self::end();
 		}
 	}
-	
+
+	/**
+	 * [DEPRECATED]
+	 *
+	 * @see HTTPStatus
+	 * @param type $code
+	 * @param type $headerResponse
+	 */
 	static function sendHeaderCode ( $code, $headerResponse = null )
 	{
 	
