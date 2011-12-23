@@ -215,7 +215,7 @@ class EHtmlElement extends Object {
 				break;
 			// renderElement
 			case '&':
-				$res .= '<?php $this->renderElement(\'' . $this->rawTokenContent . '\'); ?>' . "\n";
+				$res .= '<?php $this->element(\'' . $this->rawTokenContent . '\'); ?>' . "\n";
 				break;
 			// Close HTML tag
 			case '/':

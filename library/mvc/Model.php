@@ -3,8 +3,34 @@
 /*
  * Class: Model
  *
- * <Model> is
+ * Callbacks:
+ * Model contains callbacks that are automatically called when data is added, edited or deleted.
+ * You should override callbacks in concrete <Model>s classes.
  * 
+ * Callback example:
+ * In this example we will avoid saving data in case a field has a forbidden value.
+ * Please note we could do that using structure validation.
+ * (start code)
+ * class FooModel extends Model {
+ *		
+ *		function beforeAdd ( $data )
+ *		{
+ *			// If data is not valid
+ *			if ( $data['field'] == 'unauthorized_value' )
+ *			{
+ *				// We do not want to save it
+ *				return false ;
+ *			}
+ *			
+ *			// Data is valid, let's save it
+ *			return $data ;
+ *		}
+ * }
+ * 
+ * (end)
+ * 
+ * See also:
+ * <Controller>
  */
 class Model extends Object {
 
@@ -70,7 +96,7 @@ class Model extends Object {
 	 *
 	 * @var type
 	 */
-	protected $structure = array () ;
+//	protected $structure = array () ;
 	
 	protected $table ;
 
@@ -91,7 +117,7 @@ class Model extends Object {
 		
 		$this->db = DatabaseManager::get($db);
 		
-		if ( !is_null($table) )
+		if ( !is_null($table) && !is_null($this->db) )
 		{
 			if ( !$this->db->tableExists($table) )
 			{
@@ -105,8 +131,6 @@ class Model extends Object {
 				
 				
 				$this->setTable ( $table ) ;
-				
-				$this->structure = $this->db->getTableStructure( $table );
 			}
 		}	
 	}
@@ -115,6 +139,11 @@ class Model extends Object {
 	final function setTable ( $table )
 	{
 		$this->table = $table ;
+		
+		if ( !is_null($this->db) )
+		{
+			$this->setSchema( $this->db->getTableSchema( $table ) ) ;
+		}
 	}
 
 	final function getSchema ()
@@ -131,7 +160,7 @@ class Model extends Object {
 	 * [Callback] Called before data addition
 	 *
 	 * @param array $data Data to save
-	 * @return array Data to save
+	 * @return mixed Array of data to save, or boolean false if data must not be saved
 	 */
 	function beforeAdd ( $data )
 	{
@@ -143,7 +172,7 @@ class Model extends Object {
 	 *
 	 * @param mixed $id Identifier of data row to save 
 	 * @param array $data Data to save
-	 * @return array Data to save
+	 * @return mixed Array of data to save, or boolean false if data must not be saved
 	 */
 	function beforeEdit ( $id , $data )
 	{
@@ -153,34 +182,63 @@ class Model extends Object {
 	/**
 	 * [Callback] Called after data edited
 	 *
-	 * @param type $id
-	 * @param type $data
+	 * @param mixed $id Identifier of data row
+	 * @param array $data Saved data
 	 */
 	function onEdit ( $id , $data )
 	{
 		
 	}
 	
+
+	/**
+	 * [Callback] Called after data added
+	 *
+	 * @param mixed $id Identifier of data row
+	 * @param array $data Saved data
+	 */
 	function onAdd ( $id , $data )
 	{
 		
 	}
 
+	/**
+	 * [Callback] Called before data deletion
+	 *
+	 * @param mixed $id Identifier of data row to be deleted 
+	 * @return boolean True if data can be deleted, false otherwise
+	 */
 	function beforeDelete ( $id )
 	{
 		return true ;
 	}
 	
+	/**
+	 * [Callback] Called before multiple data deletion
+	 *
+	 * @param array $ids Array of identifiers of data rows to be deleted 
+	 * @return boolean True if data can be deleted, false otherwise
+	 */
 	function beforeDeleteAll ( $ids )
 	{
 		return true ;
 	}
 	
+	/**
+	 * [Callback] Called after data deletion
+	 * 
+	 * @param mixed $id Identifier of deleted data
+	 */
 	function onDelete ( $id )
 	{
 		
 	}
 	
+	/**
+	 * [Callback] Called after multiple data deletion
+	 * 
+	 * @param array $ids Array of identifiers of deleted data rows
+	 */
 	function onDeleteAll ( $ids )
 	{
 		

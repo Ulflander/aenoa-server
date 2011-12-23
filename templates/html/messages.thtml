@@ -16,12 +16,12 @@
 <?php if ( !App::isAjax() && !$this->useLayout ): ?>
 	<?php 
 		$this->useACF = true ;
-		$this->renderElement ( 'header' ) ;
+		$this->element ( 'header' ) ;
 	?>
 
 		<title><?php echo $title ?> | <?php echo Config::get ( App::APP_NAME ) ?></title>
 
-	<?php $this->renderElement ( 'header-end' ) ; ?>
+	<?php $this->element ( 'header-end' ) ; ?>
 	
 	
 		<div class="layout block-centered margedtop"> 
@@ -29,7 +29,7 @@
 
 			<h1><?php echo $title ?></h1>
 			
-			<?php $this->renderElement('responses'); ?>
+			<?php $this->element('responses'); ?>
 			<div id="messages">
 				<?php if (isset($message)){echo $message;} ?>
 			</div>
@@ -38,6 +38,6 @@
 
 <?php if ( !App::isAjax() && !$this->useLayout ): ?>
 		</div>
-	<?php $this->renderElement ( 'footer' ) ; ?>
+	<?php $this->element ( 'footer' ) ; ?>
 
 <?php endif; ?>

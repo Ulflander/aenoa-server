@@ -25,6 +25,6 @@
 			
 			<hr />
 			
-			<?php $this->renderElement('responses'); ?>
+			<?php $this->element('responses'); ?>
 			
 	</div>

@@ -19,7 +19,7 @@
 			<h2><?php echo sprintf(_('%s Application status'), Config::get(App::APP_NAME)) ?></h2>
 			
 			
-			<?php $this->renderElement('responses'); ?>
+			<?php $this->element('responses'); ?>
 			
 			
 			

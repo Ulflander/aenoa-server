@@ -26,7 +26,7 @@ if ($mode != 'readAllUpdate' && !App::isAjax()):
     <?php
 endif;
 
-$this->renderElement('responses');
+$this->element('responses');
 ?>
 <?php
 switch ($mode) {

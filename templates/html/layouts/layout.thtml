@@ -14,15 +14,15 @@
 
 
 <?php if ( !App::isAjax() ): ?>
-	<?php $this->renderElement ( 'header' ) ; ?>
+	<?php $this->element ( 'header' ) ; ?>
 
 	<title><?php echo $this->title ?></title>
 
-	<?php $this->renderElement ( 'header-end' ) ; ?>
+	<?php $this->element ( 'header-end' ) ; ?>
 	
 	<div class="layout block-centered margedtop">
 			
-	<?php $this->renderElement('responses'); ?>
+	<?php $this->element('responses'); ?>
 	
 <?php endif; ?>
 
@@ -30,5 +30,5 @@
 	
 <?php if ( !App::isAjax() ): ?>
 	</div>
-	<?php $this->renderElement ( 'footer' ) ; ?>
+	<?php $this->element ( 'footer' ) ; ?>
 <?php endif; ?>

@@ -4,7 +4,7 @@
 <div class="expanded">
 
     <form id="webpage_creation" action="<?php echo url() ?>webpages/create" method="post">
-    <?php $this->renderElement('responses'); ?>
+    <?php $this->element('responses'); ?>
 
 	<div class="control">
 	    <label for="webpage_filename"><?php echo _('Webpage filename') ?></label>

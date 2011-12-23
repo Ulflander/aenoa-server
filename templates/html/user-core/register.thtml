@@ -10,7 +10,7 @@
 	<p><strong><?php echo _('Please first fill in your main email address.') ?></strong></p>
 
 
-	<?php $this->renderElement('responses'); ?>
+	<?php $this->element('responses'); ?>
 
 
 	<form action="<?php echo url() ?>user-core/register" method="post" class="left expanded" id="usercore/register">

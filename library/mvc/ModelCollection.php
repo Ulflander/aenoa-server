@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Class: DatabaseModel
+ * Class: ModelCollection
  *
  * Internal class.
  *
@@ -12,7 +12,7 @@
  * See also:
  * <Model>, <Controller>
  */
-class DatabaseModel extends Collection {
+class ModelCollection extends Collection {
 
 	/**
 	 * Return required model by its camelized name, null otherwise.
@@ -20,7 +20,7 @@ class DatabaseModel extends Collection {
 	 * Checkout: http://php.net/manual/en/language.oop5.overloading.php
 	 *
 	 *
-	 * @see DatabaseModel::get
+	 * @see ModelCollection::get
 	 * @param string $name Name of model to get
 	 * @return Model Model if exists, null otherwise
 	 */

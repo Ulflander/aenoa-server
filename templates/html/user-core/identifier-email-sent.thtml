@@ -2,7 +2,7 @@
 
 <?php if ( !App::isAjax() ) : ?>
 <div class="user-block">
-<?php $this->renderElement('account-nav'); ?>
+<?php $this->element('account-nav'); ?>
 
 <h2><?php echo _('Change your email address') ?></h2>
 <p><strong><?php echo sprintf(_('Your current email address is %s. You are about to change it. Be aware that all mails from %s system will be sent using the new email address.'), $user_object->getIdentifier () , Config::get(App::APP_NAME)) ?></strong></p>
@@ -10,7 +10,7 @@
 <div id="usercore/identifier/container" class="expanded">
 <?php endif; ?>
 
-	<?php $this->renderElement('responses'); ?>
+	<?php $this->element('responses'); ?>
 
 	<p><strong><?php echo sprintf(_('An email has been sent to %s, containing a link to follow in order to confirm this new address.'), $email) ?></strong></p>
 

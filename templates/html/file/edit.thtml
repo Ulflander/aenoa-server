@@ -6,7 +6,7 @@
 
 <h3><?php echo sprintf(_('Edit file %s'), $filename) ?></h3>
 
-	<?php $this->renderElement('responses'); ?>
+	<?php $this->element('responses'); ?>
 
 	<form action="<?php echo url() . $url ?>" method="post" id="core/file/edition/form">
 		<textarea id="file/content" name="file/content" style="width: 98%; height: 400px; margin-bottom: 10px;" spellcheck="false"><?php echo $content ?></textarea>

@@ -31,7 +31,7 @@ class Collection extends Object {
 	 *
 	 * @param array $vars [Optional] Associative array of items names/values
 	 */
-	function __construct ( $vars = array() )
+	function __construct ( array $vars = array() )
 	{
 		$this->setAll ( $vars ) ;
 	}
@@ -111,6 +111,8 @@ class Collection extends Object {
 	 * @return Collection Current instance for chained command on this element
 	 */
 	function setAll(array $array) {
+		
+		
 		foreach ($array as $k => $v) {
 			$this->set($k, $v);
 		}
@@ -135,10 +137,14 @@ class Collection extends Object {
 	 * @return mixed The item value if exists, NULL otherwise
 	 */
 	function get($k) {
-		if (array_key_exists($k, $this->_vars)) {
-			return $this->_vars[$k];
+		if ( is_string($k) ) {
+			if (array_key_exists($k, $this->_vars)) {
+				return $this->_vars[$k];
+			}
+		} else {
+			throw new ErrorException('Collection keys must allways be string') ;
 		}
-
+		
 		return null;
 	}
 

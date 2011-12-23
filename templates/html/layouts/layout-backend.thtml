@@ -14,7 +14,7 @@
 
 
 <?php if ( !App::isAjax() ): ?>
-	<?php $this->renderElement ( 'header-backend' ) ; ?>
+	<?php $this->element ( 'header-backend' ) ; ?>
 	
 	<link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ; ?>acf/plugins/aenoa/backend.css" type="text/css" media="screen,projection" />
 	
@@ -40,10 +40,10 @@
 		
 			
 	
-	<?php $this->renderElement ( 'backend-nav' ) ; ?>
+	<?php $this->element ( 'backend-nav' ) ; ?>
 	
 	<section>
-	<?php $this->renderElement('responses'); ?>
+	<?php $this->element('responses'); ?>
 <?php endif; ?>
 
 <?php echo $content_for_layout ?>

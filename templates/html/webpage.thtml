@@ -14,16 +14,16 @@
 
 
 <?php if ( !App::isAjax() ): ?>
-	<?php $this->renderElement ( 'header' ) ; ?>
+	<?php $this->element ( 'header' ) ; ?>
 
 	<title><?php echo $this->title ?></title>
 
-	<?php $this->renderElement ( 'header-end' ) ; ?>
+	<?php $this->element ( 'header-end' ) ; ?>
 <?php endif; ?>
-	<?php $this->renderElement ( 'responses' ) ; ?>
+	<?php $this->element ( 'responses' ) ; ?>
 
 	<?php $this->renderWebpage () ; ?>
 	
 <?php if ( !App::isAjax() ): ?>
-	<?php $this->renderElement ( 'footer' ) ; ?>
+	<?php $this->element ( 'footer' ) ; ?>
 <?php endif; ?>

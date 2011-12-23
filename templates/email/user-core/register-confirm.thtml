@@ -11,7 +11,7 @@
 
 ?>
 
-<?php $this->renderElement('mail-header') ?>
+<?php $this->element('mail-header') ?>
 
 	<h2><?php echo sprintf(_('%s registration process'), Config::get(App::APP_NAME)) ?></h2>
 	<hr />
@@ -45,4 +45,4 @@
 		<strong><?php echo sprintf(_('%s team'), Config::get(App::APP_NAME)) ?></strong>
 	</p>
 	
-<?php $this->renderElement('mail-footer') ?>
+<?php $this->element('mail-footer') ?>

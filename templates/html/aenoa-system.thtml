@@ -11,7 +11,7 @@
 
 ?>
 
-<?php $this->renderElement ( 'header-start' ) ; ?>
+<?php $this->element ( 'header-start' ) ; ?>
 
 		<title><?php echo Config::get(App::APP_NAME) ?></title>
 				

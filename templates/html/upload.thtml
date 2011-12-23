@@ -57,7 +57,7 @@
 	</head>
 	<body class="">
 		
-	<?php $this->renderElement('responses'); ?>
+	<?php $this->element('responses'); ?>
 	
 <?php endif; ?>
 

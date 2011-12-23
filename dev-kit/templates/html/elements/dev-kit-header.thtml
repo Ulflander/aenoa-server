@@ -1,6 +1,6 @@
 
 
-<?php $this->renderElement ( 'header' ); ?>
+<?php $this->element ( 'header' ); ?>
 
 		<title><?php echo $title ?><?php 
 				if ( isset ( $project ) )
@@ -88,6 +88,6 @@
 		
 		<?php
 				// HEADER
-				$this->renderElement ( 'core_errors' ) ;
+				$this->element ( 'core_errors' ) ;
 		?>
 				

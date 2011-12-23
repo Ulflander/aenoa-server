@@ -4,7 +4,7 @@
 	<div class="approx">Do you mean <?php echo $results['approx']; ?> ?</div> 
 <?php endif; ?>
 
-<?php $this->renderElement ( 'search_form' ) ; ?>	
+<?php $this->element ( 'search_form' ) ; ?>	
 <script type="text/javascript">
 	focusOnLastSearchForm () ;
 </script>

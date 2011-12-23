@@ -190,8 +190,8 @@ class Controller extends Object {
 	 *
 	 *
 	 * @see Model
-	 * @see DatabaseModel
-	 * @param string $name Name of Model or DatabaseModel to get
+	 * @see ModelCollection
+	 * @param string $name Name of Model or ModelCollection to get
 	 * @return Model
 	 */
 	final function __get($name) {
@@ -221,11 +221,10 @@ class Controller extends Object {
 			if (strpos($model, '/') !== false) {
 				list($id, $table) = explode('/', $model);
 			} else {
-				$id = $this->_implicit;
+				$id = urlize($this->_implicit, '_');
 				$table = $model;
 			}
 			
-			$id = camelize($id,'_') ;
 
 			if (!ake($id, $_models)) {
 				$_models[$id] = array();
@@ -237,19 +236,20 @@ class Controller extends Object {
 		// Then actually load models
 		foreach ($_models as $database => $models) {
 			$tables = array();
+			
 			foreach ($models as $model) {
-				$tables[camelize($model,'_')] = $this->_loadModel($model);
+				$tables[camelize($model,'_')] = $this->_loadModel($database, $model);
 			}
-			$this->_models[$database] = new DatabaseModel($tables);
+			$this->_models[camelize($database, '_')] = new ModelCollection($tables);
 		}
 
 		if ( !ake($this->_implicit, $this->_models) )
 		{
-			$this->_models[$this->_implicit] = new DatabaseModel ( array () ) ;
+			$this->_models[$this->_implicit] = new ModelCollection ( array () ) ;
 		}
 	}
-
-	private function _loadModel($model) {
+	
+	private function _loadModel($database, $model) {
 		
 		$table = $model ;
 		$model = camelize($model).'Model';
@@ -264,37 +264,48 @@ class Controller extends Object {
 
 		// Create model
 		if (class_exists($model)) {
-			return new $model($this, $this->getDB(), $table);
+			return new $model($this, $database, $table);
 		} else {
-			return new Model($this, $this->getDB(), $table);
+			return new Model($this, $database, $table);
 		}
 	}
 
 	/**
 	 * Set implicit database
 	 *
-	 * @param string $id Implicit database identifier
-	 * @return Controller
+	 * @param string $id [Optional] Implicit database identifier, dafault is "main"
+	 * @return Controller Current 
 	 */
-	function implicit($id = null ) {
+	function implicit( $id = 'main' ) {
 		if (is_string($id)) {
 			$this->_implicit = $id;
-
-			return $this ;
 		}
 
-		return null ;
+		return $this ;
 	}
 	
+	/**
+	 * Checks if a database identifier is the implicit one
+	 * 
+	 * @param string $id Database identifier
+	 * @return boolean True if database is implicit, false otherwise
+	 */
 	function isImplicit($id) {
 		return $id == $this->_implicit;
 	}
 
+	/**
+	 * Get the implicit database identifier
+	 * 
+	 * @return string Current implicit database identifier 
+	 */
 	function getImplicit() {
 		return $this->_implicit;
 	}
 
 	///// END NEW WAY TO USE MODELS
+	
+	
 
 	/**
 	 * Reset the data of the controller
@@ -321,7 +332,9 @@ class Controller extends Object {
 	function getResponses() {
 		return $this->responses;
 	}
-
+	
+	
+	// TODO: move this in Model
 	protected function validateInputs($ruleArray) {
 		$errors = array();
 
@@ -397,18 +410,33 @@ class Controller extends Object {
 	public function getView() {
 		return $this->view;
 	}
-
+	
+	
+	/**
+	 * [DEPRECATED]
+	 * 
+	 * @see Controller::__get
+	 * @return Model 
+	 */
 	public function getModel() {
 		return $this->model;
 	}
-
+	
+	/**
+	 * [DEPRECATED]
+	 * 
+	 * @see Controller::setModels
+	 * @param Model $model 
+	 */
 	public function setModel(Model &$model) {
 		$this->model = $model;
 	}
 
 	/**
+	 * [DEPRECATED]
 	 * 
-	 * @param unknown_type $controllerName
+	 * @see Controller::_loadModel
+	 * @param string $controllerName
 	 * @return Model
 	 */
 	public function getNewModel($controllerName) {
@@ -420,18 +448,24 @@ class Controller extends Object {
 			require_once($model);
 		}
 
-
+		$database = $this->getDB() ? $this->getDB()->getDatabaseId() : null ;
 
 		// Create model
 		if (class_exists($_m)) {
-			$model = new $_m($this, $this->getDB());
+			$model = new $_m($this, $database );
 
 			return $model;
 		} else {
-			return new Model($this, $this->getDB());
+			return new Model($this, $database );
 		}
 	}
-
+	
+	/**
+	 * [DEPRECATED]
+	 * 
+	 * @see Controller::setModels
+	 * @param type $controllerName 
+	 */
 	public function reloadModel($controllerName) {
 		$this->setModel($this->getNewModel($controllerName));
 	}

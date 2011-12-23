@@ -5,7 +5,7 @@
 <h2><?php echo _('Login') ?></h2>
 <div id="usercore/login/container" class="expanded">
 <?php endif; ?>
-	<?php $this->renderElement('responses'); ?>
+	<?php $this->element('responses'); ?>
 
 
 	<?php if ( $login_closed == false ) : ?>

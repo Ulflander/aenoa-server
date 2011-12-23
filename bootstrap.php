@@ -242,14 +242,6 @@ addAutoloadPath ( AE_LIBS ) ;
 addAutoloadPath ( AE_CONTROLLERS ) ;
 addAutoloadPath ( AE_WIDGETS ) ;
 
-$FILE_UTIL = new FSUtil ( AE_LIBS ) ;
-$folders = $FILE_UTIL->getDirsList(AE_LIBS,false);
-
-foreach ( $folders as $v )
-{
-	addAutoloadPath ( $v['path'] ) ;
-} 
-
 $FILE_UTIL = new FSUtil ( ROOT ) ;
 $includePaths = array ( 'controllers', 'libs' ) ;
 
@@ -264,6 +256,14 @@ foreach ( $includePaths as $p )
 		addAutoloadPath(ROOT.$p.DS) ;
 	}
 }
+
+$FILE_UTIL2 = new FSUtil ( AE_LIBS ) ;
+$folders = $FILE_UTIL2->getDirsList(AE_LIBS,false);
+
+foreach ( $folders as $v )
+{
+	addAutoloadPath ( $v['path'] ) ;
+} 
 
 $broker = new Broker () ;
 $broker->futil = &$FILE_UTIL ;

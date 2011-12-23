@@ -4,7 +4,7 @@
 
 <div  class="marged left">
 	
-<?php $this->renderElement('responses') ?>
+<?php $this->element('responses') ?>
 
 <?php if ( !isset ( $done ) || $done == false ) : ?> 	
 

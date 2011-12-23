@@ -2,13 +2,13 @@
 
 <?php if ( !App::isAjax() ) : ?>
 <div class="user-block">
-<?php $this->renderElement('account-nav'); ?>
+<?php $this->element('account-nav'); ?>
 <h2><?php echo _('Profile') ?></h2>
 <p><?php echo sprintf(_('Setup your %s profile.'), Config::get(App::APP_NAME)) ?></p>
 <div id="usercore/register/container" class="expanded">
 <?php endif;?>
 
-	<?php $this->renderElement('responses'); ?>
+	<?php $this->element('responses'); ?>
 
 	<?php
 		

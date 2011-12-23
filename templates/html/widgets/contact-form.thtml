@@ -3,7 +3,7 @@
 
 <div id="<?php echo $this->uniqueWidgetID ?>">
 	
-	<?php $this->renderElement('responses'); ?>
+	<?php $this->element('responses'); ?>
 
 	<form action="<?php echo url() ?>common/email/widget" method="post" class="<?php echo $widget['class'] ?>" id="<?php echo $this->uniqueWidgetID . '_form' ?>">
 		

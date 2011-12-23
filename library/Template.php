@@ -396,14 +396,13 @@ class Template extends View {
 		return array_key_exists($name, $this->vars) ;
 	}
 	
-	
 	/**
 	 * Render a template element.
 	 * 
 	 * @param object $file The element file to render.
-	 * @return 
+	 * @return Template Current instance for chained command on this element
 	 */
-	function renderElement ( $file )
+	function element ( $file )
 	{
 		$title = $this->title ;
 		
@@ -415,6 +414,20 @@ class Template extends View {
 		{
 			include ( $file ) ;
 		}
+		
+		return $this ;
+	}
+	
+	
+	/**
+	 * [DEPRECATED] Render a template element.
+	 * 
+	 * @see Template::element
+	 * @param object $file The element file to render.
+	 */
+	function renderElement ( $file )
+	{
+		$this->element ( $file ) ;
 	}
 
 	

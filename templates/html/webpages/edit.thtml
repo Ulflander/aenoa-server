@@ -2,7 +2,7 @@
 <h2><?php echo sprintf(_('Edit %s webpage'), $webpage_filename ) ?></h2>
 
 <div class="expanded">
-    <?php $this->renderElement('responses'); ?>
+    <?php $this->element('responses'); ?>
 
     <form id="webpage_edition" action="" method="post">
 

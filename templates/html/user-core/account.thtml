@@ -1,13 +1,13 @@
 
 <?php if ( !App::isAjax() ) : ?>
 <div class="user-block">
-<?php $this->renderElement('account-nav'); ?>
+<?php $this->element('account-nav'); ?>
 
 <h2><?php echo _('Your account') ?></h2>
 <div id="usercore/register/container" class="expanded">
 <?php endif; ?>
 
-	<?php $this->renderElement('responses'); ?>
+	<?php $this->element('responses'); ?>
 	<h3><?php echo _('Login & password') ?></h3>
 	<ul class="expanded no-list-style">
 		<li class="expanded"><?php echo _('Your email address') ?>: <strong><?php echo $user_object->getIdentifier () ?></strong> <span class="right">[<a href="<?php echo url() ?>user-core/identifier" title="<?php echo _('Change email address') ?>"><?php echo _('Change') ?></a>]</span></li>
