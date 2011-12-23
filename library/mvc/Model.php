@@ -65,16 +65,31 @@ class Model extends Object {
 	 * @var AbstractDBEngine
 	 */
 	protected $db ;
-	
+
+	/**
+	 *
+	 * @var type
+	 */
 	protected $structure = array () ;
 	
 	protected $table ;
-	
-	function __construct ( Controller &$controller , AbstractDBEngine &$db = null , $table = null ) 
+
+	protected $schema ;
+
+	/**
+	 * Creates a new model.
+	 *
+	 * 
+	 * @see Controller::setModels
+	 * @param Controller $controller Controller that load the model
+	 * @param string $db [Optional] Database identifier, default is "main"
+	 * @param string $table [Optional] Database table name to bind to model
+	 */
+	function __construct ( Controller &$controller , $db = 'main' , $table = null )
 	{
 		$this->controller = $controller ;
 		
-		$this->db = $db;
+		$this->db = DatabaseManager::get($db);
 		
 		if ( !is_null($table) )
 		{
@@ -91,7 +106,7 @@ class Model extends Object {
 				
 				$this->setTable ( $table ) ;
 				
-				$this->structure = $db->getTableStructure( $table );
+				$this->structure = $this->db->getTableStructure( $table );
 			}
 		}	
 	}
@@ -101,17 +116,46 @@ class Model extends Object {
 	{
 		$this->table = $table ;
 	}
-	
+
+	final function getSchema ()
+	{
+		return $this->schema ;
+	}
+
+	final function setSchema ( $schema )
+	{
+		$this->schema = $schema ;
+	}
+
+	/**
+	 * [Callback] Called before data addition
+	 *
+	 * @param array $data Data to save
+	 * @return array Data to save
+	 */
 	function beforeAdd ( $data )
 	{
 		return $data ;
 	}
-	
+
+	/**
+	 * [Callback] Called before data edition
+	 *
+	 * @param mixed $id Identifier of data row to save 
+	 * @param array $data Data to save
+	 * @return array Data to save
+	 */
 	function beforeEdit ( $id , $data )
 	{
 		return $data ;
 	}
-	
+
+	/**
+	 * [Callback] Called after data edited
+	 *
+	 * @param type $id
+	 * @param type $data
+	 */
 	function onEdit ( $id , $data )
 	{
 		

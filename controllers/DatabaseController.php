@@ -865,7 +865,7 @@ class DatabaseController extends Controller {
 			$limit[3] = $dir = (!is_null($dir) ? $dir : 'asc' );
 			$baseURL .= '/' . $order . '/' . $dir;
 		}
-		
+
 		$this->view->set('order', $order);
 		$this->view->set('dir', $dir);
 

@@ -180,9 +180,9 @@ class Controller extends Object {
 	 *			// Implicit database is main, so doing this is the same as upper
 	 *			$this->Main->Products->findRandom () ;
 	 *
-	 *			// Call 
+	 *			// Call an explicit database model
 	 *			$this->Remote->Table->findAll () ;
-	 *
+	 *			
 	 * 		}
 	 *
 	 * }
@@ -207,6 +207,12 @@ class Controller extends Object {
 		return null ;
 	}
 
+
+	/**
+	 * Load models into controller.
+	 *
+	 * @param type $models
+	 */
 	function setModels($models) {
 		$_models = array();
 
