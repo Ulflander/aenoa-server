@@ -35,17 +35,6 @@ class Collection extends Object {
 	{
 		$this->setAll ( $vars ) ;
 	}
-	
-	/**
-	 * Empty all items
-	 *
-	 * @return Collection Current instance for chained commands on this element
-	 */
-	function usetAll() {
-		$this->_vars = array();
-
-		return $this;
-	}
 
 	/**
 	 * Set an item given its key and its value
@@ -120,6 +109,18 @@ class Collection extends Object {
 		return $this;
 	}
 
+
+	/**
+	 * Empty all items
+	 *
+	 * @return Collection Current instance for chained commands on this element
+	 */
+	function usetAll() {
+		$this->_vars = array();
+
+		return $this;
+	}
+	
 	/**
 	 * Tests if an item exists
 	 *

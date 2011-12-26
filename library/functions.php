@@ -48,6 +48,37 @@ function keysToFormKeys ( $databaseId , $table , $data )
 	return $d ;
 }
 
+/**
+ * Camelize recursively all keys of an associative array. Indexed arrays keep being indexed.
+ *
+ * @see camelize
+ * @param array $arr Array to transform
+ * @param string $sep [Optional] Separator for camelize function
+ * @return array Resulting array
+ */
+function camelize_keys ( $arr , $sep = '_')
+{
+	if ( is_array ( $arr ) )
+	{
+		$_arr = array () ;
+
+		foreach ( $arr as $k => $v )
+		{
+			if ( is_int ( $k ) )
+			{
+				$_arr[$k] = $v ;
+				continue;
+			}
+
+			$_arr [ camelize ( $k , $sep ) ] = is_array($v) ? camelize_keys($v) : $v ;
+		}
+
+		return $_arr ;
+	}
+
+	return $arr ;
+}
+
 
 function url ()
 {
@@ -69,6 +100,16 @@ function setTrailingDS($str) {
 
 function unsetTrailingDS($str) {
 	return rtrim($str, DIRECTORY_SEPARATOR );
+}
+
+/**
+ * Tests if an array is associative or indexed
+ *
+ * @param array $arr Array to test
+ * @return boolean True if array is associative array, false if indexed array
+ */
+function is_assoc (&$arr) {
+	return (is_array($arr) && (!count($arr) || count(array_filter(array_keys($arr),'is_string')) == count($arr)));
 }
 
 function ake($key,&$array)

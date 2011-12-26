@@ -56,29 +56,39 @@ class Model extends Object {
 		'findAndRelatives',
 		'findRelatives'
 	) ;
-	
-	public $selection = array () ;
 
-	final function __call($name, $arguments) {
+	static function arrayToCollectionModel ( array &$arr ) {
 
-		array_unshift( $arguments , $this->table ) ;
-			
-		if ( in_array ( $name , self::$_mWrite) )
+		$sel = new ModelCollection () ;
+
+		foreach ( $arr as $k => $v )
 		{
-			pr($arguments);
-			
-			return call_user_func_array(array($this->db, $name), $arguments ) ;
-		} else if ( in_array($name, self::$_mRead) )
-		{
-			$result = call_user_func_array(array($this->db, $name), $arguments ) ;
-			
-			$this->selection = $result ;
-			
-			return $result ;
+			if (is_array($v))
+			{
+				$sel->set ( $k , self::arrayToCollectionModel($v) ) ;
+			} else {
+				$sel->set ( $k , $v ) ;
+			}
 		}
 
-		throw new ErrorException('Method ' . $name . ' does not exist in class ' . get_class($this) );
+		return $sel ;
 	}
+
+	/*
+	 * Unique item selection
+	 *
+	 * @var ModelCollection
+	 */
+	private $_unqSel = null ;
+
+	/*
+	 * Multi selection
+	 *
+	 * @var array
+	 */
+	private $_multiSel = array () ;
+
+	private $_multiSelLength = 0 ;
 	
 	/**
 	 * 
@@ -94,12 +104,15 @@ class Model extends Object {
 
 	/**
 	 *
-	 * @var type
+	 * @var string
 	 */
-//	protected $structure = array () ;
-	
 	protected $table ;
 
+
+	/**
+	 *
+	 * @var DBTableSchema
+	 */
 	protected $schema ;
 
 	/**
@@ -116,6 +129,11 @@ class Model extends Object {
 		$this->controller = $controller ;
 		
 		$this->db = DatabaseManager::get($db);
+
+		if (is_null($this->_unqSel ) )
+		{
+			$this->_unqSel = new ModelCollection () ;
+		}
 		
 		if ( !is_null($table) && !is_null($this->db) )
 		{
@@ -123,9 +141,9 @@ class Model extends Object {
 			{
 				if ( debuggin () )
 				{
-					trigger_error ( 'Attempting to bind a model to database table that does not exists: ' . $table ) ;
+					throw new ErrorException( 'Attempting to bind a model to database table that does not exists: ' . $table ) ;
 				} else {
-					trigger_error ( 'Model error' ) ;
+					throw new ErrorException( 'Model error' ) ;
 				}
 			} else {
 				
@@ -134,8 +152,107 @@ class Model extends Object {
 			}
 		}	
 	}
-	
-	
+
+
+	final function __call($name, $arguments) {
+
+		array_unshift( $arguments , $this->table ) ;
+
+		new ModelSelection () ;
+
+		if ( in_array ( $name , self::$_mWrite) )
+		{
+			return call_user_func_array(array($this->db, $name), $arguments ) ;
+			
+		} else if ( in_array($name, self::$_mRead) )
+		{
+			$result = call_user_func_array(array($this->db, $name), $arguments ) ;
+			
+			// Returns on resut
+			if (is_assoc($result))
+			{
+				$this->_unqSel = self::arrayToCollectionModel(camelize_keys($result)) ;
+				
+			} else {
+
+				$res = $result ; 
+
+				foreach ( $res as $k => &$v )
+				{
+					if (is_array($v))
+					{
+						$v = self::arrayToCollectionModel(camelize_keys($v)) ;
+					}
+				}
+
+				$this->_multiSel = $res ;
+
+				$this->_multiSelLength = count($res);
+
+			}
+
+
+			return $result ;
+		}
+
+		throw new ErrorException ('Method <strong>' . $name . '</strong> does not exist in class <strong>' . get_class($this) .'</strong>' );
+	}
+
+	/**
+	 * 
+	 *
+	 * @param type $name
+	 * @return type 
+	 */
+	final function __get ( $name )
+	{
+		return $this->_unqSel->$name ;
+	}
+
+	/**
+	 * Returns current unique selection
+	 *
+	 * @return 
+	 */
+	final function selection ()
+	{
+		return $this->_unqSel ; 
+	}
+
+	/**
+	 * Returns current multiple selection
+	 *
+	 * @return
+	 */
+	final function selections ()
+	{
+		return $this->_multiSel ;
+	}
+
+	/**
+	 * Returns ModelCollection instance of current unique selection, or of given index of current multiple selection.
+	 *
+	 * @param int $index [Optional] If given, must be an int
+	 * @return ModelCollection If $index given, returns
+	 */
+	final function item( $index = null )
+	{
+		if ( is_null($index) )
+		{
+			return $this->_unqSel ;
+		}
+
+		if ( $index < $this->_multiSelLength )
+		{
+			return $this->_multiSel[$index] ;
+		}
+	}
+
+	/**
+	 * Change the table used by this model (within the same database). If database found, then new table schema is applied to model.
+	 *
+	 * @param string $table Name of table
+	 */
 	final function setTable ( $table )
 	{
 		$this->table = $table ;
@@ -143,18 +260,47 @@ class Model extends Object {
 		if ( !is_null($this->db) )
 		{
 			$this->setSchema( $this->db->getTableSchema( $table ) ) ;
+		} else {
+			$this->setSchema( null ) ;
 		}
+
+		return $this ;
 	}
 
+	/**
+	 *
+	 *
+	 * @return DBTableSchema Schema of the table if exists, null otherwise
+	 */
 	final function getSchema ()
 	{
 		return $this->schema ;
 	}
 
+	/**
+	 *
+	 *
+	 * @param type $schema
+	 * @return Model
+	 */
 	final function setSchema ( $schema )
 	{
 		$this->schema = $schema ;
+
+		return $this ;
 	}
+
+	/**
+	 * [Callback][NOT WORKING YET] Called after data has been retrieved
+	 *
+	 * @param array $data Array of data from database
+	 * @return array Array of data to return to controller
+	 */
+	function afterSelect ( $data )
+	{
+		return $data ;
+	}
+
 
 	/**
 	 * [Callback] Called before data addition

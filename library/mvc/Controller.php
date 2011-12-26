@@ -202,7 +202,8 @@ class Controller extends Object {
 			return $this->_models[$name];
 		}
 
-		throw new ErrorException('Trying to get unknown database or model ' . $name );
+		throw new ErrorException('Trying to get unknown database or model <strong>' . $name
+								. '</strong> from Controller <strong>' . get_class($this) . '</strong>' );
 
 		return null ;
 	}
