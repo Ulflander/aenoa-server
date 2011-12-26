@@ -59,7 +59,7 @@ class Model extends Object {
 
 	static function arrayToCollectionModel ( array &$arr ) {
 
-		$sel = new ModelCollection () ;
+		$sel = new GetableCollection () ;
 
 		foreach ( $arr as $k => $v )
 		{
@@ -77,18 +77,16 @@ class Model extends Object {
 	/*
 	 * Unique item selection
 	 *
-	 * @var ModelCollection
+	 * @var GetableCollection
 	 */
 	private $_unqSel = null ;
 
 	/*
 	 * Multi selection
 	 *
-	 * @var array
+	 * @var IndexedArray
 	 */
-	private $_multiSel = array () ;
-
-	private $_multiSelLength = 0 ;
+	private $_multiSel = null ;
 	
 	/**
 	 * 
@@ -130,10 +128,9 @@ class Model extends Object {
 		
 		$this->db = DatabaseManager::get($db);
 
-		if (is_null($this->_unqSel ) )
-		{
-			$this->_unqSel = new ModelCollection () ;
-		}
+		$this->_unqSel = new GetableCollection () ;
+		
+		$this->_multiSel = new IndexedArray () ;
 		
 		if ( !is_null($table) && !is_null($this->db) )
 		{
@@ -143,11 +140,9 @@ class Model extends Object {
 				{
 					throw new ErrorException( 'Attempting to bind a model to database table that does not exists: ' . $table ) ;
 				} else {
-					throw new ErrorException( 'Model error' ) ;
+					App::do500 () ;
 				}
 			} else {
-				
-				
 				$this->setTable ( $table ) ;
 			}
 		}	
@@ -158,7 +153,7 @@ class Model extends Object {
 
 		array_unshift( $arguments , $this->table ) ;
 
-		new ModelSelection () ;
+		new IndexedArray () ;
 
 		if ( in_array ( $name , self::$_mWrite) )
 		{
@@ -185,10 +180,7 @@ class Model extends Object {
 					}
 				}
 
-				$this->_multiSel = $res ;
-
-				$this->_multiSelLength = count($res);
-
+				$this->_multiSel = new IndexedArray( $res ) ;
 			}
 
 
@@ -212,9 +204,9 @@ class Model extends Object {
 	/**
 	 * Returns current unique selection
 	 *
-	 * @return 
+	 * @return GetableCollection
 	 */
-	final function selection ()
+	final function item ()
 	{
 		return $this->_unqSel ; 
 	}
@@ -222,30 +214,11 @@ class Model extends Object {
 	/**
 	 * Returns current multiple selection
 	 *
-	 * @return
+	 * @return IndexedArray
 	 */
-	final function selections ()
+	final function selection ()
 	{
 		return $this->_multiSel ;
-	}
-
-	/**
-	 * Returns ModelCollection instance of current unique selection, or of given index of current multiple selection.
-	 *
-	 * @param int $index [Optional] If given, must be an int
-	 * @return ModelCollection If $index given, returns
-	 */
-	final function item( $index = null )
-	{
-		if ( is_null($index) )
-		{
-			return $this->_unqSel ;
-		}
-
-		if ( $index < $this->_multiSelLength )
-		{
-			return $this->_multiSel[$index] ;
-		}
 	}
 
 	/**

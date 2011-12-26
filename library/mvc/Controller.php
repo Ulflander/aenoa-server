@@ -190,8 +190,8 @@ class Controller extends Object {
 	 *
 	 *
 	 * @see Model
-	 * @see ModelCollection
-	 * @param string $name Name of Model or ModelCollection to get
+	 * @see GetableCollection
+	 * @param string $name Name of Model or GetableCollection to get
 	 * @return Model
 	 */
 	final function __get($name) {
@@ -241,12 +241,12 @@ class Controller extends Object {
 			foreach ($models as $model) {
 				$tables[camelize($model,'_')] = $this->_loadModel($database, $model);
 			}
-			$this->_models[camelize($database, '_')] = new ModelCollection($tables);
+			$this->_models[camelize($database, '_')] = new GetableCollection($tables);
 		}
 
 		if ( !ake($this->_implicit, $this->_models) )
 		{
-			$this->_models[$this->_implicit] = new ModelCollection ( array () ) ;
+			$this->_models[$this->_implicit] = new GetableCollection ( array () ) ;
 		}
 	}
 	

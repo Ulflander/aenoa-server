@@ -1,13 +1,42 @@
 <?php
 
 /*
- * Class: ModelSelection
+ * Class: IndexedArray
  *
  * Class used by models to store indexed arrays.
+ * 
+ * How to use:
+ * (start code)
+ *  // creates a new instance of IndexedArray
+ * $arr = new IndexedArray () ;
+ * 
+ * // Push some elements
+ * $arr->push('someValue');
+ * $arr->push('anotherValue');
+ * $arr->push('Hello World');
+ * $arr->push(23);
+ * 
+ * // Get somme elements
+ * echo $arr->get(0) ; // someValue
+ * echo $arr->get(2) ; // Hello World
+ * 
+ * // Loop on elements
+ * while ( $val = $arr->next () )
+ * {
+ *		echo $val . ' - ' ;
+ * }
+ * 
+ * // will echo 
+ * // someValue - anotherValue - Hello World - 23 - 
+ * 
+ * (end)
+ * 
+ * See also:
+ * <Collection>
  *
  *
  */
-class ModelSelection extends Object {
+class IndexedArray extends Object {
 
 	private $_selection = array () ;
 
@@ -16,7 +45,7 @@ class ModelSelection extends Object {
 	private $_length = 0 ;
 
 	/**
-	 * Creates a new instance of ModelSelection
+	 * Creates a new instance of IndexedArray
 	 *
 	 * @param array $array Base array
 	 */
@@ -29,11 +58,11 @@ class ModelSelection extends Object {
 	}
 
 	/**
-	 * Alias of ModelSelection::push
+	 * Alias of IndexedArray::push
 	 *
-	 * @see ModelSelection::push
+	 * @see IndexedArray::push
 	 * @param mixed $value Value to push in array
-	 * @return ModelSelection Current instance for chained command on this element
+	 * @return IndexedArray Current instance for chained command on this element
 	 */
 	function set ( $value )
 	{
@@ -48,7 +77,7 @@ class ModelSelection extends Object {
 	 * @param int $index Index of value to remove
 	 * @param int $index2 [Optional] Another index
 	 * @param int ...
-	 * @return ModelSelection Current instance for chained command on this element
+	 * @return IndexedArray Current instance for chained command on this element
 	 */
 	function uset ( $index1 /* , $index2, ... */ )
 	{
@@ -71,7 +100,7 @@ class ModelSelection extends Object {
 	 * Push all values from an existing indexed array
 	 *
 	 * @param array $array Indexed array
-	 * @return ModelSelection Current instance for chained command on this element
+	 * @return IndexedArray Current instance for chained command on this element
 	 */
 	function setAll ( array $array )
 	{
@@ -86,7 +115,7 @@ class ModelSelection extends Object {
 	/**
 	 * Empty array, reset iterator and length
 	 *
-	 * @return ModelSelection Current instance for chained command on this element
+	 * @return IndexedArray Current instance for chained command on this element
 	 */
 	function usetAll ()
 	{
@@ -104,7 +133,7 @@ class ModelSelection extends Object {
 	 * Unshift a value at the beginning of array
 	 *
 	 * @param mixed $value Value to unshift into array
-	 * @return ModelSelection Current instance for chained command on this element
+	 * @return IndexedArray Current instance for chained command on this element
 	 */
 	function unshift ( $value )
 	{
@@ -119,7 +148,7 @@ class ModelSelection extends Object {
 	 * Push a value at the end of array
 	 *
 	 * @param mixed $value Value to push at the end of array
-	 * @return ModelSelection Current instance for chained command on this element
+	 * @return IndexedArray Current instance for chained command on this element
 	 */
 	function push ( $value )
 	{
@@ -228,9 +257,9 @@ class ModelSelection extends Object {
 	}
 
 	/**
-	 * Alias of ModelSelection::count
+	 * Alias of IndexedArray::count
 	 *
-	 * @see ModelSelection::count
+	 * @see IndexedArray::count
 	 * @return int Length of indexed array
 	 */
 	function length ()
@@ -242,7 +271,7 @@ class ModelSelection extends Object {
 	 * Reset the iterator to 0 or to given index
 	 *
 	 * @param int $index [Optional] Index of iterator, default is 0
-	 * @return ModelSelection Current instance for chained command on this element
+	 * @return IndexedArray Current instance for chained command on this element
 	 */
 	function iterator ( $index = 0 )
 	{
@@ -301,7 +330,7 @@ class ModelSelection extends Object {
 			return null ;
 		}
 
-		$res &= $this->item () ;
+		$res = &$this->item () ;
 
 		$this->_idx ++ ;
 
