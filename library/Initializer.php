@@ -87,12 +87,7 @@ class Initializer extends Object {
 				}
 			}
 		}
-
-
-
-
-
-
+		
 
 		/*
 		 * FILES COPY IF REQUIRED

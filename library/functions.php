@@ -236,7 +236,7 @@ if ( function_exists( 'pr' ) == false )
 if ( function_exists( 'urlize' ) == false )
 {
 	/**
-	 * [DEPRECATED] urlize a string :
+	 * [DEPRECATED] See Inflector. urlize a string :
 	 * - all European chars with accent are replaced with their equivalent whitout accent
 	 * - strings authorized are letters, numbers and -
 	 * - spaces are replaced by $separator char
@@ -264,7 +264,18 @@ if ( function_exists( 'tl_get' ) == false )
 	$tl__from = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿŔŕ';
 	$tl__to = 'aaaaaaaceeeeiiiidnoooooouuuuybsaaaaaaaceeeeiiiidnoooooouuuyybyRr';
 	
-	
+	/**
+	 * [DEPRECATED] See Inflector
+	 * 
+	 * @see Inflector::transliterate
+	 * 
+	 * @global string $tl__to
+	 * @global string $tl__from
+	 * @global array $tl_rules
+	 * @param type $str
+	 * @param type $separator
+	 * @return type 
+	 */
 	function tl_get ( $str = null , $separator = '-' ) {
 
 		global $tl__to;
@@ -287,10 +298,19 @@ if ( function_exists( 'tl_get' ) == false )
 			
 			return str_replace(' ', $separator ,trim(preg_replace('/[^a-z0-9\\'.$separator.'\s]+/', '' , $str )));
 		}
+		
 		return '' ;
 	}
 	
-	
+	/**
+	 * [DEPRECATED] See Inflector
+	 * 
+	 * @see InflectorRules::addTLRule
+	 * @global string $tl__to
+	 * @global string $tl__from
+	 * @param type $rules
+	 * @param type $replaces 
+	 */
 	function tl_add ( $rules, $replaces )
 	{
 		global $tl__to;
@@ -299,19 +319,30 @@ if ( function_exists( 'tl_get' ) == false )
 		$tl__to = $replaces . $tl__to ;
 	}
 	
+	
+	/**
+	 * [DEPRECATED] See Inflector
+	 * 
+	 * @see InflectorRules::addTLComplexRule
+	 * @global string $tl__to
+	 * @global string $tl__from
+	 * @param type $rules
+	 * @param type $replaces 
+	 */
 	function tl_set ( $rule, $replace ) {
 		$tl_rules[$rule] = $replace ;
 	}
 	
-	function replace_unicode_escape_sequence($match) {
-	    return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
-	}
-	
-	function unescape_unicode ( $str )
-	{
-		return preg_replace_callback('/\\\\u([0-9a-f]{4})/i', 'replace_unicode_escape_sequence', $str);
-	}
 				
+}
+
+function unescape_unicode ( $str )
+{
+	return preg_replace_callback('/\\\\u([0-9a-f]{4})/i', 'replace_unicode_escape_sequence', $str);
+}
+
+function replace_unicode_escape_sequence($match) {
+	return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
 }
 
 
