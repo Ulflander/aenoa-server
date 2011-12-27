@@ -4,7 +4,7 @@
 /*
  * Class: Initializer
  *
- * Initializer runs a check-list on current Aenoa Server and application environment.
+ * Initializer runs a check-list on current Aenoa Server and application environment *when debugging mode in ON*.
  * 
  * Initializer is called by <App::start>.
  * 

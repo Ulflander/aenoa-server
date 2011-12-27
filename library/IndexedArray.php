@@ -337,6 +337,16 @@ class IndexedArray extends Object {
 		return $res ;
 	}
 
+	/**
+	 * toString implementation
+	 *
+	 * @return string String representation of this object
+	 */
+	function __toString ()
+	{
+		return '[IndexedArray/'.$this->count().']' ;
+	}
+
 }
 
 ?>

@@ -26,9 +26,18 @@
  *			return $data ;
  *		}
  * }
- * 
  * (end)
- * 
+ *
+ * Propagation of data from Model to View:
+ * <Controller>s may require automatic propagation of selected data from <Model> to <View>.
+ * This is NOT an automatic behavior (checkout <Controller> for detail).
+ *
+ * When controllers ask for automatic propagation of selections,
+ * they are automatically set in <View> of current controller action using <Controller::propagate> method.
+ *
+ * Undocumented features:
+ * How to use models to get data
+ *
  * See also:
  * <Controller>
  */
@@ -57,6 +66,12 @@ class Model extends Object {
 		'findRelatives'
 	) ;
 
+	/**
+	 * Convert an associative array to GetableCollection
+	 *
+	 * @param array $arr Array to convert
+	 * @return GetableCollection Instance of GetableCollection
+	 */
 	static function arrayToCollectionModel ( array &$arr ) {
 
 		$sel = new GetableCollection () ;
@@ -87,6 +102,13 @@ class Model extends Object {
 	 * @var IndexedArray
 	 */
 	private $_multiSel = null ;
+
+	/*
+	 * Do propagate data to controller and view. Default false.
+	 *
+	 * @var boolean
+	 */
+	private $_propagate = false ;
 	
 	/**
 	 * 
@@ -104,8 +126,10 @@ class Model extends Object {
 	 *
 	 * @var string
 	 */
-	protected $table ;
+	protected $_table ;
 
+
+	private $_camelizedTable ;
 
 	/**
 	 *
@@ -120,7 +144,7 @@ class Model extends Object {
 	 * @see Controller::setModels
 	 * @param Controller $controller Controller that load the model
 	 * @param string $db [Optional] Database identifier, default is "main"
-	 * @param string $table [Optional] Database table name to bind to model
+	 * @param string $table [Optional] Database _table name to bind to model
 	 */
 	function __construct ( Controller &$controller , $db = 'main' , $table = null )
 	{
@@ -138,7 +162,7 @@ class Model extends Object {
 			{
 				if ( debuggin () )
 				{
-					throw new ErrorException( 'Attempting to bind a model to database table that does not exists: ' . $table ) ;
+					throw new ErrorException( 'Attempting to bind a model to database _table that does not exists: ' . $table ) ;
 				} else {
 					App::do500 () ;
 				}
@@ -151,7 +175,7 @@ class Model extends Object {
 
 	final function __call($name, $arguments) {
 
-		array_unshift( $arguments , $this->table ) ;
+		array_unshift( $arguments , $this->_table ) ;
 
 		new IndexedArray () ;
 
@@ -162,12 +186,19 @@ class Model extends Object {
 		} else if ( in_array($name, self::$_mRead) )
 		{
 			$result = call_user_func_array(array($this->db, $name), $arguments ) ;
+
+			$result = $this->afterSelect( $result ) ;
 			
 			// Returns on resut
 			if (is_assoc($result))
 			{
 				$this->_unqSel = self::arrayToCollectionModel(camelize_keys($result)) ;
 				
+				if ( $this->_propagate )
+				{
+					pr($this->_table);
+				}
+
 			} else {
 
 				$res = $result ; 
@@ -181,6 +212,12 @@ class Model extends Object {
 				}
 
 				$this->_multiSel = new IndexedArray( $res ) ;
+
+
+				if ( $this->_propagate )
+				{
+					$this->controller->propagate ( $this->_camelizedTable , $this->_multiSel ) ;
+				}
 			}
 
 
@@ -190,25 +227,27 @@ class Model extends Object {
 		throw new ErrorException ('Method <strong>' . $name . '</strong> does not exist in class <strong>' . get_class($this) .'</strong>' );
 	}
 
-	/**
-	 * 
-	 *
-	 * @param type $name
-	 * @return type 
-	 */
-	final function __get ( $name )
+	function __get ( $name )
 	{
 		return $this->_unqSel->$name ;
 	}
 
 	/**
-	 * Returns current unique selection
+	 * Returns current unique selection if negative $index given,
+	 * returns an item of current multiple selection if $index given.
+	 * Default behavior (no parameters given) returns current unique selection.
 	 *
+	 * @param int $index [Optional] Index
 	 * @return GetableCollection
 	 */
-	final function item ()
+	function item ( $index = -1 )
 	{
-		return $this->_unqSel ; 
+		if ( $index < 0 )
+		{
+			return $this->_unqSel ;
+		}
+
+		return $this->_multiSel->get( $index ) ;
 	}
 
 	/**
@@ -216,9 +255,35 @@ class Model extends Object {
 	 *
 	 * @return IndexedArray
 	 */
-	final function selection ()
+	function selection ()
 	{
 		return $this->_multiSel ;
+	}
+
+	/**
+	 * Ask for automatic propagation of data from model to controller and view
+	 *
+	 * @param bool $bool Boolean "true" to propagate data to controller and view, false or anything else otherwise
+	 * @return Model Current instance for chained command on this element
+	 */
+	function propagate ( $bool = false )
+	{
+		if ( $bool === true )
+		{
+			$this->_propagate = $bool ;
+		}
+
+		return $this ;
+	}
+
+	/**
+	 *
+	 *
+	 * @return bool True if model propagating data to controller and view, false otherwise
+	 */
+	function isPropagating ()
+	{
+		return $this->_propagate ;
 	}
 
 	/**
@@ -228,7 +293,9 @@ class Model extends Object {
 	 */
 	final function setTable ( $table )
 	{
-		$this->table = $table ;
+		$this->_table = $table ;
+
+		$this->_camelizedTable = camelize( $table, '_' ) ;
 		
 		if ( !is_null($this->db) )
 		{
@@ -241,9 +308,24 @@ class Model extends Object {
 	}
 
 	/**
+	 * Returns currently used table
+	 *
+	 * @return string Table name
+	 */
+	function getTable ()
+	{
+		return $this->_table ;
+	}
+
+	function getCamelizedTable ()
+	{
+		return $this->_camelizedTable ;
+	}
+
+	/**
 	 *
 	 *
-	 * @return DBTableSchema Schema of the table if exists, null otherwise
+	 * @return DBTableSchema Schema of the _table if exists, null otherwise
 	 */
 	final function getSchema ()
 	{
@@ -264,7 +346,7 @@ class Model extends Object {
 	}
 
 	/**
-	 * [Callback][NOT WORKING YET] Called after data has been retrieved
+	 * [Callback] Called after data has been retrieved
 	 *
 	 * @param array $data Array of data from database
 	 * @return array Array of data to return to controller

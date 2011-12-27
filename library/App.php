@@ -601,12 +601,11 @@ class App extends Object
 	}
 	
 	/**
-	 * Start the application
+	 * Starts the application
+	 *
+	 * If no main class is given, then App will try to dispatch query using <Dispatcher> to corresponding webpages or controllers.
 	 * 
-	 * @param string $mainClass [optional] The main class to load. If no main class is given, then App will try to dispatch URL to corresponding webpages or controllers. Check out the Dispatcher class.
-	 * 
-	 * 
-	 * @return 
+	 * @param string $mainClass [optional] The main class name to be load.
 	 */
 	static final function start ( $mainClass = null )
 	{

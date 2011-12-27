@@ -41,6 +41,11 @@ class Controller extends Object {
 	public $futil;
 
 	/**
+	 * Does selected data in Model automatically sent to view
+	 */
+	public $propagation = false ;
+
+	/**
 	 * @var Template
 	 */
 	protected $view;
@@ -260,15 +265,21 @@ class Controller extends Object {
 		if (is_file($path)) {
 			require_once($path);
 		}
-		
+
 		
 
 		// Create model
 		if (class_exists($model)) {
-			return new $model($this, $database, $table);
+			$mObj = new $model($this, $database, $table) ;
 		} else {
-			return new Model($this, $database, $table);
+			$mObj = new Model($this, $database, $table) ;
 		}
+
+		$mObj->propagate( $this->propagation ) ;
+
+
+
+		return $mObj ;
 	}
 
 	/**
@@ -302,6 +313,22 @@ class Controller extends Object {
 	 */
 	function getImplicit() {
 		return $this->_implicit;
+	}
+
+	/**
+	 * Propagate some data to view, if view exists
+	 *
+	 * @param string $key Name of variable in view
+	 * @param mixed $value Value of data
+	 * @return Controller Current instance for chained command on this element
+	 */
+	function propagate ( $key , $value ) 
+	{
+		if ( $this->hasView() )
+		{
+			$this->view->set ( $key , $value ) ;
+		}
+		return $this ;
 	}
 
 	///// END NEW WAY TO USE MODELS
@@ -410,6 +437,10 @@ class Controller extends Object {
 
 	public function getView() {
 		return $this->view;
+	}
+
+	public function hasView() {
+		return is_object($this->view);
 	}
 	
 	

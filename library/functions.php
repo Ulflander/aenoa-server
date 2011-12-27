@@ -154,7 +154,7 @@ function is_public_controller_method ( $class_name, $method_name )
 	return false ;
 }
 
-function array_keys_exists ( $keys = array () , $needle )
+function array_keys_exists ( $keys = array () , $needle = array () )
 {
 	foreach ( $keys as $key )
 	{
@@ -236,12 +236,14 @@ if ( function_exists( 'pr' ) == false )
 if ( function_exists( 'urlize' ) == false )
 {
 	/**
-	 * urlize a string :
+	 * [DEPRECATED] urlize a string :
 	 * - all European chars with accent are replaced with their equivalent whitout accent
 	 * - strings authorized are letters, numbers and -
 	 * - spaces are replaced by $separator char
 	 *
 	 * get a clean string without any special char
+	 *
+	 * @see Inflector::urlize
 	 * @param $str String to urlize
 	 * @return urlized string
 	 */
@@ -766,15 +768,38 @@ if ( function_exists ( 'get_microtime' ) == false )
 	}
 }
 
-
+/**
+ * [DEPRECATED]
+ *
+ * @see Inflector::humanize
+ * @param type $lowerCaseWord
+ * @param type $separator
+ * @return type
+ */
 function humanize ($lowerCaseWord , $separator = '-' ) {
 	return ucwords(str_replace($separator, ' ', $lowerCaseWord));
 }
 
+/**
+ * [DEPRECATED]
+ *
+ * @see Inflector::camelize
+ * @param type $lowerCaseWord
+ * @param type $separator
+ * @return type
+ */
 function camelize($lowerCaseWord , $separator = '-' ) {
 	return str_replace(' ', '', ucwords(str_replace($separator, ' ', $lowerCaseWord)));
 }
 
+/**
+ * [DEPRECATED
+ *
+ * @see Inflector::underscore
+ * @param type $camelCasedWord
+ * @param type $separator
+ * @return type
+ */
 function uncamelize($camelCasedWord , $separator = '-' ) {
 	return strtolower(preg_replace('/(?<=\\w)([A-Z])/', '-\\1', $camelCasedWord));
 }
