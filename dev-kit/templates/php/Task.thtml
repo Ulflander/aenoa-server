@@ -37,3 +37,5 @@ class <?php echo $taskName ?> extends Task {
 	}
 
 }
+
+

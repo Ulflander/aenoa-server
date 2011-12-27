@@ -189,31 +189,30 @@ class Model extends Object {
 
 			$result = $this->afterSelect( $result ) ;
 			
-			// Returns on resut
-			if (is_assoc($result))
+			if ( empty ( $result ) )
+			{
+				
+			} else if (is_assoc($result))
 			{
 				$this->_unqSel = self::arrayToCollectionModel(camelize_keys($result)) ;
 				
 				if ( $this->_propagate )
 				{
-					pr($this->_table);
+					$this->controller->propagate (Inflector::singularize($this->_camelizedTable) , $this->_unqSel ) ;
 				}
 
 			} else {
 
 				$res = $result ; 
+				
+				$this->_multiSel = new IndexedArray() ;
 
-				foreach ( $res as $k => &$v )
+				foreach ( $result as $k => &$v )
 				{
-					if (is_array($v))
-					{
-						$v = self::arrayToCollectionModel(camelize_keys($v)) ;
-					}
+					$this->_multiSel->set ( self::arrayToCollectionModel(camelize_keys($v)) ) ;
 				}
 
-				$this->_multiSel = new IndexedArray( $res ) ;
-
-
+				
 				if ( $this->_propagate )
 				{
 					$this->controller->propagate ( $this->_camelizedTable , $this->_multiSel ) ;

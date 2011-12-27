@@ -121,6 +121,7 @@ class MenuHelper {
 			$str .= '<li><a href="' . url() . 'dev/GenerateStructureDocFile" title="' . _('Update structures documentation files by extracting structure description') . '" class="icon16 manual">' . _('Update structures doc') . '</a></li>' . "\n";
 			$str .= '<li><a href="' . url() . 'dev/GenerateDocumentation" title="' . _('Create documentation using NaturalDocs') . '" class="icon16 manual">' . _('Create documentation') . '</a></li>' . "\n";
 			$str .= '<li><a href="' . url() . 'dev/EhtmlToThtml" title="' . _('Generate templates from EHtml files to THtml files') . '" class="icon16 wizard">' . _('Generate templates') . '</a></li>' . "\n";
+			$str .= '<li><a href="' . url() . 'dev/Scaffold" title="' . _('Scaffold structures to MVC') . '" class="icon16 wizard">' . _('Scaffold structures to MVC') . '</a></li>' . "\n";
 			$str .= '<li><a href="' . url() . 'dev/HashMachine" title="' . _('Make some hash') . '" class="icon16 run">' . _('Hash machine') . '</a></li>' . "\n";
 			$str .= '<li><a href="' . url() . 'dev/AssetsCompressor" title="' . _('Compress assets') . '" class="icon16 package">' . _('Compress assets') . '</a></li>' . "\n";
 			$str .= '<li><a href="' . url() . 'dev/RevertAssetsCompressor" title="' . _('Revert assets compression') . '" class="icon16 package">' . _('Revert assets compression') . '</a></li>' . "\n";

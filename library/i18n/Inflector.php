@@ -116,6 +116,7 @@ class Inflector extends Object {
 	{
 		self::$tlSimple[0] .= $from ;
 		self::$tlSimple[1] .= $to ;
+		
 	}
 	
 	static function addTLComplexRule ( $from , $to )
@@ -168,12 +169,12 @@ class Inflector extends Object {
 	static function singularize ( $str , $count = 1 )
 	{
 		
-        if ( $count > 1 || in_array( strtolower( $str ), InflectorRules::$uncountable ) )
+        if ( $count > 1 || in_array( strtolower( $str ), self::$uncountable ) )
 		{
             return $str;
 		}
 
-        foreach ( InflectorRules::$irregular as $result => $pattern )
+        foreach ( self::$irregular as $result => $pattern )
         {
             $pattern = '/' . $pattern . '$/i';
 
@@ -182,7 +183,7 @@ class Inflector extends Object {
         }
 
 		
-        foreach ( InflectorRules::$singular as $pattern => $result )
+        foreach ( self::$singular as $pattern => $result )
         {
             if ( preg_match( $pattern, $str ) )
 			{
@@ -203,12 +204,12 @@ class Inflector extends Object {
 	 */
 	static function pluralize ( $str , $count = 2 )
 	{
-        if ( $count < 2 || in_array( strtolower( $str ), InflectorRules::$uncountable ) )
+        if ( $count < 2 || in_array( strtolower( $str ), self::$uncountable ) )
 		{
             return $str;
 		}
 		
-        foreach ( InflectorRules::$irregular as $pattern => $result )
+        foreach ( self::$irregular as $pattern => $result )
         {
             $pattern = '/' . $pattern . '$/i';
 
@@ -218,7 +219,7 @@ class Inflector extends Object {
 			}
         }
 		
-        foreach ( InflectorRules::$plural as $pattern => $result )
+        foreach ( self::$plural as $pattern => $result )
         {
             if ( preg_match( $pattern, $str ) )
 			{
@@ -241,13 +242,13 @@ class Inflector extends Object {
 	{
 		$str = mb_strtolower($str,'UTF8');
 		if ( !is_null ( $str ) ) {
-			foreach( $tl_rules as $rule => $replace )
+			foreach( self::$tlComplex as $rule => $replace )
 			{
 				$str = mb_ereg_replace('/'.$rule.'/',$replace, $str);
 			}
 			
-			$from = preg_split('/(?<!^)(?!$)/u',$tl__from);
-			$to = preg_split('/(?<!^)(?!$)/u',$tl__to);
+			$from = preg_split('/(?<!^)(?!$)/u',self::$tlSimple[0]);
+			$to = preg_split('/(?<!^)(?!$)/u',self::$tlSimple[1]);
 			
 			for ( $i = 0, $l = count($from) ; $i < $l ; $i ++ )
 			{
@@ -289,7 +290,11 @@ class Inflector extends Object {
 	static function urlize ( $str , $separator = '-' )
 	{
 		if ( !is_null ( $str ) ) {
-			return str_replace(' ', $separator ,trim(preg_replace('/[^a-z0-9\\'.$separator.'\s]+/', '' , strtolower( self::deaccent( $str ) ))));
+			return str_replace(' ', $separator ,trim(preg_replace('/[^a-z0-9\\'.$separator.'\s]+/', '' , strtolower( strtr(
+				utf8_decode($str),
+				utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿŔŕ'),
+							'aaaaaaaceeeeiiiidnoooooouuuuybsaaaaaaaceeeeiiiidnoooooouuuyybyRr'
+			)))));
 		}
 		return '' ;
 	}

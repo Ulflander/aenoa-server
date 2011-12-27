@@ -1,0 +1,15 @@
+
+/**
+ * Class: <?php echo $controllerName ?>
+ *
+ * See also:
+ * <<?php echo $modelName ?>>
+ */
+class <?php echo $controllerName ?> extends AppController {
+    
+    function index ()
+    {
+
+    }
+
+}

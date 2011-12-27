@@ -1,0 +1,115 @@
+
+/**
+ * Class: <?php echo $modelName ?>
+ *
+ * See also:
+ * <<?php echo $controllerName ?>>
+ */
+class <?php echo $modelName ?> extends AppModel {
+
+
+	/**
+	 * [Callback] Called after data has been retrieved
+	 *
+	 * @param array $data Array of data from database
+	 * @return array Array of data to return to controller
+	 */
+	function afterSelect ( $data )
+	{
+		return $data ;
+	}
+
+
+	/**
+	 * [Callback] Called before data addition
+	 *
+	 * @param array $data Data to save
+	 * @return mixed Array of data to save, or boolean false if data must not be saved
+	 */
+	function beforeAdd ( $data )
+	{
+		return $data ;
+	}
+
+	/**
+	 * [Callback] Called before data edition
+	 *
+	 * @param mixed $id Identifier of data row to save 
+	 * @param array $data Data to save
+	 * @return mixed Array of data to save, or boolean false if data must not be saved
+	 */
+	function beforeEdit ( $id , $data )
+	{
+		return $data ;
+	}
+
+	/**
+	 * [Callback] Called after data edited
+	 *
+	 * @param mixed $id Identifier of data row
+	 * @param array $data Saved data
+	 */
+	function onEdit ( $id , $data )
+	{
+		
+	}
+	
+
+	/**
+	 * [Callback] Called after data added
+	 *
+	 * @param mixed $id Identifier of data row
+	 * @param array $data Saved data
+	 */
+	function onAdd ( $id , $data )
+	{
+		
+	}
+
+	/**
+	 * [Callback] Called before data deletion
+	 *
+	 * @param mixed $id Identifier of data row to be deleted 
+	 * @return boolean True if data can be deleted, false otherwise
+	 */
+	function beforeDelete ( $id )
+	{
+		return true ;
+	}
+	
+	/**
+	 * [Callback] Called before multiple data deletion
+	 *
+	 * @param array $ids Array of identifiers of data rows to be deleted 
+	 * @return boolean True if data can be deleted, false otherwise
+	 */
+	function beforeDeleteAll ( $ids )
+	{
+		return true ;
+	}
+	
+	/**
+	 * [Callback] Called after data deletion
+	 * 
+	 * @param mixed $id Identifier of deleted data
+	 */
+	function onDelete ( $id )
+	{
+		
+	}
+	
+	/**
+	 * [Callback] Called after multiple data deletion
+	 * 
+	 * @param array $ids Array of identifiers of deleted data rows
+	 */
+	function onDeleteAll ( $ids )
+	{
+		
+	}
+	
+
+}
+
+
+
