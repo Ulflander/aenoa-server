@@ -365,8 +365,7 @@ class MySQLEngine extends AbstractDBEngine {
 		} else {
 			$c = '';
 
-pr($cond);
-			foreach ($cond as $fieldname => $val) {
+		foreach ($cond as $fieldname => $val) {
 				$operator = '=';
 
 				if (strlen($c) > 0) {
@@ -650,7 +649,6 @@ pr($cond);
 
 		$q = 'SELECT COUNT(*) FROM `' . $this->source['database'] . '`.`' . $table . '` ' . (!empty($cond) ? $this->__getCond($cond, $table) : '' ) . ' ;';
 		$this->log($q);
-pr($q);
 		$res = mysql_fetch_array(mysql_query($q, $this->getConnection()));
 
 		return $res[0];
