@@ -7,8 +7,25 @@
  *
  * A session is automatically created by <App> at initialization of Aenoa Server.
  *
- * A <User> is created when <Session::connect> is called by <App>
+ * An <User> is created when <Session::connect> is called by <App>
+ *
+ * See also:
+ * <App>, <User>
  */
+
+
+/**
+ * Hook: SessionClose
+ *
+ * Hook dispatched when a <Session> is closed
+ *
+ * Parameters:
+ *		- $args[0] Session object reference
+ *
+ * See also:
+ * <Hook>, <Session>
+ */
+
 class Session extends Collection {
 	
 	const SECURE_HIGH = 'high' ;
@@ -232,17 +249,7 @@ class Session extends Collection {
 		if ( $this->started () == true )
 		{
 
-			/**
-			 * Hook: SessionClose
-			 *
-			 * Hook dispatched when a <Session> is closed
-			 *
-			 * Parameters:
-			 *		- $args[0] Session object reference
-			 *
-			 * See also:
-			 * <Hook>, <Session>
-			 */
+			
 			new Hook ( 'SessionClose' , $this ) ;
 			
 			if ( $write === true )

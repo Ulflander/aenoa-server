@@ -839,8 +839,8 @@ sub BuildMenu #(FileName sourceFile, TopicType indexType) -> string htmlMenu
 
         '<script language=JavaScript><!--' . "\n"
 
-        . 'HideAllBut([' . join(', ', @$toExpand) . '], ' . $menuGroupNumber . ');'
-
+       # . 'HideAllBut([' . join(', ', @$toExpand) . '], ' . $menuGroupNumber . ');'
+	   . 'HideAllBut([' . join(', ', @$toExpand) . '], ' . 100 . ');'
         . '// --></script>';
         };
 

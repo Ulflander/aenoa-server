@@ -2,13 +2,14 @@
 
 
 /**
- * <p>QueryString is a little utility to work with query string (e.g. some/slashed/string.html)</p>
+ * Class: QueryString
  *
- * <p>It's mainly used by <Dispatcher> to easily read the client get query string. </p>
+ * QueryString is a little utility to work with query string (e.g. some/slashed/string.html)
  *
+ * It's mainly used by <Dispatcher> to easily read the client get query string.
  *
- * @see App
- * @see Dispatcher
+ * See also:
+ * <App>, <Dispatcher>
  */
 class QueryString extends Object {
 

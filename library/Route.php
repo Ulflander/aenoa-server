@@ -1,11 +1,28 @@
 <?php
 
 /**
- * Rout is the class that manage routes. It's used by <App> for <Dispatcher>.
  *
- * @see App
- * @see App::initialize
- * @see Dispatcher
+ * Class: Route
+ *
+ * Route is the class that manage routes. It's used by <App> for <Dispatcher>.
+ *
+ * How to configure routes:
+ *
+ * First you have to create an empty file in your app folder, named "routes", without extension.
+ *
+ * Then write routing rules in this conf file, like the following one.
+ *
+ * (start code)
+ * # Here is an example of routes
+ * some/route/* > controller/action/*
+ * something/* > controller/action/*
+ * myfile.png > controller/image/myfile.png
+ * (end)
+ *
+ * These routes will be automatically applied by <Dispatcher> on dispatch.
+ * 
+ * See also:
+ * <App>, <App::initialize>, <Dispatcher>, <ConfDriven>
  */
 class Route extends ConfDriven {
 
