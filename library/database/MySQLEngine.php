@@ -221,6 +221,7 @@ class MySQLEngine extends AbstractDBEngine {
 	}
 
 	function setStructure($structure = array(), $create = false) {
+	    
 		if ($this->isUsable() == false) {
 			return;
 		}
@@ -243,7 +244,7 @@ class MySQLEngine extends AbstractDBEngine {
 					$tstruct2[$table][$field['name']] = $field;
 					$tstruct[$table][] = $field;
 				} else {
-					$res = false;
+				    $res = false;
 				}
 			}
 		}
@@ -253,7 +254,7 @@ class MySQLEngine extends AbstractDBEngine {
 		$this->struct = $tstruct2;
 
 		if ((!empty($tstruct) && $create) || ( ($this->hasAnyTable() == true && debuggin() && Config::get(App::DBS_AUTO_EXPAND) == true ) )) {
-			$res2 = $this->__applyStructure($tstruct2);
+		    $res2 = $this->__applyStructure($tstruct2);
 		} else if ($this->hasAnyTable() == false) {
 			$res2 = false;
 		}
@@ -364,16 +365,17 @@ class MySQLEngine extends AbstractDBEngine {
 		} else {
 			$c = '';
 
-
+pr($cond);
 			foreach ($cond as $fieldname => $val) {
 				$operator = '=';
 
 				if (strlen($c) > 0) {
-					$c.=' AND ';
+					$c.=' OR ';
+					
 				}
 
 				$fieldname = trim($fieldname);
-
+				
 				$escapeVal = true;
 				
 				if (is_string($val) && strlen($val) > 0 && $val[0] == '(')
@@ -403,6 +405,9 @@ class MySQLEngine extends AbstractDBEngine {
 				if (substr_count($fieldname, ' ') == 1) {
 					list($fieldname, $operator) = explode(' ', $fieldname);
 				}
+				//else {
+				    
+				//}
 				if (!is_array($val)) {
 					$c .= '`' . $fieldname . '` ' . trim($operator);
 
@@ -412,7 +417,8 @@ class MySQLEngine extends AbstractDBEngine {
 						$c .= ' ' . $val;
 					}
 				} else if (!empty($val)) {
-					$c .= '`' . $fieldname . '` IN (\'' . implode('\',\'', $val) . '\')';
+					if ($val[0]=='IS NULL') $c .= '`' . $fieldname .'` ' .$val[0] .' OR ' . $fieldname . ' = ' . $val[1];
+					else $c .= '`' . $fieldname . '` IN (\'' . implode('\',\'', $val) . '\')';
 				}
 			}
 			$c = ' WHERE ' . $c;
@@ -644,7 +650,7 @@ class MySQLEngine extends AbstractDBEngine {
 
 		$q = 'SELECT COUNT(*) FROM `' . $this->source['database'] . '`.`' . $table . '` ' . (!empty($cond) ? $this->__getCond($cond, $table) : '' ) . ' ;';
 		$this->log($q);
-
+pr($q);
 		$res = mysql_fetch_array(mysql_query($q, $this->getConnection()));
 
 		return $res[0];
@@ -699,7 +705,7 @@ class MySQLEngine extends AbstractDBEngine {
 					$res = false;
 				}
 			}
-
+			
 			return $res;
 			// That's OK ! There are some tables in database
 		} else {
@@ -731,6 +737,7 @@ class MySQLEngine extends AbstractDBEngine {
 			// Any
 			foreach ($structure as $tableName => &$structfields) {
 				if (in_array($tableName, $tables) == false && $this->__createTable($tableName, $structfields) == false) {
+				    
 					$res = false;
 					continue;
 				}
@@ -751,6 +758,7 @@ class MySQLEngine extends AbstractDBEngine {
 						$q = 'ALTER TABLE `' . $this->source['database'] . '`.`' . $tableName . '` ADD ' . $this->__getCreateField($structFieldDesc, true);
 						$this->log($q);
 						if (!$this->query($q, $this->getConnection())) {
+						    pr('table problem : ' . $tableName);
 							$res = false;
 						}
 					}

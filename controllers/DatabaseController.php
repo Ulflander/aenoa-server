@@ -959,8 +959,10 @@ if (App::isAjax()) {
 	
 	 function readPublication($page=1, $order = null, $dir = null,$flag = null) {
 	if (is_null($flag)) :
-	     $this->conditions['has_publications']= 'IS NULL';
-	$this->conditions['has_publications']= '0';
+	  
+	     $this->conditions['has_publications']= array('IS NULL','0');
+	
+	
 	else :
 	    $this->conditions['has_publications']= '1';
 	endif;
