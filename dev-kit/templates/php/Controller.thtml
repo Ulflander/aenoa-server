@@ -1,6 +1,6 @@
 
 /**
- * Class: <?php echo $controllerName ?>
+ * Class: <?php echo $controllerName ?> 
  *
  * See also:
  * <<?php echo $modelName ?>>

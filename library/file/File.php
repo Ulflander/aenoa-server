@@ -5,12 +5,19 @@ class File {
 	protected $path;
 	protected $f;
 	private $mode = 'rw+';
-
+	
+	/**
+	 * Creates a new File instance
+	 *
+	 * @param string $filepath Path to file to open or create
+	 * @param boolean $create [Optional] Do create file if not exist, default is set to false
+	 * @param int $chmod [Optional] File mode to apply to newly created file
+	 */
 	function __construct($filepath, $create = false, $chmod = 0777) {
 		$this->path = $filepath;
 
 		if ($this->exists() == false && $create == true) {
-			$this->create();
+			$this->create( $chmod );
 		}
 
 		if ($this->exists()) {
@@ -125,8 +132,9 @@ class File {
 		return false;
 	}
 
-	function create() {
+	function create($chmod = 0777) {
 		if (!is_file($this->path) && is_dir(dirname($this->path)) && ($_f = @fopen($this->path, 'x+') )) {
+			chmod($this->path, $chmod) ;
 			fclose($_f);
 			return true;
 		}

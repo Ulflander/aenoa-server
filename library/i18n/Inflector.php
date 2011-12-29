@@ -111,7 +111,12 @@ class Inflector extends Object {
 		
 	) ;
 	
-	
+	/**
+	 * 
+	 *
+	 * @param type $from
+	 * @param type $to 
+	 */
 	static public function addTLRule ( $from , $to )
 	{
 		self::$tlSimple[0] .= $from ;
@@ -119,6 +124,12 @@ class Inflector extends Object {
 		
 	}
 	
+	/**
+	 * Add a complex rule for transliteration
+	 * 
+	 * @param type $from
+	 * @param type $to 
+	 */
 	static function addTLComplexRule ( $from , $to )
 	{
 		self::$tlComplex[$from] = $to ;
