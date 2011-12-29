@@ -8,13 +8,18 @@
  *
  * Must be called before any header sent.
  *
+ * It's possible to add a header message (for debug or information). If so, message will be visible with header name
+ * (start code)
+ * X-AeServer-Message
+ * (end)
+ *
  * How to use:
  * (start code)
  * // Just status before doing a redirection
  * new HTTPStatus ( 301 ) ;
  *
- * // Send a header message
- * new HTTPStatus ( 40A , 'Unknown user' ) ;
+ * // Send a "Unauthorized" HTTP status and set a header message
+ * new HTTPStatus ( 401 , 'Unknown user' ) ;
  * (end)
  *
  *

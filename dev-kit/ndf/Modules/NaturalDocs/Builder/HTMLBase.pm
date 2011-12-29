@@ -244,7 +244,7 @@ use constant MENU_TEXT_LENGTH => 1;
 use constant MENU_LINK_LENGTH => 1;
 use constant MENU_INDEX_LENGTH => 1;
 
-use constant MENU_LENGTH_LIMIT => 35;
+use constant MENU_LENGTH_LIMIT => 1;
 
 
 ###############################################################################

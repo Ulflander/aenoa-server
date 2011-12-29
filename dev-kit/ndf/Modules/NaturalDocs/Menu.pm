@@ -20,7 +20,7 @@
 #
 ###############################################################################
 
-# This file is part of Natural Docs, which is Copyright © 2003-2010 Greg Valure
+# This file is part of Natural Docs, which is Copyright ï¿½ 2003-2010 Greg Valure
 # Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 # Refer to License.txt for the complete details
 
@@ -44,8 +44,8 @@ use Encode qw(encode_utf8 decode_utf8);
 #   MINFILESINNEWGROUP - The minimum number of file entries that must be present in a group before it will be automatically
 #                                        created.  This is *not* the number of files that must be in a group before it's deleted.
 #
-use constant MAXFILESINGROUP => 6;
-use constant MINFILESINNEWGROUP => 3;
+use constant MAXFILESINGROUP => 1;
+use constant MINFILESINNEWGROUP => 1;
 
 
 ###############################################################################
