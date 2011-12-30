@@ -636,12 +636,13 @@ class AbstractDBEngine extends DBSchema {
 	/**
 	 * Find random results
 	 *
-	 *
-	 * @param unknown_type $table
-	 * @param unknown_type $fields
-	 * @param unknown_type $conds
+	 * @param type $table
+	 * @param type $fields
+	 * @param type $conds
+	 * @param type $num
+	 * @return type 
 	 */
-	function findRandom($table, $fields = array(), $conds = array()) {
+	function findRandom($table, $fields = array(), $conds = array(), $num ) {
 		return false;
 	}
 

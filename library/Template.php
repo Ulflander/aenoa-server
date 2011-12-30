@@ -400,13 +400,16 @@ class Template extends View {
 	 * Render a template element.
 	 * 
 	 * @param object $file The element file to render.
+	 * @param array $vars An array of variables to expand in element
 	 * @return Template Current instance for chained command on this element
 	 */
-	function element ( $file )
+	function element ( $file , $vars = array () )
 	{
 		$title = $this->title ;
 		
 		extract ( $this->vars ) ;
+		
+		extract ( $vars ) ;
 		
 		$file = $this->getFile ( $this->_mode . DS . 'elements' . DS . $file . '.' . $this->getExtension () ) ;
 		

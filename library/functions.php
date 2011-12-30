@@ -85,6 +85,16 @@ function url ()
 	return Config::get(App::APP_URL) ;
 }
 
+function downloads ()
+{
+	return Config::get(App::APP_URL) . 'downloads/' ;
+}
+
+function assets ()
+{
+	return Config::get(App::APP_URL) . 'assets/' ;
+}
+
 function setTrailingSlash($str) {
 	return unsetTrailingSlash($str) . '/' ;
 }

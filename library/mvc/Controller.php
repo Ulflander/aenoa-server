@@ -1,14 +1,11 @@
 <?php
 
 /**
+ * Class: Controller
+ * 
  * Controller is one of the main classes of Aenoa Server.
- *
- * Binding controllers to models:
  * 
  *
- *
- * 
- * @author xavier
  *
  */
 class Controller extends Object {

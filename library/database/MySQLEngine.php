@@ -330,13 +330,13 @@ class MySQLEngine extends AbstractDBEngine {
 		return array();
 	}
 
-	function findRandom($table, $fields = array(), $conds = array()) {
+	function findRandom($table, $fields = array(), $conds = array(), $num = 1 ) {
 		$schema = $this->tableExistsOr403($table);
 
 		$q = 'SELECT ' . $this->__selectFields($fields, $table) .
 			' FROM `' . $this->source['database'] . '`.`' . $table . '` ' .
 			$this->__getCond($conds, $table) .
-			' ORDER BY RAND() LIMIT 1 ';
+			' ORDER BY RAND() LIMIT ' . $num . ' ';
 
 
 
@@ -345,7 +345,7 @@ class MySQLEngine extends AbstractDBEngine {
 		$res = mysql_query($q, $this->getConnection());
 		$result = $this->__fetchArr($res, $schema->getInitial(), $fields);
 
-		if (!empty($result)) {
+		if (!empty($result) && $num == 1) {
 			return $result[0];
 		}
 		return $result;
