@@ -570,17 +570,31 @@ class AbstractDBEngine extends DBSchema {
 		
 	}
 
-	function get($table, $id, $fields = array()) {
+	function get($table, $id, $recursivity=1, $fields=array(), $subfields=array())
+	{
+		return $this->findAndRelatives($table, $id, $fields, $subfields, $recursivity );
+	}
+	
+	function getAlone($table, $id, $fields = array()) {
 		return $this->find($table, $id, $fields);
 	}
 
 	function getAll($table, $cond, $limit = 0, $fields = array()) {
 		return $this->findAll($table, $cond, $limit, $fields);
 	}
+	
+	function getChilds($table, $selection, $recursivity=1, $subfields=array(), $ordered = true )
+	{
+		return $this->findRelatives($table, $selection, $subfields, $recursivity, $ordered);
+	}
+	
 
 	function set($table, $data, $id) {
 		
 	}
+	
+	
+	
 
 	/**
 	 * Find an entry in a table based on ID

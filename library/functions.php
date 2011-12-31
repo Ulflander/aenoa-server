@@ -223,6 +223,22 @@ function url2rdns_str ( $url )
 	return $rdns ;
 }
 
+/**
+ * Extract the last numeric value from a string (e.g. "some-54-string-2.str" will return 2, "string-21" will return 21, "string with no int value" will return -1)
+ * 
+ * @param string $str String to search in 
+ * @return int Int value if found, -1 otherwise
+ */
+function str_get_last_int ( $str )
+{
+	preg_match_all('/([0-9]{1,})[^0-9]{0,}$/i', $str, $m) ;
+	if ( !empty($m) && !empty($m[0]) )
+	{
+		return intval ( $m[1][0] ) ;
+	}
+	
+	return -1 ;
+}
 
 
 if ( function_exists( 'pr' ) == false )

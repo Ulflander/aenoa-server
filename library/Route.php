@@ -47,29 +47,29 @@ class Route extends ConfDriven {
 	 */
 	function get($query) {
 		foreach ($this->conf as $fromRoute => &$toRoute) {
-			preg_match_all('|^' . str_replace('\\*', '[a-z0-9\_]{1,}', preg_quote($fromRoute)) . '$|i', $query, $m);
+			preg_match_all('|^' . str_replace('\\*', '[a-z\.0-9\-\'\*\(\)\_]{1,}', preg_quote($fromRoute)) . '$|i', $query, $m);
 			if ($m && !empty($m[0])) {
+				
 				$tokenQuerys = explode('/', $query);
+				
 				$tokens = explode('/', $toRoute);
-				$l = count($tokens);
-				$m = count($tokenQuerys);
-				$n = $l > $m ? $l : $m;
-
-				for ($i = 0; $i < $n; $i++) {
-					if ($i < $l) {
-						if ($tokens[$i] == '*') {
-							$tokens[$i] = $tokenQuerys[$i];
-						} else {
-							$tokens[$i] = $tokens[$i];
-						}
+				
+				$_tokens = array () ;
+				
+				while ( $tok = array_pop( $tokens ) )
+				{
+					if ( $tok === '*' )
+					{
+						array_unshift($_tokens, array_pop($tokenQuerys) ) ;
 					} else {
-						$tokens[$i] = $tokenQuerys[$i];
+						array_unshift($_tokens, $tok);
 					}
 				}
-				return implode('/', $tokens);
+				
+				return implode('/', $_tokens);
 			}
 		}
-
+		
 		return $query;
 	}
 	

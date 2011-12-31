@@ -117,6 +117,17 @@ class QueryString extends Object {
 	{
 		return $this->getAt(0) ;
 	}
+	
+	/**
+	 * Check if an index exists
+	 * 
+	 * @param int $index Index of token to check
+	 * @return boolean True if token exists, false otherwise
+	 */
+	function has ( $index )
+	{
+		return !is_null($this->getAt($index)) ;
+	}
 
 	/**
 	 * Get a token at given index.
@@ -152,6 +163,18 @@ class QueryString extends Object {
 	function getRawFrom ( $index = 0 )
 	{
 		return implode('/', $this->getFrom( $index ) ) ;
+	}
+	
+	/**
+	 * Get a numeric value in a "slug-formed-[numericId].ext" token (e.g. trying this method on "some-product-slug-546.html" will return 546
+	 * 
+	 * 
+	 */
+	function getIDAt ( $index = 0 )
+	{
+		$item = $this->getAt($index) ;
+		
+		return !is_null ( $item ) ? str_get_last_int ($str) : null ;
 	}
 
 	/**

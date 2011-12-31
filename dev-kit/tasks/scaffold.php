@@ -102,7 +102,7 @@ class Scaffold extends Task {
 		if ( $this->futil->fileExists ( AE_APP_MODELS . $modelName . '.php' ) == false )
 		{
 			
-			$templ = new Template ( 'php/Controller.thtml' ) ;
+			$templ = new Template ( 'php/Model.thtml' ) ;
 			
 			
 			$templ->setAll ( array (

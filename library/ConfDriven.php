@@ -153,12 +153,17 @@ class ConfDriven extends Object {
 	{
 		foreach ($values as $val ) {
 			if (strpos($val, '>') === false) {
-				array_push ( $this->conf , $val ) ;
+				if ( !empty($val) )
+				{
+					array_push ( $this->conf , $val ) ;
+				}
+				
 				continue;
 			}
 
 			$v = explode('>', $val);
 			$this->conf[trim($v[0])] = trim($v[1]);
+			
 		}
 	}
 	

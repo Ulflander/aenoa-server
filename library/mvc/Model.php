@@ -31,15 +31,37 @@
  * Propagation of data from Model to View:
  * <Controller>s may require automatic propagation of selected data from <Model> to <View>.
  * This is NOT an automatic behavior (checkout <Controller> for detail).
- *
+ * 
+ * Data is propagated only if result is not empty. Checkout http://php.net/manual/en/function.empty.php for all values that would lead to not propagating data.
+ * 
  * When controllers ask for automatic propagation of selections,
  * they are automatically set in <View> of current controller action using <Controller::propagate> method.
- *
+ * 
+ * If you need to propagate data with a specific identifier, you can use the "as" feature.
+ * It's just calling a unexisting Model property called "asSomeIdentifier", then calling from this property your db method.
+ * 
+ * (start code)
+ * // Example of using the "as" feature from the controller
+ * class ProductsController extends AppController {
+ *		
+ *		public $propagation = true ;
+ * 
+ *		function index ()
+ *		{
+ *			// Will propagate an IndexedArray of items with identifier "Products"
+ *			$this->Products->getAll () ;		
+ *			
+ *			// Will propagate an IndexedArray of items with identifier "MySelection"
+ *			$this->Products->asMySelection->getAll () ;
+ *		}
+ * }
+ * (end)
+ * 
  * Undocumented features:
  * How to use models to get data
  *
  * See also:
- * <Controller>
+ * <Controller>, <AbstractDBEngine>, <IndexedArray>, <GetableCollection>, <Collection>
  */
 class Model extends Object {
 
@@ -48,8 +70,6 @@ class Model extends Object {
 		'editAll',
 		'add',
 		'addAll',
-		'count',
-		'lastId',
 		'newId',
 		'delete',
 		'deleteAll'
@@ -60,10 +80,19 @@ class Model extends Object {
 		'findAll',
 		'findFirst',
 		'findAndOrder',
+		'count',
+		'lastId',
 		'findRandom',
 		'findAscendants',
 		'findAndRelatives',
-		'findRelatives'
+		'findRelatives',
+		
+		// New API
+		'get',
+		'getChilds',
+		'getAndChilds',
+		'getAll'
+		
 	) ;
 
 	/**
@@ -109,6 +138,12 @@ class Model extends Object {
 	 * @var boolean
 	 */
 	private $_propagate = false ;
+	
+	/**
+	 * Next selection propagation name
+	 * @var string
+	 */
+	private $_nextPropName = null ;
 	
 	/**
 	 * 
@@ -191,6 +226,7 @@ class Model extends Object {
 			
 			if ( empty ( $result ) )
 			{
+				return $result ;
 				
 			} else if (is_assoc($result))
 			{
@@ -198,11 +234,17 @@ class Model extends Object {
 				
 				if ( $this->_propagate )
 				{
-					$this->controller->propagate (Inflector::singularize($this->_camelizedTable) , $this->_unqSel ) ;
+					$this->controller->propagate ( $this->_getPropagateName(true) , $this->_unqSel ) ;
 				}
 
+			// Int becuase count method returns a simple int
+			} else if ( !is_array( $result ) )
+			{
+				if ( $this->_propagate )
+				{
+					$this->controller->propagate ( $this->_getPropagateName() , $result ) ;
+				}
 			} else {
-
 				$res = $result ; 
 				
 				$this->_multiSel = new IndexedArray() ;
@@ -215,19 +257,43 @@ class Model extends Object {
 				
 				if ( $this->_propagate )
 				{
-					$this->controller->propagate ( $this->_camelizedTable , $this->_multiSel ) ;
+					$this->controller->propagate ( $this->_getPropagateName() , $this->_multiSel ) ;
 				}
 			}
-
 
 			return $result ;
 		}
 
 		throw new ErrorException ('Method <strong>' . $name . '</strong> does not exist in class <strong>' . get_class($this) .'</strong>' );
 	}
+	
+	
+	private function _getPropagateName ( $singularize = false )
+	{
+		switch(true)
+		{
+			case !is_null ($this->_nextPropName):
+				$n = $this->_nextPropName ;
+				$this->_nextPropName = null ;
+				return $n ;
+				break;
+			case $singularize === true:
+				return  Inflector::singularize($this->_camelizedTable) ;
+				break;
+			default:
+				return $this->_camelizedTable ;
+		}
+	}
 
 	function __get ( $name )
 	{
+		if ( preg_match ('/^as[A-Z]{1}[a-zA-Z]{1,}/', $name) === 1 )
+		{
+			$this->_nextPropName = substr($name, 2);
+			
+			return $this ;
+		}
+		
 		return $this->_unqSel->$name ;
 	}
 

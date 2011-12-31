@@ -153,7 +153,6 @@ class Dispatcher {
 			App::end();
 		}
 
-
 		// Get main token
 		$token = $query->getAt(0);
 

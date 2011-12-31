@@ -550,9 +550,9 @@ class App extends Object
 		}
 
 		$route = new Route () ;
-
-		self::$query =  $route->get( $query ) ;
 		
+		self::$query =  $route->get( $query ) ;
+
 		self::$queryStr = new QueryString( self::$query ) ;
 		
 		// TODO: refactor this

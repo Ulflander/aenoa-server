@@ -43,7 +43,7 @@ class Behaviorable extends Object {
 			}
 		}
 
-		$this->debug('Function ' . $name . ' does not exists in BehaviorableObject.');
+		throw new ErrorException('[BehaviorableObject] Function <strong>' . $name . '</strong> does not exists in <strong>'.get_class($this).'</strong>');
 	}
 
 }
