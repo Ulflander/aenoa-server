@@ -90,7 +90,7 @@ class HTTPStatus {
 		{
 			header( 'Status: ' . self::$headers[strval($code)], false, $code ) ;
 
-			if ( !is_null ( $message ) )
+			if ( !is_null ( $message ) && debuggin () )
 			{
 				header ( 'X-AeServer-Message: '.$message ) ;
 			}

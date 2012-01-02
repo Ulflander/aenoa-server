@@ -80,12 +80,12 @@ class Initializer extends Object {
 							break;
 					}
 					
-					chmod(ROOT . $folder, 0777);
 				} else {
 					$this->log('Folder "' . $folder . '" has NOT been created.');
 					$result = false;
 				}
 			}
+			chmod(ROOT . $folder, 0777);
 		}
 		
 

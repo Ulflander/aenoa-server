@@ -163,7 +163,7 @@ class Dispatcher {
 
 		// Check rights for this query
 		if (AenoaRights::hasRightsOnQuery($query->raw()) == false) {
-			App::do401('Permission denied');
+			App::do401('Permission denied' );
 		}
 
 		// And dispatch

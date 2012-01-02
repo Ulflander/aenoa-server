@@ -8,205 +8,9 @@
  * All DB engines must extend AbstractDBEngine.
  *
  *
+ * Common parameters formatting:
  *
- *
- * Structures:
- *
- *
- *
- * > $field = array (
- * >		'name' => 'my_field_id',
- * >		'type' => DBSchema::TYPE_INT,
- * >		'behavior' => DBSchema::BHR_INCREMENT,
- * >		'default' => 'any value'
- * > ) ;
- *
- * for enum type, a fifth property must be applied:
- *
- * > $enumField = array (
- * >		'name' => 'my_enum_field',
- * >		'type' => DBSchema::TYPE_ENUM,
- * >		'behavior' => DBSchema::BHR_DT_ON_EDIT,
- * >		'default' => 'any value'
- * >		'values' => array ( 'any value' , 'another value' )
- * > ) ;
- *
- *
- * So here what would be an entire table structure:
- *
- * (start code)
- * $usersTable = array (
- * 		array (
- * 			'name' => 'id',
- * 			'type' => DBSchema::TYPE_INT,
- * 			'behavior' => DBSchema::BHR_INCREMENT
- * 		),
- * 		array (
- * 			'name' => 'email',
- * 			'label' => 'Email address',
- * 			'type' => DBSchema::TYPE_STRING,
- * 			'validation' => array (
- * 				'rule' => DBValidator::EMAIL,
- * 				'message' => 'The email field must be a well-formatted email address'
- * 			)
- * 		),
- * 		array (
- * 			'name' => 'password',
- * 			'label' => 'Password',
- * 			'type' =>  DBSchema::TYPE_STRING,
- * 			'behavior' => DBSchema::BHR_SHA1,
- * 			'validation' => array (
- * 				'rule' => '/[A-Za-z0-9\-_]{6,10}/',
- * 				'message' => 'Your password must contain 6 to 10 chars "A" to "Z", "a" to "z", "0" to "9", "-" and "_". '
- * 			)
- * 		),
- * 		array (
- * 			'name' => 'profile_picture',
- * 			'label' => 'Profile picture',
- * 			'type' =>  DBSchema::TYPE_FILE,
- * 			'behavior' => array ( &CallBackObjectInstance , 'methodName' , array ( 'argument 2' , 'some other argument' ) ) ,
- * 			'validation' => array (
- * 				'rule' => array ( 'jpg' , 'png' ),
- * 				'message' => 'Your profile picture must be a JPG or a PNG file.'
- * 			)
- * 		)
- * ) ;
- * (end)
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * Type:
- *
- *
- *
- *
- * For all other types, it depends on concrete engine, but there should be at least implementation of these ones :
- * - int
- * - float
- * - string
- * - boolean
- * - enum
- * - timestamp
- * - datetime
- * - date
- *
- * Concrete engine must reflect these types, for example: in MySQL concrete engine,
- * string will correspond to TEXT, int to INT, boolean will be an enum like this one: ( 'TRUE' , 'FALSE' ), ...
- * Creating a new type (e.g. VARCHAR for MySQL) must be possible using the concrete engine.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * Behaviors:
- *
- *
- *
- *
- * The behaviors that must be usable in concrete engine are:
- * - BHR_INCREMENT : Behavior Increment (only for int typed fields)
- * - BHR_TS_ON_EDIT : Behavior Timestamp on edit (only for timestamp type fields)
- * - BHR_DT_ON_EDIT : Behaviour Datetime on edit (only for datetime type fields)
- * - BHR_SHA1 : Behavior sha1 (only for string type fields)
- * - BHR_MD5 : Behavior md5 (only for string type fields)
- * - BHR_URLIZE : Behavior Urlize (only for string type fields)
- *
- * Behavior for a field can be replaced by a callback method of yours.
- * Regarding this field behavior:
- *
- * (start code)
- * $profilePictureField = array (
- * 			'name' => 'profile_picture',
- * 			'label' => 'Profile picture',
- * 			'type' =>  DBSchema::TYPE_FILE,
- * 			'behavior' => array ( &CallBackObjectInstance , 'methodName' , array ( 'argument 2' , 'some other argument' ) ) ,
- * 			'validation' => array (
- * 				'rule' => array ( 'jpg' , 'png' ),
- * 				'message' => 'Your profile picture must be a JPG or a PNG file.'
- * 			);
- * (end)
- * we should have a class named CallBackObjectInstance, that implements the method methodName:
- * (start code)
- * class CallBackObjectInstance {
- * 		function methodName ( $fieldValue , $argument2 , $someOtherArgument )
- * 		{
- * 			// do something on value
- * 			if ( is_uploaded_file ( $fieldValue ) )
- * 			{
- * 				//...
- * 			}
- * 			// and return it
- * 			return $fieldValue ;
- * 		}
- * }
- * (end)
- *
- * Here are some others valid callback behaviors and their corresponding functions:
- *
- * (start code)
- * $behaviorFunction = array ( 'function_name' ) ;
- *
- * function function_name ( $fieldValue )
- * {
- * 		// Make something
- * 		return $fieldValue;
- * }
- *
- *
- * $behaviorFunctionWArgs = array ( 'function_name' , array ( 'an argument' ) ) ;
- *
- * function function_name ( $fieldValue , $otherArgument)
- * {
- * 		// Make something
- * 		return $fieldValue;
- * }
- * (end)
- * and so on.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * Magic field names:
- *
- *
- *
- * There is 3 magic fields name:
- * - updated
- * - modified
- * - created
- *
- * If you add in your table structure a field named like one of these,
- * when an entry is added in your table, the 'created' field will automatically be
- * filled with current Date and Time or Timestamp.
- * And so on, if an entry is updated, the 'updated' or 'modified' or both fields are automatically filled with
- * current Date and Time or Timestamp.
- *
- * These fields must be typed as DATETIME or as TIMESTAMP.
- *
- * This feature is considered as an auto behavior, because the implementation of magic fields resolution is done
- * in DBTableSchema::applyInputBehaviors method.
- *
- * Using BHR_DT_ON_EDIT or BHR_TS_ON_EDIT on magic fields 'updated' and 'modified'  is obvious:
- * the time will be updated twice.
- *
- *
- * Writing conditions:
+ * Conditions:
  *
  * You can use a strict equality creating a simple associative array:
  *
@@ -570,6 +374,16 @@ class AbstractDBEngine extends DBSchema {
 		
 	}
 
+	/**
+	 * New API for
+	 *
+	 * @param type $table
+	 * @param type $id
+	 * @param type $recursivity
+	 * @param type $fields
+	 * @param type $subfields
+	 * @return type
+	 */
 	function get($table, $id, $recursivity=1, $fields=array(), $subfields=array())
 	{
 		return $this->findAndRelatives($table, $id, $fields, $subfields, $recursivity );

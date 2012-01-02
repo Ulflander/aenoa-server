@@ -880,6 +880,9 @@ class App extends Object
 			{
 				App::getSession()->set('redirect',self::getQuery());
 			}
+
+			new HTTPStatus(401 , $headerResponse ) ;
+
 			if ( Config::get(self::USER_CORE_SYSTEM) === true)
 			{
 			    self::redirectGlobal( url().'user-core/login' );
