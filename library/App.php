@@ -1079,6 +1079,10 @@ class App extends Object
 	 */
 	public static function getUser()
 	{
+		if( is_null(self::$session) )
+		{
+			self::$session = new Session () ;
+		}
 		return self::$session->getUser () ;
 	}
 

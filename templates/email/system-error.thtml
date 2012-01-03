@@ -47,10 +47,10 @@
 		Ajax mode: <?php echo (App::isAjax() ? 'Yes' : 'No') ?> <br />
 		
 		Post data:<br />
-		<?php pr( App::getSanitizer()->getAll('POST') ) ; ?>
+		<?php pr(App::getSanitizer() ? App::getSanitizer()->getAll('POST') : '' ) ; ?>
 		API Key: <?php echo ServerAuthCheck::getUseReport () ?><br />
 		User:<br />
-		<?php pr( App::getUser() ) ; ?>
+		<?php // pr( App::getUser() ) ; ?>
  	</p>
 	
 <?php $this->element('mail-footer') ?>
