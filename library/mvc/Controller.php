@@ -82,18 +82,44 @@ class Controller extends Object {
 	private $name = null;
 
 	/**
-	 * Action performing
+	 * Action run
 	 * @var string
 	 */
 	protected $action = null;
+
+	/**
+	 * All loaded models
+	 * @var array
+	 */
 	private $_models = array();
+
+	/**
+	 * Main model
+	 * @var Model
+	 */
+	private $_model = null ;
+
+	/**
+	 * Implicit database id
+	 * @var type
+	 */
 	private $_implicit = 'Main';
 
 	/**
-	 * Model class name
-	 * @var string
+	 * [DEPRECATED] 
+	 * 
+	 * @see Controller::validated 
+	 * @var type 
 	 */
-	private $modelClassName = null;
+	protected $toSave = array();
+
+
+	/**
+	 * Validated data to be saved by model
+	 *
+	 * @var type
+	 */
+	protected $validated = null ;
 
 	/**
 	 * This define a SUCCESS response status
@@ -362,7 +388,7 @@ class Controller extends Object {
 	// TODO: move this in Model
 	protected function validateInputs($ruleArray) {
 		$errors = array();
-
+		
 		if (!empty($this->data)) {
 			foreach ($ruleArray as $field => $regexp) {
 				$fieldName = ucfirst(array_pop(explode('/', $field)));
@@ -387,6 +413,76 @@ class Controller extends Object {
 		return (empty($errors) ? true : $errors );
 	}
 
+	protected function validate ()
+	{
+		$validity = array();
+
+		$hasError = ake(self::RESPONSE_ERROR, $this->responses);
+
+		if ( empty ($this->data) )
+		{
+			return $hasError ;
+		}
+
+		$sep = null ;
+
+		foreach ($this->data as $k => $v) {
+			if ($k == '__SESS_ID') {
+				continue;
+			}
+
+			if ( is_null($sep) )
+			{
+				$sep = strpos('/', $k) !== false ? '/' : '-' ;
+			}
+
+
+			$id = explode($sep, $k);
+			
+			if (count($id) > 3) {
+				continue;
+			}
+
+			// [DEPRECATED] Old way to validate
+
+			if ( $sep == '/' )
+			{
+				foreach ($this->structure[$this->table] as &$field) {
+					if (is_array($field) && array_key_exists('name', $field) && $field['name'] == $id[2]) {
+						if (array_key_exists('validation', $field)) {
+							$r = '/' . $field['validation']['rule'] . '/';
+
+							if (!preg_match($r, $v)) {
+								$hasError = true;
+								$this->addResponse($field['validation']['message'], self::RESPONSE_ERROR);
+								$validity[$field['name']] = false;
+							} else {
+								$validity[$field['name']] = true;
+							}
+						}
+					}
+				}
+
+				$this->toSave[$id[2]] = $v;
+
+			// NEW WAY TO VALIDATE
+			} else {
+				pr($this->model);
+			}
+
+		}
+
+		$this->view->set('validities', $validity);
+
+		return $hasError == false;
+	}
+
+	/**
+	 *
+	 * @param type $name
+	 * @param type $action
+	 * @param type $modelClassName [DEPRECATED]
+	 */
 	final function setIDS($name, $action, $modelClassName = null) {
 		if (is_null($this->name)) {
 			$this->name = $name;
@@ -405,18 +501,40 @@ class Controller extends Object {
 		return $this->action;
 	}
 
+	/**
+	 * [DEPRECATED]
+	 *
+	 * @see Controller::run
+	 * @param type $action
+	 */
 	protected function runAction($action) {
-		if (method_exists($this, $action)) {
+		$this->run ( $action ) ;
+	}
+
+	/**
+	 * Run a new action, reloading the view, if action does not exist then a 404 error is triggered
+	 * 
+	 * @param type $action
+	 */
+	protected function run ( $action )
+	{
+		if ( method_exists($this, $action))
+		{
+
 			$this->action = $action;
 
 			$this->createView();
 
 			$this->$action();
+			
 		} else {
+
 			App::do404('Action ' . $action . ' not found in ' . $this->name);
+			
 		}
 	}
 
+	
 	public function addResponse($text, $type = 'success') {
 		if (!array_key_exists($type, $this->responses)) {
 			$this->responses[$type] = array();
@@ -661,6 +779,11 @@ class Controller extends Object {
 		// Instanciate controller
 		$controller = new $_n ();
 
+		if ( !is_subclass_of($controller, 'Controller') )
+		{
+			throw new ErrorException('Class <strong>' . $_n . '</strong> should extends <strong>Controller</strong>' ) ;
+		}
+		
 		// Setting controller properties
 		foreach ($controllerParams as $k => $v) {
 			@$controller->{$k} = $v;

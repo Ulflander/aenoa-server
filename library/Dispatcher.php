@@ -163,7 +163,7 @@ class Dispatcher {
 
 		// Check rights for this query
 		if (AenoaRights::hasRightsOnQuery($query->raw()) == false) {
-		//	App::do401('Permission denied' );
+			App::do401('Permission denied' );
 		}
 
 		// And dispatch
@@ -196,7 +196,7 @@ class Dispatcher {
 
 			// For dev kit access
 			case $token == QueryString::DEV_TOKEN:
-				if (/*App::getUser()->isGod() &&*/ debuggin()) {
+				if (App::getUser()->isGod() && debuggin()) {
 					if (file_exists(AE_SERVER . 'dev-kit' . DS . 'devkit-bootstrap.php')) {
 						
 						require_once(AE_SERVER . 'dev-kit' . DS . 'devkit-bootstrap.php');

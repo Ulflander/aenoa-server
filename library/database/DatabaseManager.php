@@ -173,7 +173,7 @@ class DatabaseManager extends Object {
 			include ( AE_APP_STRUCTURES . $structureFile);
 
 			if (!isset($tables) || empty($tables)) {
-				App::do500('Structure file for DB ' . $id . ' is not valid.');
+				App::do500('Structure file for DB ' . $id . ' is not valid: missing $tables variable.');
 			}
 		}
 		

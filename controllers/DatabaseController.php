@@ -19,7 +19,6 @@ class DatabaseController extends Controller {
 	public $subFields = array();
 	protected $structure;
 	protected $errors = array();
-	protected $toSave = array();
 	protected $previousPage = null;
 	protected $baseURL = null;
 	protected $conditions = array();
@@ -47,46 +46,6 @@ class DatabaseController extends Controller {
 				$this->view->render();
 			}
 		}
-	}
-
-	private function _validate() {
-		$validity = array();
-
-		$hasError = ake(self::RESPONSE_ERROR, $this->responses);
-
-
-		foreach ($this->data as $k => $v) {
-			if ($k == '__SESS_ID') {
-				continue;
-			}
-
-			$id = explode('/', $k);
-			if (count($id) > 3) {
-				continue;
-			}
-
-			foreach ($this->structure[$this->table] as &$field) {
-				if (is_array($field) && array_key_exists('name', $field) && $field['name'] == $id[2]) {
-					if (array_key_exists('validation', $field)) {
-						$r = '/' . $field['validation']['rule'] . '/';
-
-						if (!preg_match($r, $v)) {
-							$hasError = true;
-							$this->addResponse($field['validation']['message'], self::RESPONSE_ERROR);
-							$validity[$field['name']] = false;
-						} else {
-							$validity[$field['name']] = true;
-						}
-					}
-				}
-			}
-
-			$this->toSave[$id[2]] = $v;
-		}
-
-		$this->view->set('validities', $validity);
-
-		return $hasError == false;
 	}
 
 	protected function beforeAction($action) {
@@ -284,7 +243,7 @@ class DatabaseController extends Controller {
 
 	public function __add() {
 
-		if (!$this->_validate()) {
+		if (!$this->validate()) {
 			return false;
 		}
 
@@ -322,7 +281,7 @@ class DatabaseController extends Controller {
 
 	public function __edit($id) {
 
-		if (!$this->_validate()) {
+		if (!$this->validate()) {
 			return false;
 		}
 
