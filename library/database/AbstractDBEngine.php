@@ -397,6 +397,16 @@ class AbstractDBEngine extends DBSchema {
 		return $this->findAll($table, $cond, $limit, $fields);
 	}
 	
+	function getAllAndChilds ( $table , $cond = array () , $limit = 0 , $recursivity = 1 , $fields = array () , $subfields = array () , $ordered = true )
+	{
+		return $this->findChildren($table, $this->findAll($table, $cond, $limit, $fields), $subfields, $recursivity , $ordered ) ;
+	}
+	
+	function getAllAndRelatives ($table, $cond = array () , $limit = 0 , $recursivity = 1 , $fields = array () , $subfields = array () , $ordered = true )
+	{
+		return $this->findRelatives($table, $this->findAll($table, $cond, $limit, $fields), $subfields, $recursivity, $ordered);
+	}
+	
 	function getChilds($table, $selection, $recursivity=1, $subfields=array(), $ordered = true )
 	{
 		return $this->findRelatives($table, $selection, $subfields, $recursivity, $ordered);
@@ -819,7 +829,7 @@ class AbstractDBEngine extends DBSchema {
 	 */
 	function findChildren($table, $dbselection, $subFields = array(), $recursivity = 1, $ordered = true) {
 		$schema = $this->tableExistsOr403($table);
-
+		
 		if ($schema->getLength() < 2) {
 			return $dbselection;
 		}
@@ -901,7 +911,6 @@ class AbstractDBEngine extends DBSchema {
 					$this->__childCache[$inf['source']] = array();
 				}
 
-
 				if (!empty($__ids)) {
 					// Subfields
 					$__f = array();
@@ -928,12 +937,11 @@ class AbstractDBEngine extends DBSchema {
 
 				$result = array_merge($result, $__res2);
 
-
 				if ($inf['multi'] == true && array_key_exists(0, $result) == false) {
 					$result = array($result);
 				}
 				if ($recursivity > 1) {
-					$result = $this->findChildren($inf['source'], $result, $subFields, $recursivity - 1);
+					$result = $this->findChildren($inf['source'], $result, $subFields, $recursivity - 1, $ordered );
 				}
 				foreach ($dbselection as &$res) {
 					if ($inf['isSameTable']) {

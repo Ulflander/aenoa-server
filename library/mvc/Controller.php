@@ -94,12 +94,6 @@ class Controller extends Object {
 	private $_models = array();
 
 	/**
-	 * Main model
-	 * @var Model
-	 */
-	private $_model = null ;
-
-	/**
 	 * Implicit database id
 	 * @var type
 	 */
@@ -645,7 +639,9 @@ class Controller extends Object {
 			$this->view->appendToTitle($this->title);
 			$this->view->setFile($viewPath);
 		}
-
+		
+		
+		
 		return $this->view;
 	}
 
@@ -656,6 +652,7 @@ class Controller extends Object {
 
 		if ($this->view->isRendered() == false) {
 			$this->view->set('__responses', $this->responses);
+			$this->view->set('current_url' , url() . App::getQuery() ) ;
 			$this->view->render();
 		}
 	}

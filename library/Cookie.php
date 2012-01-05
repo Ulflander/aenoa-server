@@ -41,6 +41,7 @@ class Cookie extends Collection {
 	 * @param string $path 
 	 */
 	function __construct($name = 'AE', $path = '/') {
+		
 		$this->setName($name);
 
 		$this->setPath($path);

@@ -91,6 +91,8 @@ class Model extends Object {
 		'get',
 		'getChilds',
 		'getAndChilds',
+		'getAllAndChilds',
+		'getAllAndRelatives',
 		'getAll'
 		
 	) ;

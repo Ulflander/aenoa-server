@@ -112,18 +112,19 @@ final class User {
 			$this->_identifier = $identifier;
 		}
 		
-		if ( !is_null ( $cookieName ) )
-		{
-			$this->_cookieName = $cookieName ;
-		} else if ( Config::has(App::APP_COOKIE_NAME) )
+		if ( Config::has(App::APP_COOKIE_NAME) )
 		{
 			$this->_cookieName = Config::get(App::APP_COOKIE_NAME) ;
+		} else if ( !is_null ( $cookieName ) )
+		{
+			$this->_cookieName = $cookieName ;
 		}
+		
+		$this->_cookie = new Cookie($this->_cookieName);
 
 		if (!is_null(App::$session) && App::$session->get('User.logged') === 1 && is_null(self::$_currentlogged))
 		{
 			
-			$this->_cookie = new Cookie($this->_cookieName);
 
 			$this->_identifier = App::$session->get('User.identifier');
 			$this->_firstname = App::$session->get('User.firstname');
