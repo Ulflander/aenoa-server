@@ -24,6 +24,7 @@ if ( $this->useACF === true ): ?>
 <link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ; ?>acf/plugins/colorize.css" type="text/css" media="screen,projection" />
 <link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ; ?>acf/plugins/iconify/iconify.css" type="text/css" media="screen,projection" />
 <link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ; ?>acf/plugins/roundify.css" type="text/css" media="screen,projection" />
+<link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ; ?>acf/plugins/buttonify.css" type="text/css" media="screen,projection" />
 <?php endif; ?>
 
 <?php 

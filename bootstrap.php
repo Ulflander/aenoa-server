@@ -15,14 +15,15 @@
  * 
  */
 
-set_exception_handler ( function ( ErrorException $e ) {
+	
+function ae_handle_error ( ErrorException $e ) {
 
 	if ( debuggin () )
 	{
 		echo '<pre>';
 		echo '[EXCEPTION] ' . $e->getMessage() . "\n\n" ;
 		echo 'Exception location: <strong>' . $e->getFile() . '</strong> / Line: <strong>' . $e->getLine() . "</strong>\n\n" ;
-		
+
 
 		$trace = $e->getTrace() ;
 
@@ -50,7 +51,7 @@ set_exception_handler ( function ( ErrorException $e ) {
 		{
 			$c -- ;
 
-			
+
 			$str = '['.sprintf($leading,$c) .']   ' ;
 
 			for ( $ind2 = 0 ; $ind2 < $ind ; $ind2 ++ )
@@ -73,11 +74,12 @@ set_exception_handler ( function ( ErrorException $e ) {
 
 		echo '</pre>';
 	}
-	
+
 	App::end () ;
 
-} );
+} 
 
+set_exception_handler ( 'ae_handle_error' );
 
 /**
  * Constant: DS
