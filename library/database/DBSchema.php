@@ -52,6 +52,7 @@ class DBSchema extends AeObject {
 	 * @var string
 	 */
 	const TYPE_INT = 'int' ;
+	const TYPE_BIGINT = 'bigint' ;
 
 	/**
 	 * String type definition

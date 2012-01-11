@@ -287,14 +287,41 @@ class MySQLEngine extends AbstractDBEngine {
 
 		return array();
 	}
+	
+	function findNextPrevious($table,$id,$fields = array(),$order){
+	    $schema = $this->tableExistsOr403($table);
+	    $operator = '>';
+	    if ($order == 'DESC') $operator = '<';
+	    $q = 'SELECT ' . $this->__selectFields($fields, $table) .
+			' FROM `' . $this->source['database'] . '`.`' . $table . '` WHERE ID '. $operator. $id .
+			
+			' ORDER BY ID '.$order .' LIMIT 1';
 
-	function findAll($table, $cond = array(), $limit = 0, $fields = array()) {
+
+
+		$this->log($q);
+
+		$res = mysql_query($q, $this->getConnection());
+		$result = $this->__fetchArr($res, $schema->getInitial(), $fields);
+
+		if (!empty($result)) {
+			return $result[0];
+		}
+		return $result;
+	    
+	    
+	}
+
+	function findAll($table, $cond = array(), $limit = 0, $fields = array(),$distinct = false) {
 		$schema = $this->tableExistsOr403($table);
-		$q = 'SELECT ' . $this->__selectFields($fields, $table) . ' FROM `' . $this->source['database'] . '`.`' . $table . '` ';
+		$q = 'SELECT ' ;
+		if ($distinct==true) $q .='DISTINCT ';
+		$q .= $this->__selectFields($fields, $table) . ' FROM `' . $this->source['database'] . '`.`' . $table . '` ';
 		$q .= $this->__getCond($cond, $table);
 		$q .= $this->__getLimit($table, $limit);
 		$q .= ';';
 		$this->log($q);
+		//pr($q);
 		$res = mysql_query($q, $this->getConnection());
 		if ($res === false) {
 			return $res;
@@ -304,9 +331,11 @@ class MySQLEngine extends AbstractDBEngine {
 		return $result;
 	}
 
-	function findAndOrder($table, $cond = array(), $limit = 0, $fields = array(), $order_fields = array(), $order = 'ASC') {
+	function findAndOrder($table,$cond = array(), $limit = 0, $fields = array(), $order_fields = array(), $order = 'ASC') {
 		$schema = $this->tableExistsOr403($table);
-		$q = 'SELECT ' . $this->__selectFields($fields, $table) . ' FROM `' . $this->source['database'] . '`.`' . $table . '` ';
+		$q = 'SELECT ' ;
+		//if ($distinct==true) $q .=' DISTINCT ';
+		$q .= $this->__selectFields($fields, $table) . ' FROM `' . $this->source['database'] . '`.`' . $table . '` ';
 		$q .= $this->__getCond($cond, $table);
 		$q .= $this->__getLimit($table, $limit);
 		$q .= ' ORDER BY ' . $this->__selectFields($order_fields, $table) . ' ';
@@ -331,6 +360,15 @@ class MySQLEngine extends AbstractDBEngine {
 		return array();
 	}
 
+	function findLast($table, $cond = array(), $fields = array(), $childsRecursivity = 0) {
+		$res = $this->findAll($table, $cond, 1, $fields, $childsRecursivity);
+		if (!empty($res)) {
+			return $res[count($res)-1];
+		}
+		return array();
+	}
+	
+	
 	function findRandom($table, $fields = array(), $conds = array()) {
 		$schema = $this->tableExistsOr403($table);
 
@@ -369,7 +407,7 @@ class MySQLEngine extends AbstractDBEngine {
 				$operator = '=';
 
 				if (strlen($c) > 0) {
-					$c.=' OR ';
+					$c.=' AND ';
 					
 				}
 
@@ -417,10 +455,12 @@ class MySQLEngine extends AbstractDBEngine {
 					}
 				} else if (!empty($val)) {
 					if ($val[0]=='IS NULL') $c .= '`' . $fieldname .'` ' .$val[0] .' OR ' . $fieldname . ' = ' . $val[1];
-					else $c .= '`' . $fieldname . '` IN (\'' . implode('\',\'', $val) . '\')';
+					else 
+					    $c .= '`' . $fieldname . '` IN (\'' . implode('\',\'', $val) . '\')';
 				}
 			}
 			$c = ' WHERE ' . $c;
+			
 		}
 		return $c . ' ';
 	}

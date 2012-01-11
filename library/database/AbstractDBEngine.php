@@ -594,15 +594,30 @@ class AbstractDBEngine extends DBSchema {
 	}
 
 	/**
+	 * Find an entry in a table based on ID
+	 *
+	 * @param object $table The table where to search
+	 * @param object $id The ID of an entry
+	 * @param object $fields [optional] Fields to return, default will return all fields
+	 * @param object $order , default will return ascendant order
+	 * @return bool False on failure, entries on success
+	 */
+	function findNextPrevious($table, $id, $fields = array(),$order) {
+		return false;
+	}
+	
+	
+	/**
 	 * Find all entries in a table, depending on conditions
 	 *
 	 * @param object $table The table where to search
 	 * @param object $cond [optional] Conditions
 	 * @param object $limit [optional] Max returned entries
 	 * @param object $fields [optional] Fields to return, default will return all fields
+	  * @param object $distinct [optional] flag disctinct for unique values in a column
 	 * @return bool False on failure, entries on success
 	 */
-	function findAll($table, $cond = array(), $limit = 0, $fields = array()) {
+	function findAll($table, $cond = array(), $limit = 0, $fields = array(),$distinct = false) {
 		return false;
 	}
 
@@ -612,9 +627,11 @@ class AbstractDBEngine extends DBSchema {
 	 * @param object $table The table where to search
 	 * @param object $cond [optional] Conditions
 	 * @param object $fields [optional] Fields to return, default will return all fields
+	 * @param object $order_fields Fields to order
+	 * @param object $order [optional] order type, default will ascendant order
 	 * @return bool False on failure, entry on success
 	 */
-	function findAndOrder($table, $cond = array(), $limit = 0, $fields = array(), $order_fields = array(), $order = 'ASC') {
+	function findAndOrder($table, $distinct = false,$cond = array(), $limit = 0, $fields = array(), $order_fields = array(), $order = 'ASC') {
 		return false;
 	}
 
@@ -632,6 +649,22 @@ class AbstractDBEngine extends DBSchema {
 		return false;
 	}
 
+	/**
+	 * Find first entry in a table, depending on conditions
+	 *
+	 * @param object $table The table where to search
+	 * @param object $cond [optional] Conditions
+	 * @param object $fields [optional] Fields to return, default will return all fields
+	 * @param object $fields [optional] Fields to order
+	 * @param object $order , default will return ascendant order
+	 * @return bool False on failure, entry on success
+	 */
+	function findLast($table, $cond = array(), $fields = array()) {
+		return false;
+	}
+
+	
+	
 	/**
 	 * Find random results
 	 *

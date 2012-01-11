@@ -125,7 +125,7 @@ class AeAutoTable {
 			$this->_result[] = '<li><a href="' . $this->getURL() . 'read-mode-filter/inline/desc/created/true/' . $currentWidget . '" class="icon16 rows-list unlabeled inline" title="' . _('Show widget product content') . '"></a></li>';
 		}
 		else {
-			$this->_result[] = '<li><a href="' . $this->getURL() . 'reset-filter/inline' . (!is_null($order) ? '/'.$order.'/' . $dir  .'/false/' . $currentWidget : '' ) . '" class="icon16 rows-list unlabeled inline" title="' . _('Reset result') . '"></a></li>';
+			$this->_result[] = '<li><a href="' . $this->getURL() . 'reset-filter/inline' . (!is_null($order) ? '/'.$order.'/' . $dir  .'/false/' . $currentWidget : '' ) . '" class="icon16 rows-list unlabeled inline" id="reset" title="' . _('Reset result') . '"></a></li>';
 		}
 		$this->_result[] = '<li><a href="' . $this->getURL() . 'read-mode-switch/inline/' . $page . (!is_null($order) ? '/' . $order . '/' . $dir : '' ) . '" class="icon16 rows-list unlabeled ' . ($this->getMode() == 'inline' ? 'current' : '') . '" title="' . _('Show results inline') . '">' . _('Show results inline') . '</a></li>';
 
