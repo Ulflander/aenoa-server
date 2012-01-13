@@ -199,19 +199,16 @@ class FSUtil
 		$files = scandir ( $path ) ;
 		foreach ( $files as $f )
 		{
-			if ($f != '.' && $f != '..' )
+			if ($f == '.' || $f == '..' || $returnHidden == false && ( (substr($f, 0 , 1) == '.' || ( $this->CVSAsHidden && $f == 'CVS' ) ) ) )
 			{
-				if ( $returnHidden == false && ( (substr($f, 0 , 1) == '.' || ( $this->CVSAsHidden && $f == 'CVS' ) ) ) )
-				{
-					continue;
-				}
+				continue;
+			}
 				
-				$result[] = $path.$f ;
-				
-				if ( @is_dir($path.$f) )
-				{
-					$result = $this->getTree($path.$f.DS, $returnHidden, $result ) ;
-				}
+			$result[] = $path.$f ;
+
+			if ( @is_dir($path.$f) )
+			{
+				$result = $this->getTree($path.$f.DS, $returnHidden, $result ) ;
 			}
 		}
 		

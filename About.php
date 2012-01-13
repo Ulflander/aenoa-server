@@ -5,12 +5,6 @@
 
     This documentation refers to Aenoa Server, the Aenoa PHP Framework.
 
-    Current version:
-    1.0.5
-
-    Changelog:
-    1.0.5: Binding Dev Kit to Server
-
     Main classes:
 
     Documentation of Aenoa Server is still incomplete. However, the main classes of the system have some doc.

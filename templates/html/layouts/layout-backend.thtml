@@ -28,11 +28,15 @@
 	<div id="nav" class="shadowed">
 	    <a href="<?php echo url() ?>" title="<?php echo _('Back to application') ?>">&laquo; <?php echo _('Back to application') ?></a>
 	    
+	    - <a href="http://www.aenoa-systems.com/docs/aenoa-server/" class="icon16 manual">Aenoa Server Doc</a>
+	    - <a href="http://www.aenoa-systems.com/docs/ajsf/" class="icon16 manual">AJSF Doc</a>
+	    
 	    <?php if ( debuggin () ): ?>
 		<a href="<?php echo url() ?>maintenance/debug" class=" notify warning debug no-bg"><?php echo _('Debug is currently ON') ?></a>
 	    <?php else: ?>
 		<a href="<?php echo url() ?>maintenance/debug" class=" notify info debug no-bg"><?php echo _('Debug is currently OFF') ?></a>
 	    <?php endif; ?>
+	    
 	    
 	</div>
 	    
