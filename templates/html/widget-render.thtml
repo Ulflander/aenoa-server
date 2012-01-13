@@ -16,6 +16,7 @@
 
 
 <?php if ( !App::isAjax() ): ?>
+
 	<?php $this->element ( 'header' ) ; ?>
 
 	<title><?php echo $this->title ?></title>
