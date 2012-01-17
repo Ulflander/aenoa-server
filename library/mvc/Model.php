@@ -396,6 +396,7 @@ class Model extends Object {
 	 */
 	final function getSchema ()
 	{
+		pr($this->_table);
 		return $this->schema ;
 	}
 

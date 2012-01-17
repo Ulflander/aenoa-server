@@ -40,7 +40,7 @@ class Controller extends Object {
 	/**
 	 * Does selected data in Model automatically sent to view
 	 */
-	public $propagation = false ;
+	public $propagation = false;
 
 	/**
 	 * @var Template
@@ -107,13 +107,12 @@ class Controller extends Object {
 	 */
 	protected $toSave = array();
 
-
 	/**
 	 * Validated data to be saved by model
 	 *
 	 * @var type
 	 */
-	protected $validated = null ;
+	protected $validated = null;
 
 	/**
 	 * This define a SUCCESS response status
@@ -168,13 +167,9 @@ class Controller extends Object {
 			$this->responses = App::getSession()->uget('Controller.responses');
 		}
 
-		if (property_exists($this, 'models')) {
-			$this->setModels($this->models);
-		}
 	}
 
 	///// START NEW WAY TO USE MODELS
-
 
 	/**
 	 * Get a model or a database model
@@ -185,26 +180,26 @@ class Controller extends Object {
 	 * <pre>
 	 * class FooController extends Controller {
 	 *
-	 *		// Declaring models
-	 *		public $models = array (
-	 *			'products',			// A Model from implicit database (main, by default)
-	 *			'main/categories',  // A Model from explicit database Main
-	 *			'remote/table'		// A Model from an explicit remote database
-	 *		) ;
+	 * 		// Declaring models
+	 * 		public $models = array (
+	 * 			'products',			// A Model from implicit database (main, by default)
+	 * 			'main/categories',  // A Model from explicit database Main
+	 * 			'remote/table'		// A Model from an explicit remote database
+	 * 		) ;
 	 *
-	 *		function bar ()
-	 *		{
+	 * 		function bar ()
+	 * 		{
 	 *
 	 *
-	 *			// Get a random entry of products
-	 *			$this->Products->findRandom () ;
+	 * 			// Get a random entry of products
+	 * 			$this->Products->findRandom () ;
 	 *
-	 *			// Implicit database is main, so doing this is the same as upper
-	 *			$this->Main->Products->findRandom () ;
+	 * 			// Implicit database is main, so doing this is the same as upper
+	 * 			$this->Main->Products->findRandom () ;
 	 *
-	 *			// Call an explicit database model
-	 *			$this->Remote->Table->findAll () ;
-	 *			
+	 * 			// Call an explicit database model
+	 * 			$this->Remote->Table->findAll () ;
+	 * 			
 	 * 		}
 	 *
 	 * }
@@ -217,19 +212,18 @@ class Controller extends Object {
 	 * @return Model
 	 */
 	final function __get($name) {
-		
-		if ( $this->_models[$this->_implicit]->has($name) ) {
-			return $this->_models[$this->_implicit]->$name ;
+
+		if ($this->_models[$this->_implicit]->has($name)) {
+			return $this->_models[$this->_implicit]->$name;
 		} else if (ake($name, $this->_models)) {
 			return $this->_models[$name];
 		}
 
 		throw new ErrorException('Trying to get unknown database or model <strong>' . $name
-								. '</strong> from Controller <strong>' . get_class($this) . '</strong>' );
+			. '</strong> from Controller <strong>' . get_class($this) . '</strong>');
 
-		return null ;
+		return null;
 	}
-
 
 	/**
 	 * Load models into controller.
@@ -247,7 +241,7 @@ class Controller extends Object {
 				$id = urlize($this->_implicit, '_');
 				$table = $model;
 			}
-			
+
 
 			if (!ake($id, $_models)) {
 				$_models[$id] = array();
@@ -255,48 +249,55 @@ class Controller extends Object {
 
 			$_models[$id][] = $table;
 		}
-		
+
 		// Then actually load models
 		foreach ($_models as $database => $models) {
 			$tables = array();
-			
+
 			foreach ($models as $model) {
-				$tables[camelize($model,'_')] = $this->_loadModel($database, $model);
+				$tables[camelize($model, '_')] = $this->_loadModel($database, $model);
 			}
 			$this->_models[camelize($database, '_')] = new GetableCollection($tables);
 		}
 
-		if ( !ake($this->_implicit, $this->_models) )
-		{
-			$this->_models[$this->_implicit] = new GetableCollection ( array () ) ;
+		if (!ake($this->_implicit, $this->_models)) {
+			$this->_models[$this->_implicit] = new GetableCollection(array());
 		}
 	}
-	
-	private function _loadModel($database, $model) {
-		
-		$table = $model ;
-		$model = camelize($model).'Model';
 
-		$path = AE_APP_MODELS . $model . '.php';
+	private function _loadModel($database, $model) {
+
+		$table = $model;
+		$model = camelize($model);
+
+		if ($database !== 'main') {
+			$model = camelize($database, '_') . $model;
+		}
+		
+		$modelClass = $model . 'Model' ;
+
+		$path = AE_APP_MODELS . $modelClass . '.php';
 
 		if (is_file($path)) {
 			require_once($path);
 		}
-
 		
-
 		// Create model
-		if (class_exists($model)) {
-			$mObj = new $model($this, $database, $table) ;
+		if (class_exists($modelClass)) {
+
+			$mObj = new $modelClass($this, $database, $table);
 		} else {
-			$mObj = new Model($this, $database, $table) ;
+			$mObj = new Model($this, $database, $table);
 		}
 
-		$mObj->propagate( $this->propagation ) ;
+		$mObj->propagate($this->propagation);
 
+		if ( $model . 'Controller' == get_class($this) || is_subclass_of($this, $model . 'Controller'))
+		{
+			$this->model = $mObj ;
+		}
 
-
-		return $mObj ;
+		return $mObj;
 	}
 
 	/**
@@ -305,14 +306,14 @@ class Controller extends Object {
 	 * @param string $id [Optional] Implicit database identifier, dafault is "main"
 	 * @return Controller Current 
 	 */
-	function implicit( $id = 'main' ) {
+	function implicit($id = 'main') {
 		if (is_string($id)) {
 			$this->_implicit = $id;
 		}
 
-		return $this ;
+		return $this;
 	}
-	
+
 	/**
 	 * Checks if a database identifier is the implicit one
 	 * 
@@ -339,18 +340,47 @@ class Controller extends Object {
 	 * @param mixed $value Value of data
 	 * @return Controller Current instance for chained command on this element
 	 */
-	function propagate ( $key , $value ) 
-	{
-		if ( $this->hasView() )
-		{
-			$this->view->set ( $key , $value ) ;
+	function propagate($key, $value) {
+		if ($this->hasView()) {
+			$this->view->set($key, $value);
 		}
-		return $this ;
+		return $this;
+	}
+
+	/**
+	 * Get main model for this controller
+	 * 
+	 * @see Model
+	 * @return Model 
+	 */
+	public function getModel() {
+		return $this->model;
+	}
+
+	/**
+	 * Set main model for this controller
+	 * 
+	 * @see Model
+	 * @param Model $model Main model for this controller
+	 * @return Controller Current instance for chained command on this element
+	 */
+	public function setModel(Model &$model) {
+		$this->model = $model;
+
+		return $this;
+	}
+
+	/**
+	 * Check if current controller has a main model
+	 * 
+	 * @see Model
+	 * @return bool True if model property is not null and is actually subclass of Model
+	 */
+	public function hasModel() {
+		return is_object($this->model) && is_subclass_of($this->model, 'Model');
 	}
 
 	///// END NEW WAY TO USE MODELS
-	
-	
 
 	/**
 	 * Reset the data of the controller
@@ -377,12 +407,11 @@ class Controller extends Object {
 	function getResponses() {
 		return $this->responses;
 	}
-	
-	
+
 	// TODO: move this in Model
 	protected function validateInputs($ruleArray) {
 		$errors = array();
-		
+
 		if (!empty($this->data)) {
 			foreach ($ruleArray as $field => $regexp) {
 				$fieldName = ucfirst(array_pop(explode('/', $field)));
@@ -407,40 +436,36 @@ class Controller extends Object {
 		return (empty($errors) ? true : $errors );
 	}
 
-	protected function validate ()
-	{
+	protected function validate() {
 		$validity = array();
 
 		$hasError = ake(self::RESPONSE_ERROR, $this->responses);
 
-		if ( empty ($this->data) )
-		{
-			return $hasError ;
+		if (empty($this->data)) {
+			return $hasError;
 		}
 
-		$sep = null ;
+		$sep = null;
 
 		foreach ($this->data as $k => $v) {
 			if ($k == '__SESS_ID') {
 				continue;
 			}
 
-			if ( is_null($sep) )
-			{
-				$sep = strpos('/', $k) !== false ? '/' : '-' ;
+			if (is_null($sep)) {
+				$sep = strpos('/', $k) !== false ? '/' : '-';
 			}
 
 
 			$id = explode($sep, $k);
-			
+
 			if (count($id) > 3) {
 				continue;
 			}
 
 			// [DEPRECATED] Old way to validate
 
-			if ( $sep == '/' )
-			{
+			if ($sep == '/') {
 				foreach ($this->structure[$this->table] as &$field) {
 					if (is_array($field) && array_key_exists('name', $field) && $field['name'] == $id[2]) {
 						if (array_key_exists('validation', $field)) {
@@ -459,11 +484,10 @@ class Controller extends Object {
 
 				$this->toSave[$id[2]] = $v;
 
-			// NEW WAY TO VALIDATE
+				// NEW WAY TO VALIDATE
 			} else {
-				pr($this->model);
+				pr($this->model->getSchema());
 			}
-
 		}
 
 		$this->view->set('validities', $validity);
@@ -502,7 +526,7 @@ class Controller extends Object {
 	 * @param type $action
 	 */
 	protected function runAction($action) {
-		$this->run ( $action ) ;
+		$this->run($action);
 	}
 
 	/**
@@ -510,25 +534,20 @@ class Controller extends Object {
 	 * 
 	 * @param type $action
 	 */
-	protected function run ( $action )
-	{
-		if ( method_exists($this, $action))
-		{
+	protected function run($action) {
+		if (method_exists($this, $action)) {
 
 			$this->action = $action;
 
 			$this->createView();
 
 			$this->$action();
-			
 		} else {
 
 			App::do404('Action ' . $action . ' not found in ' . $this->name);
-			
 		}
 	}
 
-	
 	public function addResponse($text, $type = 'success') {
 		if (!array_key_exists($type, $this->responses)) {
 			$this->responses[$type] = array();
@@ -551,27 +570,6 @@ class Controller extends Object {
 	public function hasView() {
 		return is_object($this->view);
 	}
-	
-	
-	/**
-	 * [DEPRECATED]
-	 * 
-	 * @see Controller::__get
-	 * @return Model 
-	 */
-	public function getModel() {
-		return $this->model;
-	}
-	
-	/**
-	 * [DEPRECATED]
-	 * 
-	 * @see Controller::setModels
-	 * @param Model $model 
-	 */
-	public function setModel(Model &$model) {
-		$this->model = $model;
-	}
 
 	/**
 	 * [DEPRECATED]
@@ -589,18 +587,18 @@ class Controller extends Object {
 			require_once($model);
 		}
 
-		$database = $this->getDB() ? $this->getDB()->getDatabaseId() : null ;
+		$database = $this->getDB() ? $this->getDB()->getDatabaseId() : null;
 
 		// Create model
 		if (class_exists($_m)) {
-			$model = new $_m($this, $database );
+			$model = new $_m($this, $database);
 
 			return $model;
 		} else {
-			return new Model($this, $database );
+			return new Model($this, $database);
 		}
 	}
-	
+
 	/**
 	 * [DEPRECATED]
 	 * 
@@ -639,9 +637,9 @@ class Controller extends Object {
 			$this->view->appendToTitle($this->title);
 			$this->view->setFile($viewPath);
 		}
-		
-		
-		
+
+
+
 		return $this->view;
 	}
 
@@ -652,7 +650,7 @@ class Controller extends Object {
 
 		if ($this->view->isRendered() == false) {
 			$this->view->set('__responses', $this->responses);
-			$this->view->set('current_url' , url() . App::getQuery() ) ;
+			$this->view->set('current_url', url() . App::getQuery());
 			$this->view->render();
 		}
 	}
@@ -776,11 +774,10 @@ class Controller extends Object {
 		// Instanciate controller
 		$controller = new $_n ();
 
-		if ( !is_subclass_of($controller, 'Controller') )
-		{
-			throw new ErrorException('Class <strong>' . $_n . '</strong> should extends <strong>Controller</strong>' ) ;
+		if (!is_subclass_of($controller, 'Controller')) {
+			throw new ErrorException('Class <strong>' . $_n . '</strong> should extends <strong>Controller</strong>');
 		}
-		
+
 		// Setting controller properties
 		foreach ($controllerParams as $k => $v) {
 			@$controller->{$k} = $v;
@@ -790,8 +787,15 @@ class Controller extends Object {
 		$controller->setIDS($controllerName, $viewAction, $_m);
 
 		self::$_ctrl = $controller;
-
-		$controller->reloadModel($controllerName);
+		
+		
+		if (property_exists($controller, 'models')) {
+			$controller->setModels($controller->models);
+		}
+		
+		if (!$controller->hasModel()) {
+			$controller->reloadModel($controllerName);
+		}
 
 
 		// Let's controller manager view creation
