@@ -99,6 +99,8 @@ class DBTableSchema extends Object {
 		
 		return $this->_primary ;
 	}
+
+	
 	
 	/**
 	 * Returns initial structure as an array of $fieldname => $field
@@ -124,6 +126,27 @@ class DBTableSchema extends Object {
 			return $this->_fields[$name] ;
 		}
 		return null ;
+	}
+
+	function validate ( $name, $value )
+	{
+		$field = $this->getField($name) ;
+
+		if ( !is_null($field) )
+		{
+			if (ake('validation', $field)) {
+
+				$r = '/' . $field['validation']['rule'] . '/';
+
+				if (!preg_match($r, $value)) {
+
+					return $field['validation']['message'] ;
+
+				}
+			}
+		}
+
+		return true ;
 	}
 	
 	/**

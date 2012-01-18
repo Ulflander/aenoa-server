@@ -396,7 +396,6 @@ class Model extends Object {
 	 */
 	final function getSchema ()
 	{
-		pr($this->_table);
 		return $this->schema ;
 	}
 
@@ -412,6 +411,38 @@ class Model extends Object {
 
 		return $this ;
 	}
+
+	/**
+	 * Validate an array of data. Returns localized messages in case of failure.
+	 * 
+	 *
+	 * @param type $data
+	 */
+	function validate ( $data , $result = array () )
+	{
+		if ( empty($result) )
+		{
+			$result['messages'] = array () ;
+			$result['data'] = array () ;
+		}
+
+		foreach ( $data as $k => $v )
+		{
+			$v = $this->schema->validate($k, $v) ;
+
+			if ( $v !== true )
+			{
+				$result['messages'] = $v ;
+			}
+
+			$result['data'][$k] = $v ;
+		}
+
+		pr($result);
+
+		return $result ;
+	}
+
 
 	/**
 	 * [Callback] Called after data has been retrieved

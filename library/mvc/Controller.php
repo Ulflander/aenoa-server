@@ -166,7 +166,6 @@ class Controller extends Object {
 		if (App::getSession()->has('Controller.responses')) {
 			$this->responses = App::getSession()->uget('Controller.responses');
 		}
-
 	}
 
 	///// START NEW WAY TO USE MODELS
@@ -273,15 +272,15 @@ class Controller extends Object {
 		if ($database !== 'main') {
 			$model = camelize($database, '_') . $model;
 		}
-		
-		$modelClass = $model . 'Model' ;
+
+		$modelClass = $model . 'Model';
 
 		$path = AE_APP_MODELS . $modelClass . '.php';
 
 		if (is_file($path)) {
 			require_once($path);
 		}
-		
+
 		// Create model
 		if (class_exists($modelClass)) {
 
@@ -292,9 +291,8 @@ class Controller extends Object {
 
 		$mObj->propagate($this->propagation);
 
-		if ( $model . 'Controller' == get_class($this) || is_subclass_of($this, $model . 'Controller'))
-		{
-			$this->model = $mObj ;
+		if ($model . 'Controller' == get_class($this) || is_subclass_of($this, $model . 'Controller')) {
+			$this->model = $mObj;
 		}
 
 		return $mObj;
@@ -437,7 +435,20 @@ class Controller extends Object {
 	}
 
 	protected function validate() {
-		$validity = array();
+
+
+		// [DEPRECATED] Old way to validate
+		// This loop has to be removed for 1.1
+		foreach ($this->data as $k => $v) {
+			if ($k == '__SESS_ID') {
+				continue;
+			}
+
+			$sep = strpos('/', $k) !== false ? '/' : '-';
+			break;
+		}
+
+		$validities = array();
 
 		$hasError = ake(self::RESPONSE_ERROR, $this->responses);
 
@@ -447,25 +458,25 @@ class Controller extends Object {
 
 		$sep = null;
 
-		foreach ($this->data as $k => $v) {
-			if ($k == '__SESS_ID') {
-				continue;
-			}
 
-			if (is_null($sep)) {
-				$sep = strpos('/', $k) !== false ? '/' : '-';
-			}
+		// DEPRECATED, to be removed for 1.1
+		if ($sep == '/') {
+			foreach ($this->data as $k => $v) {
+				if ($k == '__SESS_ID') {
+					continue;
+				}
+
+				if (is_null($sep)) {
+					$sep = strpos('/', $k) !== false ? '/' : '-';
+				}
 
 
-			$id = explode($sep, $k);
+				$id = explode($sep, $k);
 
-			if (count($id) > 3) {
-				continue;
-			}
+				if (count($id) > 3) {
+					continue;
+				}
 
-			// [DEPRECATED] Old way to validate
-
-			if ($sep == '/') {
 				foreach ($this->structure[$this->table] as &$field) {
 					if (is_array($field) && array_key_exists('name', $field) && $field['name'] == $id[2]) {
 						if (array_key_exists('validation', $field)) {
@@ -474,25 +485,89 @@ class Controller extends Object {
 							if (!preg_match($r, $v)) {
 								$hasError = true;
 								$this->addResponse($field['validation']['message'], self::RESPONSE_ERROR);
-								$validity[$field['name']] = false;
+								$validities[$field['name']] = false;
 							} else {
-								$validity[$field['name']] = true;
+								$validities[$field['name']] = true;
 							}
 						}
 					}
 				}
 
 				$this->toSave[$id[2]] = $v;
+			}
 
-				// NEW WAY TO VALIDATE
+			$this->view->set('validities', $validities);
+
+			return $hasError == false;
+			// NEW WAY TO VALIDATE
+		}
+
+
+		// Here is final line code to keep for 1.1
+
+		$dbs = array() ;
+		
+		// We order POST data by db/table to call the right model for each data
+		foreach ( $this->data as $k => $v )
+		{
+			// Find something less ugly
+			$c = count(explode('-', $k))-1 ;
+			
+			// DB nor table given, we apply implicit db and table of this controller
+			if ( $c == 0 )
+			{
+				$db = $this->_implicit ;
+
+				if ( !is_null($this->model ) )
+				{
+					throw new ErrorException('POST field ' . $k . ' has not been associated to a table.') ;
+				}
+				
+				$table = $this->model->getTable() ;
+
+				$field = $k ;
+			// Only table and field are given, we apply implicit db of this controller
+			} else if ( $c == 1 )
+			{
+				$db = $this->_implicit ;
+				list ( $table , $field ) = explode ( '-' , $k ) ;
 			} else {
-				pr($this->model->getSchema());
+				list ( $db , $table , $field ) = explode ( '-' , $k ) ;
+			}
+
+
+			// Now we add field in all fields to be validated
+			$db = camelize ( $db, '_') ;
+
+			if ( !ake($db, $dbs) )
+			{
+				$dbs[$db] = array () ;
+			}
+
+			$model = camelize($table, '_') ;
+
+			if ( !ake($model, $dbs[$db]) )
+			{
+				$dbs[$db][$model] = array () ;
+			}
+
+			$dbs[$db][$model][$field] = $v ;
+		}
+
+		// And we call each model to validate data
+		foreach ( $dbs as $db => $models )
+		{
+			foreach ( $models as $model => $fields )
+			{
+				$result = $this->$db->$model->validate( $fields ) ;
 			}
 		}
 
-		$this->view->set('validities', $validity);
+		$this->toSave = $result['data'] ;
 
-		return $hasError == false;
+		$this->view->set('validities', $result['messages']);
+		
+		return !empty($result['messages']) ;
 	}
 
 	/**
@@ -787,12 +862,12 @@ class Controller extends Object {
 		$controller->setIDS($controllerName, $viewAction, $_m);
 
 		self::$_ctrl = $controller;
-		
-		
+
+
 		if (property_exists($controller, 'models')) {
 			$controller->setModels($controller->models);
 		}
-		
+
 		if (!$controller->hasModel()) {
 			$controller->reloadModel($controllerName);
 		}
