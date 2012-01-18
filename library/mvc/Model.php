@@ -423,6 +423,7 @@ class Model extends Object {
 		if ( empty($result) )
 		{
 			$result['messages'] = array () ;
+			$result['validities'] = array () ;
 			$result['data'] = array () ;
 		}
 
@@ -432,13 +433,13 @@ class Model extends Object {
 
 			if ( $v !== true )
 			{
-				$result['messages'] = $v ;
+				$result['messages'][$k] = $v ;
 			}
+			
+			$result['validities'][$k] = $v === true ? true : false ;
 
 			$result['data'][$k] = $v ;
 		}
-
-		pr($result);
 
 		return $result ;
 	}

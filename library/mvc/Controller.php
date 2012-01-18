@@ -553,21 +553,30 @@ class Controller extends Object {
 
 			$dbs[$db][$model][$field] = $v ;
 		}
-
+		
+		$result = array () ;
+		
 		// And we call each model to validate data
 		foreach ( $dbs as $db => $models )
 		{
 			foreach ( $models as $model => $fields )
 			{
-				$result = $this->$db->$model->validate( $fields ) ;
+				$result = $this->$db->$model->validate( $fields , $result ) ;
 			}
 		}
-
-		$this->toSave = $result['data'] ;
-
-		$this->view->set('validities', $result['messages']);
 		
-		return !empty($result['messages']) ;
+		
+		$this->toSave = $result['data'] ;
+		
+		// We send result messages to view
+		foreach ( $result['messages'] as $msg )
+		{
+			$this->addResponse($msg , self::RESPONSE_ERROR);
+		}
+
+		$this->view->set('validities', $result['validities']);
+		
+		return empty($result['messages']) ;
 	}
 
 	/**
@@ -705,7 +714,8 @@ class Controller extends Object {
 
 		if ($this->view == null) {
 			$this->view = new Template($this->viewPath, $this->title);
-
+			$this->view->addBehavior('InputData') ;
+			
 			$this->view->set('input_data', $this->data);
 		} else {
 

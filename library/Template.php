@@ -396,6 +396,8 @@ class Template extends View {
 		return array_key_exists($name, $this->vars) ;
 	}
 	
+	
+	
 	/**
 	 * Render a template element.
 	 * 
