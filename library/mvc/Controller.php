@@ -565,8 +565,9 @@ class Controller extends Object {
 			}
 		}
 		
-		
+		// [DEPRECATED] >>
 		$this->toSave = $result['data'] ;
+		// << [DEPRECATED]
 		
 		// We send result messages to view
 		foreach ( $result['messages'] as $msg )

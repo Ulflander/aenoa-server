@@ -26,8 +26,6 @@ abstract class View extends Behaviorable {
 	
 	abstract function has ( $name ) ;
 	
-	abstract function getInput ( $name ) ;
-	
 	abstract function prependTemplate ( $content ) ;
 	
 	abstract function appendTemplate ( $content ) ;

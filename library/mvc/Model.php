@@ -436,7 +436,7 @@ class Model extends Object {
 				$result['messages'][$k] = $v ;
 			}
 			
-			$result['validities'][$k] = $v === true ? true : false ;
+			$result['validities'][$this->db->getDatabaseId().'-'.$this->getTable().'-'.$k] = $v === true ? true : false ;
 
 			$result['data'][$k] = $v ;
 		}

@@ -6,9 +6,9 @@ class InputDataBehavior extends Behavior {
 	
 	function getInput ( $name )
 	{
-		if ( $this->has('input_data') && ake ($name , $this->vars['input_data']) )
+		if ( $this->_parent->has('input_data') && ake ($name , $this->_parent->vars['input_data']) )
 		{
-			return $this->vars['input_data'][$name] ; 
+			return $this->_parent->vars['input_data'][$name] ;
 		}
 		
 		return '' ;
@@ -17,7 +17,17 @@ class InputDataBehavior extends Behavior {
 	
 	function getValitidy ( $name )
 	{
-		
+		if ( $this->_parent->has('validities') )
+		{
+			if ( ake ( $name , $this->_parent->vars['validities'] ) )
+			{
+				return 'valid' ;
+			}
+
+			return 'invalid' ;
+		}
+
+		return '' ;
 	}
 }
 
