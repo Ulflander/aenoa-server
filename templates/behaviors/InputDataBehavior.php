@@ -1,7 +1,7 @@
 <?php
 
 class InputDataBehavior extends Behavior {
-	
+	 
 	public $type = 'View' ;
 	
 	function getInput ( $name )
