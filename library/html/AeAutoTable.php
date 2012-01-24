@@ -391,7 +391,7 @@ class AeAutoTable {
 					return '';
 				$res = array();
 				foreach ($val as $v) {
-					$str .= $v[$field['source-main-field']];
+					$res[] = $v[$field['source-main-field']];
 				}
 				return implode(', ', $res);
 			}

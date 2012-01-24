@@ -815,8 +815,10 @@ class DatabaseController extends Controller {
 
 		$this->view->set('pageLength', $pageLength);
 
-		$limit = array($length, ($page - 1) * $length);
-
+		$sqlpage = ($page - 1) * $length ;
+		
+		$limit = array($length, $sqlpage >= 0 ? $sqlpage : 0 );
+		
 		$baseURL = $this->baseURL . 'index/' . $page;
 
 		if (!is_null($order)) {

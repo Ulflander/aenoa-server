@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ; ?>acf/plugins/aenoa/aenoa.css" type="text/css" media="screen,projection" />
 <link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ; ?>acf/plugins/notify/notify.css" type="text/css" media="screen,projection" />
 <link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ; ?>acf/plugins/iconify/iconify.css" type="text/css" media="screen,projection" />
+<link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ; ?>acf/plugins/ajaxize/ajaxize.css" type="text/css" media="screen,projection" />
 <link rel="stylesheet" href="<?php echo Config::get(App::STATIC_SERVER) ; ?>acf/plugins/colorize.css" type="text/css" media="screen,projection" />
 
 <script id="js-aecore" type="text/javascript" src="<?php echo Config::get(App::STATIC_SERVER) ; ?>ajsf/aecore.js" data-base-url="<?php echo url() ?>"></script>
