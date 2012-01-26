@@ -581,7 +581,7 @@ class MySQLEngine extends AbstractDBEngine {
 			$q = 'UPDATE `' . $this->source['database'] . '`.`' . $table . '` SET ';
 			$q .= implode(', ', $entries);
 			$q .= $this->__getCond($cond, $table);
-
+pr($q);
 			$this->log($q);
 
 			if (!$this->_inTransaction) {
