@@ -944,4 +944,15 @@ function mysql_date ( $time = null , $separator = ' ' )
 	return date ( 'Y-m-d' . $separator . 'H:i:s' , $time ) ;
 }
 
+$_str_unq_id = 1 ;
+
+function str_unique ()
+{
+	global $_str_unq_id ;
+	$_str_unq_id ++ ;
+	return 'rand_id_' . $_str_unq_id ;
+}
+
+
+
 ?>

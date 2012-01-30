@@ -9,22 +9,29 @@ class Behaviorable extends Object {
 
 	private $_behaviors = array();
 
-	function addBehavior($behavior) {
-		if (!array_key_exists($behavior, $this->_behaviors)) {
+	function addBehavior( /* $behavior, ... */ ) {
+		
+		$bs = func_get_args() ;
+		
+		while( $behavior = array_shift($bs) )
+		{
+		
+			if (!array_key_exists($behavior, $this->_behaviors)) {
 
-			$class = $behavior . 'Behavior';
+				$class = $behavior . 'Behavior';
 
 
-			if (!class_exists($class)) {
-				if (is_file(AE_BEHAVIORS . $class . '.php')) {
-					require_once (AE_BEHAVIORS . $class . '.php');
-				} else if (is_file(ROOT . 'templates' . DS . 'behaviors' . DS . $class . '.php')) {
-					require_once (ROOT . 'templates' . DS . 'behaviors' . DS . $class . '.php');
+				if (!class_exists($class)) {
+					if (is_file(AE_BEHAVIORS . $class . '.php')) {
+						require_once (AE_BEHAVIORS . $class . '.php');
+					} else if (is_file(ROOT . 'templates' . DS . 'behaviors' . DS . $class . '.php')) {
+						require_once (ROOT . 'templates' . DS . 'behaviors' . DS . $class . '.php');
+					}
 				}
-			}
 
-			if (class_exists($class)) {
-				$this->_behaviors[$behavior] = new $class($this);
+				if (class_exists($class)) {
+					$this->_behaviors[$behavior] = new $class($this);
+				}
 			}
 		}
 	}

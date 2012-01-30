@@ -300,6 +300,7 @@ class IndexedArray extends Object {
 	{
 		return $this->has(0) === false ;
 	}
+	
 
 	/**
 	 * Get value for current iterator index

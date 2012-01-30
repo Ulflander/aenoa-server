@@ -412,6 +412,11 @@ class AbstractDBEngine extends DBSchema {
 		return $this->findRelatives($table, $selection, $subfields, $recursivity, $ordered);
 	}
 	
+	function getRand ( $table, $fields = array () , $conds = array () , $num = 1 )
+	{
+		return $this->findRandom($table, $fields, $conds, $num ) ;
+	}
+	
 
 	function set($table, $data, $id) {
 		
