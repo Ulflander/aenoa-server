@@ -324,7 +324,7 @@ class IndexedArray extends Object {
 	 */
 	function next ()
 	{
-		if ( $this->_idx > $this->_length - 1 )
+		if ( $this->_idx > $this->_length - 1 || !$this->has() )
 		{
 			$this->_idx = 0 ;
 

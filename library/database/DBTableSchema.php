@@ -197,7 +197,11 @@ class DBTableSchema extends Object {
 	 */
 	function filterFields ( $fields )
 	{
-
+		if (!is_array($fields) )
+		{
+			return array() ;
+		}
+		
 		if ( empty($fields) )
 		{
 			return $fields ;

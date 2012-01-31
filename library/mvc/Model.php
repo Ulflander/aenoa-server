@@ -229,6 +229,16 @@ class Model extends Object {
 			
 			if ( empty ( $result ) )
 			{
+				if ( $this->_propagate )
+				{
+					if ( $name === 'get' )
+					{
+						$this->controller->propagate ( $this->_getPropagateName(true) , new GetableCollection() ) ;
+					} else {
+						$this->controller->propagate ( $this->_getPropagateName(true) , new IndexedArray() ) ;
+					}
+				}
+				
 				return $result ;
 				
 			} else if (is_assoc($result))
@@ -254,10 +264,9 @@ class Model extends Object {
 
 				foreach ( $result as $k => &$v )
 				{
-					$this->_multiSel->set ( self::arrayToCollectionModel(camelize_keys($v)) ) ;
+					$this->_multiSel->push ( self::arrayToCollectionModel(camelize_keys($v)) ) ;
 				}
 
-				
 				if ( $this->_propagate )
 				{
 					$this->controller->propagate ( $this->_getPropagateName() , $this->_multiSel ) ;
