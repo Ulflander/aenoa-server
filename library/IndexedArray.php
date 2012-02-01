@@ -79,7 +79,7 @@ class IndexedArray extends Object {
 	 * @param int ...
 	 * @return IndexedArray Current instance for chained command on this element
 	 */
-	function uset ( $index1 /* , $index2, ... */ )
+	function uset ( /*  $index , $index2, ... */ )
 	{
 		$indexes = func_get_args() ;
 
@@ -267,19 +267,7 @@ class IndexedArray extends Object {
 		return $this->count() ;
 	}
 
-	/**
-	 * Reset the iterator to 0 or to given index
-	 *
-	 * @param int $index [Optional] Index of iterator, default is 0
-	 * @return IndexedArray Current instance for chained command on this element
-	 */
-	function iterator ( $index = 0 )
-	{
-		$this->_idx = $index ;
-
-		return $this ;
-	}
-
+	
 	/**
 	 * Checks if an index exists
 	 *
@@ -301,6 +289,28 @@ class IndexedArray extends Object {
 		return $this->has(0) === false ;
 	}
 	
+	/**
+	 * Reset the iterator to 0 or to given index
+	 *
+	 * @param int $index [Optional] Index of iterator, default is 0
+	 * @return IndexedArray Current instance for chained command on this element
+	 */
+	function iterator ( $index = 0 )
+	{
+		$this->_idx = $index ;
+
+		return $this ;
+	}
+	
+	/**
+	 * Get the current value of iterator
+	 * 
+	 * @return int Current value of iterator
+	 */
+	function current ()
+	{
+		return $this->_idx; 
+	}
 
 	/**
 	 * Get value for current iterator index
@@ -336,6 +346,16 @@ class IndexedArray extends Object {
 		$this->_idx ++ ;
 
 		return $res ;
+	}
+	
+	/**
+	 * Check if iterator is set on the last value
+	 * 
+	 * @return boolean True if iterator is set on the last value, false otherwise 
+	 */
+	function isLast ()
+	{
+		return $this->_idx === $this->_length - 1 ;
 	}
 
 	/**

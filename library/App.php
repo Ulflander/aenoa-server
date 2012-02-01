@@ -380,7 +380,7 @@ class App extends Object
 	
 	/**
 	 * Main session object
-	 * @var string
+	 * @var Session
 	 */
 	public static $session ;
 	

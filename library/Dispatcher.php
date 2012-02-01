@@ -64,7 +64,6 @@
  */
 class Dispatcher {
 
-	static private $_more = array();
 	static private $_done = false;
 	static private $_activated = true;
 
@@ -109,6 +108,14 @@ class Dispatcher {
 		if (self::$_activated) {
 			self::_dispatch(App::getQueryString());
 		}
+	}
+	
+	/**
+	 * Check if current dispatched query is the site Home
+	 */
+	static public function isHome () 
+	{
+		
 	}
 
 	/**

@@ -27,6 +27,25 @@ class Collection extends Object {
 	private $_formal = array();
 	
 	/**
+	 *@private
+	 * @var array 
+	 */
+	private $_indexes = array () ;
+	
+	/**
+	 * @private  
+	 */
+	private $_length = 0 ;
+	
+	/**
+	 *
+	 * @var type 
+	 */
+	private $_idx = 0 ;
+	
+	private $_curkey = null ;
+	
+	/**
 	 * Create a new Collection
 	 *
 	 * @param array $vars [Optional] Associative array of items names/values
@@ -35,7 +54,74 @@ class Collection extends Object {
 	{
 		$this->setAll ( $vars ) ;
 	}
+	
+	
+	function next ()
+	{
+		if ( empty ( $this->_indexes ) )
+		{
+			$this->_indexes = $this->inventory () ;
+		}
+		
+		
+		$item = $this->item() ;
+		
+		
+		
+		if ( !is_null ( $item ) )
+		{
+			$this->_curkey = $this->_indexes[$this->_idx] ;
+			$this->_idx ++ ;
+		} else {
+			$this->_curkey = null ;
+			$this->_idx = 0 ;
+		}
+		
+		return $item ;
+	}
+	
+	/**
+	 * Reset the iterator to 0 or to given index
+	 *
+	 * @param int $index [Optional] Index of iterator, default is 0
+	 * @return Collection Current instance for chained command on this element
+	 */
+	function iterator ( $index = 0 )
+	{
+		$this->_idx = $index ;
 
+		return $this ;
+	}
+	
+	/**
+	 * Get the current value of iterator
+	 * 
+	 * @return int Current value of iterator
+	 */
+	function current ()
+	{
+		return $this->_idx; 
+	}
+
+	/**
+	 * Get value for current iterator index
+	 *
+	 * @return mixed Value if index exists, null otherwise
+	 */
+	function item ()
+	{
+		return $this->_idx < $this->_length ? $this->_vars[$this->_indexes[$this->_idx]] : null ;
+	}
+	
+	function key ()
+	{
+		return $this->_curkey ;
+	}
+
+	
+	
+	
+	
 	/**
 	 * Set an item given its key and its value
 	 *
@@ -56,6 +142,8 @@ class Collection extends Object {
 
 			return $this;
 		}
+		
+		$this->_length ++ ;
 
 		$this->_vars[$k] = $v;
 
@@ -85,6 +173,7 @@ class Collection extends Object {
 			}
 		}
 
+		$this->_length -- ;
 
 		if (ake($k, $this->_vars)) {
 			unset($this->_vars[$k]);
@@ -117,7 +206,7 @@ class Collection extends Object {
 	 */
 	function usetAll() {
 		$this->_vars = array();
-
+		$this->_length = 0 ;
 		return $this;
 	}
 	
@@ -272,6 +361,27 @@ class Collection extends Object {
 		return empty($errors) ? true : $errors;
 	}
 
+	/**
+	 * Returns count of elements in Collection
+	 *
+	 * @return int Count of elements in Collection
+	 */
+	function count ()
+	{
+		return $this->_length ;
+	}
+
+	/**
+	 * Alias of Collection::count
+	 *
+	 * @see Collection::count
+	 * @return int Count of elements in Collection
+	 */
+	function length ()
+	{
+		return $this->count() ;
+	}
+	
 }
 
 ?>

@@ -94,6 +94,7 @@ class Model extends Object {
 		'getAllAndChilds',
 		'getAllAndRelatives',
 		'getAll',
+		'getFirst',
 		'getRand'
 		
 	) ;
@@ -119,6 +120,18 @@ class Model extends Object {
 		}
 
 		return $sel ;
+	}
+	
+	static function arrayToIndexedArray ( array &$arr )
+	{
+		$selection = new IndexedArray() ;
+
+		foreach ( $arr as $k => &$v )
+		{
+			$selection->push ( self::arrayToCollectionModel(camelize_keys($v)) ) ;
+		}
+		
+		return $selection ;
 	}
 
 	/*
@@ -258,14 +271,8 @@ class Model extends Object {
 					$this->controller->propagate ( $this->_getPropagateName() , $result ) ;
 				}
 			} else {
-				$res = $result ; 
 				
-				$this->_multiSel = new IndexedArray() ;
-
-				foreach ( $result as $k => &$v )
-				{
-					$this->_multiSel->push ( self::arrayToCollectionModel(camelize_keys($v)) ) ;
-				}
+				$this->_multiSel = self::arrayToIndexedArray($result) ;
 
 				if ( $this->_propagate )
 				{
@@ -554,6 +561,7 @@ class Model extends Object {
 	{
 		
 	}
+	
 	
 }
 ?>

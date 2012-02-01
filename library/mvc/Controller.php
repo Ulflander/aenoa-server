@@ -639,19 +639,41 @@ class Controller extends Object {
 		}
 		$this->responses[$type][] = $text;
 	}
-
+	
+	/**
+	 * Get the main database engine instance
+	 * 
+	 * @return AbstractDBEngine
+	 */
 	public function getDB() {
 		return $this->db;
 	}
-
+	
+	/**
+	 * Set the view object to use
+	 * 
+	 * @param View $view Set instance of view for this controller
+	 * @return Controller Current instance for chained command on this element
+	 */
 	public function setView(View &$view) {
 		$this->view = $view;
 	}
-
+	
+	/**
+	 * Get the View object
+	 * 
+	 * @see View
+	 * @return View
+	 */
 	public function getView() {
 		return $this->view;
 	}
 
+	/**
+	 * Checks if controller has a view
+	 * 
+	 * @return boolean True if controller has a view, false otherwise 
+	 */
 	public function hasView() {
 		return is_object($this->view);
 	}
@@ -724,7 +746,7 @@ class Controller extends Object {
 			$this->view->setFile($viewPath);
 		}
 
-
+		$this->view->set('is_home' , $this->getName() === 'home' ) ;
 
 		return $this->view;
 	}

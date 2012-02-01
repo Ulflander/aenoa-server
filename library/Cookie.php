@@ -10,7 +10,7 @@
  * See also:
  * <Collection>, <User>
  */
-class Cookie extends Collection {
+class Cookie extends FlushableCollection {
 	// 60 days : (60 * 60 * 24 * 60)
 
 	/**
@@ -22,14 +22,6 @@ class Cookie extends Collection {
 	 */
 	public $expire = 5184000;
 
-	/**
-	 * Is cookie automatically saved at each edition of data.
-	 * 
-	 * If $autoflush is set to false, developer has to flush manually the cookie, however data would be lost.
-	 * 
-	 * @var boolean 
-	 */
-	public $autoflush = true;
 	private $_name = 'AE';
 	private $_path = '/';
 	private $_domain = null;
@@ -145,59 +137,7 @@ class Cookie extends Collection {
 
 		return $this;
 	}
-
-	/**
-	 * Set a new pair key/value in the cookie
-	 * 
-	 * @see Collection::set
-	 * @param string $k Key of option
-	 * @param mixed $v Value of option
-	 * @return Cookie Current instance for chained command on this element
-	 */
-	function set($k, $v) {
-		parent::set($k, $v);
-
-		if ($this->autoflush) {
-			$this->flush();
-		}
-
-		return $this;
-	}
-
-	/**
-	 * Set a bunch of keys/values pairs from an associative array
-	 *
-	 * @see Collection::setAll
-	 * @param array $array
-	 * @return Cookie Current instance for chained command on this element
-	 */
-	function setAll(array $array) {
-		parent::setAll($array);
-
-
-		if ($this->autoflush) {
-			$this->flush();
-		}
-
-		return $this;
-	}
-
-	/**
-	 * Unset a value if key exists
-	 * 
-	 * @param string $k Key of option 
-	 * @return Cookie Current instance for chained command on this element
-	 */
-	function uset($k) {
-		parent::uset($k);
-
-		if ($this->autoflush) {
-			$this->flush();
-		}
-
-		return $this;
-	}
-
+	
 	/**
 	 * Flush cookie data
 	 * 

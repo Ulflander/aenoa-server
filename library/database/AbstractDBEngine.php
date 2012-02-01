@@ -389,6 +389,11 @@ class AbstractDBEngine extends DBSchema {
 		return $this->findAndRelatives($table, $id, $fields, $subfields, $recursivity );
 	}
 	
+	function getFirst($table, $cond = array(), $recursivity = 1 , $fields=array(), $subfields=array())
+	{
+		return $this->findRelatives( $table , $this->findFirst($table, $cond, $fields), $subfields, $recursivity ) ;
+	}
+	
 	function getAlone($table, $id, $fields = array()) {
 		return $this->find($table, $id, $fields);
 	}
