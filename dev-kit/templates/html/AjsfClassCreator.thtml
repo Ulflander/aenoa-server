@@ -147,7 +147,7 @@
 	<fieldset>
 	    <legend>Templates</legend>
 
-	    <label for="ajsf/templates/class">Class template</label>
+	    <label for="ajsf/templates/class">Class template</label><pre>
 	    <textarea id="ajsf/templates/class" name="ajsf/templates/class">
 (function(){
 	/*
@@ -159,10 +159,10 @@
 		<%= body %>
 	}) ;
 })();
-	    </textarea>
+	    </textarea></pre>
 
 	    <label for="ajsf/templates/method">Getter template</label>
-	    <textarea id="ajsf/templates/method" name="ajsf/templates/method">
+	    <pre><textarea id="ajsf/templates/method" name="ajsf/templates/method">
 	/*
 		<%= methodtype %>: <%= method %>
 		
@@ -174,7 +174,7 @@
 	<%= method %>: function ( <%= params %> )
 	{
 		<%= body %>
-	}</textarea>
+	}</textarea></pre>
 	    
 	</fieldset>
 	<fieldset class="hidden">
