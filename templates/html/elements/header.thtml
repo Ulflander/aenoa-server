@@ -36,6 +36,8 @@ if ( $this->useAJSF === true ): ?>
 	<![endif]-->
 
 <?php endif; ?>
+
+
 <?php 
 // Check for favicon
 if ( $this->futil->fileExists ( ROOT . 'favicon.png' ) ) : ?>
@@ -47,8 +49,8 @@ elseif ( $this->futil->fileExists ( ROOT . 'favicon.ico' ) ) : ?>
 <?php 
 // Check for facebook image
 if ( $this->futil->fileExists ( ROOT . 'facebook.png' ) ) : ?>
-<link href="<?php echo url() ?>facebook.png" rel="image_src" type= />
-<meta property="og:title" content="<?php echo $this->getCurrentTitle() ?>"/>
+<link href="<?php echo url() ?>facebook.png" rel="image_src" />
+<meta property="og:title" content="<?php echo @$this->getCurrentTitle() ?>"/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="<?php echo url() ?>"/>
 <meta property="og:image" content="<?php echo url() ?>facebook.png" />
