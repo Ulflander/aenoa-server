@@ -147,8 +147,6 @@ class Collection extends Object {
 
 		$this->_vars[$k] = $v;
 
-		ksort($this->_vars);
-
 		return $this;
 	}
 
@@ -245,6 +243,7 @@ class Collection extends Object {
 	 */
 	function getAll() {
 		$tvars = $this->_vars;
+		ksort($tvars);
 		return $tvars;
 	}
 

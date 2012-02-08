@@ -648,7 +648,14 @@ class MySQLEngine extends AbstractDBEngine {
 		$q = 'SELECT COUNT(*) FROM `' . $this->source['database'] . '`.`' . $table . '` ' . (!empty($cond) ? $this->__getCond($cond, $table) : '' ) . ' ;';
 		$this->log($q);
 
-		$res = mysql_fetch_array(mysql_query($q, $this->getConnection()));
+		$res = mysql_query($q, $this->getConnection()) ;
+
+		if ( !is_resource($res) )
+		{
+			throw new ErrorException ( 'Query error: ' . $q ) ;
+		}
+
+		$res = mysql_fetch_array($res);
 
 		return $res[0];
 	}

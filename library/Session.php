@@ -169,20 +169,19 @@ class Session extends Collection {
 				
 				$this->_sid = $tdata['sid'] ;
 				
+				$this->_state = self::STATE_UNLOGGED ;
+				
 				if ( Config::get ( App::SESS_REGENERATE_ID ) === true )
 				{
 					$this->__regenerateID () ;
 				}
 				
-				
-				$this->_state = self::STATE_UNLOGGED ;
 				$this->setAll ( $tdata['data'] ) ;
 				
 				$this->_getPersistentHeaders () ;
 			break;
 			case self::CHECK_NEW:
 				
-				$this->setAll( array () ) ;
 				$_SESSION = array () ;
 				
 				$this->__regenerateID () ;
@@ -226,7 +225,6 @@ class Session extends Collection {
 			{
 				return self::CHECK_OLD ;
 			}
-			
 			return self::CHECK_FAIL ;
 		}
 		
@@ -265,7 +263,7 @@ class Session extends Collection {
 			
 			$this->_state = self::STATE_CLOSED ;
 			
-			@session_write_close () ;
+			session_write_close () ;
 		}
 		
 		

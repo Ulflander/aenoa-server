@@ -238,6 +238,17 @@ class Model extends Object {
 		{
 			$result = call_user_func_array(array($this->db, $name), $arguments ) ;
 
+			if ( $name == 'count' || $name == 'lastId' )
+			{
+				if ( $this->_propagate )
+				{
+					$this->controller->propagate ( $this->_getPropagateName(true) , $result ) ;
+				}
+
+
+				return $result ;
+			}
+
 			$result = $this->afterSelect( $result ) ;
 			
 			if ( empty ( $result ) )
