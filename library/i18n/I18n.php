@@ -186,9 +186,9 @@ class I18n extends ConfDriven {
 			$to = trim($v[1]);
 
 			if (mb_strlen($from, 'UTF-8') == 1) {
-				tl_set($from, $to);
+				Inflector::addTLRule($from, $to);
 			} else {
-				tl_add($from, $to);
+				Inflector::addTLComplexRule($from, $to);
 			}
 		}
 	}

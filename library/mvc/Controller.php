@@ -117,6 +117,7 @@ class Controller extends Object {
 	/**
 	 * This define a SUCCESS response status
 	 */
+
 	const RESPONSE_SUCCESS = 'success';
 
 	/**
@@ -460,16 +461,23 @@ class Controller extends Object {
 
 
 		// DEPRECATED, to be removed for 1.1
+		foreach ($this->data as $k => $v) {
+			if ($k == '__SESS_ID') {
+				continue;
+			}
+
+			if (is_null($sep)) {
+				$sep = strpos($k, '/') !== false ? '/' : '-';
+				break;
+			}
+		}
+
+		// DEPRECATED, to be removed for 1.1
 		if ($sep == '/') {
 			foreach ($this->data as $k => $v) {
 				if ($k == '__SESS_ID') {
 					continue;
 				}
-
-				if (is_null($sep)) {
-					$sep = strpos('/', $k) !== false ? '/' : '-';
-				}
-
 
 				$id = explode($sep, $k);
 
@@ -505,79 +513,69 @@ class Controller extends Object {
 
 		// Here is final line code to keep for 1.1
 
-		$dbs = array() ;
-		
+		$dbs = array();
+
 		// We order POST data by db/table to call the right model for each data
-		foreach ( $this->data as $k => $v )
-		{
+		foreach ($this->data as $k => $v) {
 			// Find something less ugly
-			$c = count(explode('-', $k))-1 ;
-			
+			$c = count(explode('-', $k)) - 1;
+
 			// DB nor table given, we apply implicit db and table of this controller
-			if ( $c == 0 )
-			{
-				$db = $this->_implicit ;
+			if ($c == 0) {
+				$db = $this->_implicit;
 
-				if ( !is_null($this->model ) )
-				{
-					throw new ErrorException('POST field ' . $k . ' has not been associated to a table.') ;
+				if (!is_null($this->model)) {
+					throw new ErrorException('POST field ' . $k . ' has not been associated to a table.');
 				}
-				
-				$table = $this->model->getTable() ;
 
-				$field = $k ;
-			// Only table and field are given, we apply implicit db of this controller
-			} else if ( $c == 1 )
-			{
-				$db = $this->_implicit ;
-				list ( $table , $field ) = explode ( '-' , $k ) ;
+				$table = $this->model->getTable();
+
+				$field = $k;
+				// Only table and field are given, we apply implicit db of this controller
+			} else if ($c == 1) {
+				$db = $this->_implicit;
+				list ( $table, $field ) = explode('-', $k);
 			} else {
-				list ( $db , $table , $field ) = explode ( '-' , $k ) ;
+				list ( $db, $table, $field ) = explode('-', $k);
 			}
 
 
 			// Now we add field in all fields to be validated
-			$db = camelize ( $db, '_') ;
+			$db = camelize($db, '_');
 
-			if ( !ake($db, $dbs) )
-			{
-				$dbs[$db] = array () ;
+			if (!ake($db, $dbs)) {
+				$dbs[$db] = array();
 			}
 
-			$model = camelize($table, '_') ;
+			$model = camelize($table, '_');
 
-			if ( !ake($model, $dbs[$db]) )
-			{
-				$dbs[$db][$model] = array () ;
+			if (!ake($model, $dbs[$db])) {
+				$dbs[$db][$model] = array();
 			}
 
-			$dbs[$db][$model][$field] = $v ;
+			$dbs[$db][$model][$field] = $v;
 		}
-		
-		$result = array () ;
-		
+
+		$result = array();
+
 		// And we call each model to validate data
-		foreach ( $dbs as $db => $models )
-		{
-			foreach ( $models as $model => $fields )
-			{
-				$result = $this->$db->$model->validate( $fields , $result ) ;
+		foreach ($dbs as $db => $models) {
+			foreach ($models as $model => $fields) {
+				$result = $this->$db->$model->validate($fields, $result);
 			}
 		}
-		
+
 		// [DEPRECATED] >>
-		$this->toSave = $result['data'] ;
+		$this->toSave = $result['data'];
 		// << [DEPRECATED]
-		
 		// We send result messages to view
-		foreach ( $result['messages'] as $msg )
-		{
-			$this->addResponse($msg , self::RESPONSE_ERROR);
+		foreach ($result['messages'] as $msg) {
+			$this->addResponse($msg, self::RESPONSE_ERROR);
 		}
 
 		$this->view->set('validities', $result['validities']);
-		
-		return empty($result['messages']) ;
+
+		return empty($result['messages']);
 	}
 
 	/**
@@ -639,7 +637,7 @@ class Controller extends Object {
 		}
 		$this->responses[$type][] = $text;
 	}
-	
+
 	/**
 	 * Get the main database engine instance
 	 * 
@@ -648,7 +646,7 @@ class Controller extends Object {
 	public function getDB() {
 		return $this->db;
 	}
-	
+
 	/**
 	 * Set the view object to use
 	 * 
@@ -658,7 +656,7 @@ class Controller extends Object {
 	public function setView(View &$view) {
 		$this->view = $view;
 	}
-	
+
 	/**
 	 * Get the View object
 	 * 
@@ -737,8 +735,8 @@ class Controller extends Object {
 
 		if ($this->view == null) {
 			$this->view = new Template($this->viewPath, $this->title);
-			$this->view->addBehavior('InputData') ;
-			
+			$this->view->addBehavior('InputData');
+
 			$this->view->set('input_data', $this->data);
 		} else {
 
@@ -746,7 +744,7 @@ class Controller extends Object {
 			$this->view->setFile($viewPath);
 		}
 
-		$this->view->set('is_home' , $this->getName() === 'home' ) ;
+		$this->view->set('is_home', $this->getName() === 'home');
 
 		return $this->view;
 	}

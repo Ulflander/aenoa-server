@@ -26,7 +26,7 @@
  * <Hook>, <Session>
  */
 
-class Session extends Collection {
+class Session extends FlushableCollection {
 	
 	const SECURE_HIGH = 'high' ;
 	
@@ -140,9 +140,9 @@ class Session extends Collection {
 			return false;
 		}
 		
-		$this->_prevSid = session_id ()  ;
+		$this->_sid = $this->_prevSid = session_id ()  ;
 		
-		$this->log( 'Session connection / Current id : ' . session_id () );
+		$this->log ( 'Trying to connect : _sid: ' . $this->_sid . ' / _prevSid: ' . $this->_prevSid . ' / PHP_SESSID: ' . @$_SESSION['sid'] ) ;
 		
 		if ( function_exists ( 'apache_request_headers' ) )
 		{
@@ -156,10 +156,11 @@ class Session extends Collection {
 		}
 			
 		$tdata = $_SESSION ;
+		
 		$this->_oldData = $tdata;
 		
-		
 		$check = $this->checkSession ( $tdata ) ;
+		
 		
 		// Yet connected
 		switch ( $check )
@@ -171,31 +172,43 @@ class Session extends Collection {
 				
 				$this->_state = self::STATE_UNLOGGED ;
 				
-				if ( Config::get ( App::SESS_REGENERATE_ID ) === true )
-				{
-					$this->__regenerateID () ;
-				}
+				
+				$this->log('Session recovered');
 				
 				$this->setAll ( $tdata['data'] ) ;
 				
 				$this->_getPersistentHeaders () ;
 			break;
+		
 			case self::CHECK_NEW:
 				
 				$_SESSION = array () ;
-				
-				$this->__regenerateID () ;
 
 				$this->_state = self::STATE_UNLOGGED ;
+				
+				$this->log('Session started');
+				
 				$this->set ( 'Session.started' , time () ) ;
-				break;
+			break;
+			
 			case self::CHECK_FAIL:
 				$this->_lastError = 'reconnection failed' ;
+				
+				$this->log('Session failure');
+				
 				$_SESSION = array () ;
 				$this->close ( false ) ;
 				return false ;
+			
+			default:
+				$this->log('wtf?');
+				
 		}
 		
+		if ( Config::get ( App::SESS_REGENERATE_ID ) === true )
+		{
+			$this->__regenerateID () ;
+		}
 		
 		$this->user = new User () ;
 		
@@ -221,10 +234,11 @@ class Session extends Collection {
 	{
 		if ( !empty ( $sessData ) )
 		{
-			if ( array_key_exists ( 'sid' , $sessData ) && $sessData['sid'] == session_id () )
+			if ( array_key_exists ( 'sid' , $sessData ) && $this->checkSID($sessData['sid'], Config::get(App::SESS_REGENERATE_ID) ))
 			{
 				return self::CHECK_OLD ;
 			}
+			
 			return self::CHECK_FAIL ;
 		}
 		
@@ -240,14 +254,24 @@ class Session extends Collection {
 	{
 		return ( $this->_state != self::STATE_FATAL && $this->_state != self::STATE_INIT ) ;
 	}
+	
+	function flush ()
+	{
+		if ( $this->started () == true )
+		{
+			$_SESSION['prevSid'] = $this->_prevSid ;
+
+			$_SESSION['sid'] = $this->_sid ;
+
+			$_SESSION['data'] = $this->getAll() ;
+		}
+	}
 
 	
 	function close ( $write = true )
 	{
 		if ( $this->started () == true )
 		{
-
-			
 			new Hook ( 'SessionClose' , $this ) ;
 			
 			if ( $write === true )
