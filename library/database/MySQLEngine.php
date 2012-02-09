@@ -331,10 +331,10 @@ class MySQLEngine extends AbstractDBEngine {
 		return $result;
 	}
 
-	function findAndOrder($table,$cond = array(), $limit = 0, $fields = array(), $order_fields = array(), $order = 'ASC') {
+	function findAndOrder($table,$cond = array(), $limit = 0, $fields = array(), $order_fields = array(), $order = 'ASC',$distinct =false) {
 		$schema = $this->tableExistsOr403($table);
 		$q = 'SELECT ' ;
-		//if ($distinct==true) $q .=' DISTINCT ';
+		if ($distinct==true) $q .=' DISTINCT ';
 		$q .= $this->__selectFields($fields, $table) . ' FROM `' . $this->source['database'] . '`.`' . $table . '` ';
 		$q .= $this->__getCond($cond, $table);
 		$q .= $this->__getLimit($table, $limit);
