@@ -86,7 +86,7 @@ class Initializer extends Object {
 				}
 			}
 			
-			chmod(ROOT . $folder, 0777);
+			@chmod(ROOT . $folder, 0777);
 		}
 		
 

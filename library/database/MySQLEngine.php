@@ -384,8 +384,16 @@ class MySQLEngine extends AbstractDBEngine {
 
 				if (@$this->struct[$table][$fieldname]['behavior'] & DBSchema::BHR_PICK_IN) {
 					$val = '\'(^' . $val . '\,)|(\,' . $val . '$)|(\,' . $val . '\,)|(^' . $val . '$)\'';
-					$escapeVal = false;
 					$operator = 'REGEXP';
+				}
+				
+				if (substr_count($fieldname, ' ') == 1) {
+					list($fieldname, $operator) = explode(' ', $fieldname);
+				}
+				
+				if($operator == 'REGEXP')
+				{
+					$escapeVal = false;
 				}
 
 				// $operatorMatch = '/^(\\x20(' . join(')|(', $this->__sqlOps) .')|\\x20<[>=]?(?![^>]+>)|\\x20[>=!]{1,3}(?!<))/is';
@@ -401,9 +409,6 @@ class MySQLEngine extends AbstractDBEngine {
 					}
 				}
 
-				if (substr_count($fieldname, ' ') == 1) {
-					list($fieldname, $operator) = explode(' ', $fieldname);
-				}
 				if (!is_array($val)) {
 					$c .= '`' . $fieldname . '` ' . trim($operator);
 

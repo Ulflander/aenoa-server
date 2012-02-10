@@ -513,6 +513,12 @@ class App extends Object
 			return;
 		}
 		
+		if ( debuggin () )
+		{
+			new Initializer () ;
+		}
+
+		
 		Maintenance::check () ;
 		
 		self::$_initialized = true ;
@@ -609,11 +615,6 @@ class App extends Object
 	 */
 	static final function start ( $mainClass = null )
 	{
-		if ( debuggin () )
-		{
-			new Initializer () ;
-		}
-
 		// Trigger error if App has been called yet
 		if ( is_null ( self::$_instance ) )
 		{

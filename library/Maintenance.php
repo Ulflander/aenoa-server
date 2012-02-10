@@ -8,6 +8,7 @@ class Maintenance {
 	static function check ()
 	{
 		global $FILE_UTIL ;
+		
 		if ( $FILE_UTIL->fileExists('.maintenance') && ( !array_key_exists('query',$_GET) || $_GET['query'] != 'maintenance/check-context' ) )
 		{
 			App::doRespond(503,null,false);
@@ -31,6 +32,7 @@ class Maintenance {
 	static function stop ()
 	{
 		$f = new File (ROOT.'.maintenance',false);
+		
 		if ( $f->exists() )
 		{
 			$f->delete() ;

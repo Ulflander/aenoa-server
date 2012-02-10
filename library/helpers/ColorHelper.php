@@ -69,7 +69,7 @@ class ColorHelper {
 		$r = hexdec($r);
 		$g = hexdec($g);
 		$b = hexdec($b);
-
+		
 		return array($r, $g, $b);
 	}
 	

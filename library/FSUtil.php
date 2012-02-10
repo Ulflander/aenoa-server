@@ -845,9 +845,14 @@ class FSUtil
 			return false ;
 		}
 		
-		if ( is_dir( $path . '/' . $name ) || mkdir ( $path . '/' . $name ) )
+		if ( is_dir( $path . '/' . $name ) )
 		{
 			return true ;
+		} else if ( !mkdir ( $path . '/' . $name ) )
+		{
+			throw new ErrorException('Directory ' . $path . '/' . $name ) ;
+			
+			return false ;
 		} else {
 			$this->errors[] = 1003 ;
 			return false ;

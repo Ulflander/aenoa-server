@@ -181,6 +181,20 @@ class UserCoreController extends Controller{
 		
 		App::redirectGlobal(url());
 	}
+	
+	
+	function index ()
+	{
+		$userObj = App::getUser() ;
+		
+		
+		if ( $userObj->isLogged () )
+		{
+			App::redirectGlobal(url().'user-core/account');
+		} else {
+			App::redirectGlobal(url().'user-core/login');
+		}
+	}
 
 	function login ()
 	{
