@@ -338,9 +338,9 @@ class AeAutoTable {
 
 		if ($page < $length) {
 		if ($context == 'readFilter' && isset($currentWidget)) {
-		    $this->_result[] = '<li><a id="next" class="bold" href="' . $this->getURL() . 'readAll/' . ($page + 1) . (!is_null($order) ? '/' . $order . '/' . $dir  .'/true': '' ) . '">' . _('Next page') . '</a></li>';
+		    $this->_result[] = '<li><a id="next" class="bold" href="' . $this->getURL() . 'readAll/' . ($page + 1) . (!is_null($order) ? '/' . $order . '/' . $dir  .'/true/': '' ) . '">' . _('Next page') . '</a></li>';
 		}	
-		    else $this->_result[] = '<li><a id="next" class="bold" href="' . $this->getURL() . 'readAll/' . ($page + 1) . (!is_null($order) ? '/' . $order . '/' . $dir .'/false': '' ) . '">' . _('Next page') . '</a></li>';
+		    else $this->_result[] = '<li><a id="next" class="bold" href="' . $this->getURL() . 'readAll/' . ($page + 1) . (!is_null($order) ? '/' . $order . '/' . $dir .'/false/': '' ) . '">' . _('Next page') . '</a></li>';
 		}
 	}
 
