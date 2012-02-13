@@ -321,7 +321,6 @@ class MySQLEngine extends AbstractDBEngine {
 		$q .= $this->__getLimit($table, $limit);
 		$q .= ';';
 		$this->log($q);
-		//pr($q);
 		$res = mysql_query($q, $this->getConnection());
 		if ($res === false) {
 			return $res;
