@@ -87,7 +87,7 @@ class AeCSSCompressor extends AeCSSEdition
 	 * @param bool $saveToBaseFile True if you want to save compressed CSS in original file
 	 * @return Returns false if the CSS file has not been found, returns the compressed CSS content otherwise.
 	 */
-	public static function compress ( $cssfile , $solveImports = true, $saveToBaseFile = true )
+	public static function compress ( $cssfile , $solveImports = true, $saveToBaseFile = false )
 	{
 		self::$__report = array () ;
 		
@@ -112,7 +112,11 @@ class AeCSSCompressor extends AeCSSEdition
 		
 		if ( $saveToBaseFile )
 		{
-			
+			$f = new File ( $cssfile ) ;
+
+			$f->write ( $css ) ;
+
+			$f->close () ;
 		}
 		
 		return $css ;

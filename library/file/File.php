@@ -169,7 +169,7 @@ class File {
 	 * Replace all content
 	 * 
 	 * @param string $content
-	 * @return 
+	 * @return bool True if file content written, false otherwise
 	 */
 	function write($content) {
 		$this->open();
