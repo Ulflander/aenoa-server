@@ -79,6 +79,17 @@ function camelize_keys ( $arr , $sep = '_')
 	return $arr ;
 }
 
+/**
+ * Replace needle by replacement in haystack string
+ * 
+ * @param type $needle
+ * @param type $replacement
+ * @param type $haystack
+ * @return type 
+ */
+function mb_str_replace($needle, $replacement, $haystack) {
+   return implode($replacement, mb_split($needle, $haystack));
+}
 
 function url ()
 {

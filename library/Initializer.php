@@ -195,6 +195,8 @@ class Initializer extends Object {
 
 		/*
 		 * CREATE FIRST GROUP AND FIRST USER
+		 */
+		$this->db = App::getDatabase() ;
 		
 		if (!is_null($this->db) && Config::get(App::USER_CORE_SYSTEM) == true && $this->db->tableExists('ae_users')) {
 
@@ -273,8 +275,6 @@ class Initializer extends Object {
 				$this->log('Application does not require any new user.', 'info');
 			}
 		}
- */
-
 
 		/*
 		 * CHECK FOR GPC QUOTES
@@ -342,8 +342,8 @@ class Initializer extends Object {
 		$str = array('# Auto generated HTACCESS root / Aenoa Server / Generated : ' . date('Y-m-d H:i:s', time()));
 		$str[] = 'Options +FollowSymlinks';
 		$str[] = '';
-		$str[] = 'ErrorDocument 404 ' . $relative . 'do/error/404';
-		$str[] = 'ErrorDocument 403 ' . $relative . 'do/error/403';
+		//$str[] = 'ErrorDocument 404 ' . $relative . 'do/error/404';
+		//$str[] = 'ErrorDocument 403 ' . $relative . 'do/error/403';
 		$str[] = '';
 		$str[] = '<IfModule mod_rewrite.c>';
 		$str[] = 'RewriteEngine on';

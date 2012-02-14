@@ -676,7 +676,7 @@ class MySQLEngine extends AbstractDBEngine {
 			$this->source['database'] . '`.`' .
 			$table .
 			'` WHERE `' . $table . '`.`' . $schema->getPrimary() .
-			'` = ' . (is_numeric($id) ? $id : '\'' . $id . '\'') . ' ;';
+			'` = ' . (is_numeric($id) ? $id : '\'' . $id . '\'') . ' ORDER BY `' . $table . '`.`' . $schema->getPrimary() .'`;';
 
 		$this->log($q);
 		$res = mysql_query($q, $this->getConnection());

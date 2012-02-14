@@ -185,7 +185,7 @@ class I18n extends ConfDriven {
 			$from = trim($v[0]);
 			$to = trim($v[1]);
 
-			if (mb_strlen($from, 'UTF-8') == 1) {
+			if (mb_strlen($to, 'UTF-8') == mb_strlen($from, 'UTF-8')) {
 				Inflector::addTLRule($from, $to);
 			} else {
 				Inflector::addTLComplexRule($from, $to);

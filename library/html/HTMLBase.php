@@ -17,7 +17,7 @@ class HTMLBase extends Object {
 		foreach ($arr as $k => $v) {
 			if (is_array($v)) {
 				$res[] = '<li><span class="col-3">' . _($k) . '</span></li>';
-				$res[] = arrayToList($v);
+				$res[] = self::array2HTMLList($v);
 			} else {
 				$res[] = '<li><span class="col-3">' . _($k) . '</span><strong>' . $v . '</strong></li>';
 			}

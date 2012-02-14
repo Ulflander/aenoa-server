@@ -160,7 +160,7 @@ class MenuHelper {
 		if (!$encapsulate) {
 			$str .= '<li class="caption">' . ucfirst(sprintf(_('%s database'), $struct)) . '</li>' . "\n";
 		}
-
+		
 		if ($db->isUsable()) {
 			$structure = $db->getStructure();
 

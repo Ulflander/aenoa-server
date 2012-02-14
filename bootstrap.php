@@ -348,7 +348,7 @@ if ( !Config::has(App::APP_URL) )
 Config::set ( App::SESS_PATH , AE_SESS ) ;
 Config::set ( App::SESS_AUTO_CONNECT , true ) ;
 Config::set ( App::SESS_STRING , App::TEMP_SESS_STRING ) ;
-Config::set ( App::SESS_REGENERATE_ID , true ) ;
+Config::set ( App::SESS_REGENERATE_ID , false ) ;
 Config::set ( App::SESS_SECURITY , true ) ;
 Config::set ( App::APP_ENCODING , 'utf-8' ) ;
 Config::set ( App::APP_NAME , 'New Application' ) ;

@@ -6,7 +6,7 @@ class DBValidator {
 	
 	const NOT_EMPTY = '.{1,}' ;
 	
-	const VALID_URL = '^(http|https|ftp)\:\/\/[A-Za-z0-9-_]+\\.[A-Za-z0-9-_%&\?\/.=]+$' ;
+	const VALID_URL = '^(http|https|ftp)\:\/\/[A-Za-z0-9-_]+\\.[A-Za-z0-9-_%&\#!?\/.=]+$' ;
 	
 	const URL= '^(http|https|ftp)\:\/\/';
 	

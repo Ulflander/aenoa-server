@@ -151,7 +151,7 @@ class PHPI18n extends Task
 		$extensions = array('php','html','thtml','js','xml','') ;
 		
 		$tree = $this->futil->getFolderTree(AE_SERVER, false);
-		
+		/*
 		foreach ( $tree as $t )
 		{
 			$t_extensions = array () ;
@@ -165,7 +165,7 @@ class PHPI18n extends Task
 				}
 			}
 			
-		}
+		}*/
 		
 		$tree = $this->futil->getFolderTree(ROOT , false);
 		

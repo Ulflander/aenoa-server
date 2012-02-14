@@ -253,6 +253,7 @@ class Inflector extends Object {
 	{
 		$str = mb_strtolower($str,'UTF8');
 		if ( !is_null ( $str ) ) {
+			
 			foreach( self::$tlComplex as $rule => $replace )
 			{
 				$str = mb_ereg_replace('/'.$rule.'/',$replace, $str);
@@ -263,7 +264,7 @@ class Inflector extends Object {
 			
 			for ( $i = 0, $l = count($from) ; $i < $l ; $i ++ )
 			{
-				$str = str_replace($from[$i],$to[$i], $str);
+				$str = mb_str_replace($from[$i],$to[$i], $str);
 			}
 			
 			return str_replace(' ', $separator ,trim(preg_replace('/[^a-z0-9\\'.$separator.'\s]+/', '' , $str )));

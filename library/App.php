@@ -307,6 +307,12 @@ class App extends Object
 	 */
 	const API_REQUIRE_KEY = 'API.requireKey' ;
 	
+	/**
+	 * Is the REST API read only
+	 * 
+	 * @var string
+	 */
+	const REST_READ_ONLY = 'Server.RESTReadOnly' ;
 	
 	
 	

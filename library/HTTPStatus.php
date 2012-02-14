@@ -83,7 +83,12 @@ class HTTPStatus {
 
 	);
 
-
+	/**
+	 * Creates a new HTTPStatus instance
+	 * 
+	 * @param int $code HTTP code to send back
+	 * @param string $message [Optional] Message shown into header "X-AeServer-Message"
+	 */
 	public function __construct( $code, $message = null  ) {
 
 		if ( headers_sent() == false )

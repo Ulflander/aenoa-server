@@ -61,7 +61,8 @@ class DatabaseController extends Controller {
 		if (is_null($this->db)) {
 			App::do500(sprintf(_('Database %s not available'), $this->databaseID));
 		}
-
+		
+		
 		$this->structure = $this->db->getStructure();
 
 
@@ -204,6 +205,7 @@ class DatabaseController extends Controller {
 
 		return $res;
 	}
+	
 
 	private function __setPreAddData($id) {
 		if (!is_null($id)) {

@@ -224,6 +224,17 @@ class RESTProtocol extends AbstractProtocol {
 			'avoidRender' => true
 		);
 		
+		// Aenoa Server developers may have disallow write access, we check that
+		if ( $this->mode !== 'GET' && Config::get(App::REST_READ_ONLY) === true )
+		{
+			new HTTPStatus(401,'REST API is read only');
+			
+			$this->respond() ;
+			
+			return;
+		}
+		
+		
 		switch ($this->mode) {
 			case 'GET':
 
