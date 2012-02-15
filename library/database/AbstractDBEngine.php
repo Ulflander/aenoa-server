@@ -619,6 +619,11 @@ class AbstractDBEngine extends DBSchema {
 	 * @param unknown_type $ordered
 	 */
 	function findAscendants($table, $dbselection, $subFields = array(), $recursivity = 1, $ordered = true) {
+		if ( $recursivity == 0 )
+		{
+			return $dbselection ;
+		}
+		
 		$schema = $this->tableExistsOr403($table);
 
 		if ($schema->getLength() < 2) {
@@ -802,6 +807,11 @@ class AbstractDBEngine extends DBSchema {
 	 * @return mixed False on failure, an array containing result if success
 	 */
 	function findAndRelatives($table, $id, $fields = array(), $subfields = array(), $recursivity = 1) {
+		if ( $recursivity == 0 )
+		{
+			return $dbselection ;
+		}
+		
 		$schema = $this->tableExistsOr403($table);
 
 
@@ -823,6 +833,11 @@ class AbstractDBEngine extends DBSchema {
 	 * @param unknown_type $ordered
 	 */
 	function findRelatives($table, $dbselection, $subFields = array(), $recursivity = 1, $ordered = true) {
+		if ( $recursivity == 0 )
+		{
+			return $dbselection ;
+		}
+
 		return $this->findAscendants($table, $this->findChildren($table, $dbselection, $subFields, $recursivity, $ordered), $subFields, $recursivity, $ordered);
 	}
 
@@ -838,6 +853,11 @@ class AbstractDBEngine extends DBSchema {
 	 * @return boolean
 	 */
 	function findChildren($table, $dbselection, $subFields = array(), $recursivity = 1, $ordered = true) {
+		if ( $recursivity == 0 )
+		{
+			return $dbselection ;
+		}
+		
 		$schema = $this->tableExistsOr403($table);
 		
 		if ($schema->getLength() < 2) {

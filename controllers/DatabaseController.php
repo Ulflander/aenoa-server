@@ -706,6 +706,8 @@ class DatabaseController extends Controller {
 	 *
 	 */
 	public function __enumerate() {
+		//pr($this->recursivity);
+		//die();
 		$this->output = $this->db->findRelatives($this->table, $this->db->findAll($this->table, $this->conditions, 0, $this->fields), $this->subFields, $this->recursivity);
 	}
 
