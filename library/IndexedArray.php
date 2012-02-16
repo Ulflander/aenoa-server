@@ -330,11 +330,12 @@ class IndexedArray extends Object {
 	/**
 	 * Get next value
 	 *
+	 * @param int [Optional] Limit of number of elements to retrive, default is array length
 	 * @return mixed Value if index exists, null if loop done
 	 */
-	function next ()
+	function next ( $limit = null )
 	{
-		if ( $this->_idx > $this->_length - 1 || !$this->has() )
+		if ( $this->_idx > ( !is_null($limit) ? $limit - 1 : $this->_length - 1) || !$this->has() )
 		{
 			$this->_idx = 0 ;
 
@@ -357,7 +358,26 @@ class IndexedArray extends Object {
 	{
 		return $this->_idx === $this->_length - 1 ;
 	}
-
+	
+	/**
+	 * Extract all keys of Collection typed items in this IndexedArray
+	 * 
+	 * @param type $key Key of values to extract from Collection items
+	 */
+	function extract ( $key )
+	{
+		$vals = array () ;
+		foreach ( $this->_selection as $item )
+		{
+			if ( is_object($item ) && $item instanceof Collection && $item->has($key) )
+			{
+				$vals[] = $item->get($key) ;
+			}
+		}
+		
+		return $vals ;
+	}
+	
 	/**
 	 * toString implementation
 	 *
@@ -367,7 +387,8 @@ class IndexedArray extends Object {
 	{
 		return '[IndexedArray/'.$this->count().']' ;
 	}
-
+	
+	
 }
 
 ?>

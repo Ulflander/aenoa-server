@@ -922,13 +922,17 @@ class AbstractDBEngine extends DBSchema {
 				$childTables[] = $childTable;
 			}
 		}
+		
 		foreach ($childTables as &$inf) {
+			
+			
 			if (!empty($inf['ids'])) {
+				
 				$primaryKey = $inf['fieldName'];
 
 				$__ids = $inf['ids'];
 				$__res2 = array();
-
+				
 				if (ake($inf['source'], $this->__childCache)) {
 					$cache = $this->__childCache[$inf['source']];
 					foreach ($__ids as $k => $__id) {
@@ -947,7 +951,7 @@ class AbstractDBEngine extends DBSchema {
 					if (array_key_exists($inf['source'], $subFields) && is_array($subFields[$inf['source']])) {
 						$__f = $subFields[$inf['source']];
 					}
-
+					
 					$result = $this->findAll($inf['source'], array($primaryKey => $__ids), 0, $__f);
 
 					if (array_key_exists($inf['source'], $subFields) && is_array($subFields[$inf['source']])) {
@@ -964,8 +968,8 @@ class AbstractDBEngine extends DBSchema {
 				}
 
 
-
 				$result = array_merge($result, $__res2);
+
 
 				if ($inf['multi'] == true && array_key_exists(0, $result) == false) {
 					$result = array($result);
@@ -973,6 +977,7 @@ class AbstractDBEngine extends DBSchema {
 				if ($recursivity > 1) {
 					$result = $this->findChildren($inf['source'], $result, $subFields, $recursivity - 1, $ordered );
 				}
+				
 				foreach ($dbselection as &$res) {
 					if ($inf['isSameTable']) {
 						$res[$table] = array();

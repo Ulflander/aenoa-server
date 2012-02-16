@@ -13,9 +13,9 @@ class Maintenance {
 		{
 			App::doRespond(503,null,false);
 			
-			if ( $FILE_UTIL->fileExists(ROOT.'templates'.DS.'maintenance.html') )
+			if ( $FILE_UTIL->fileExists(AE_APP_TEMPLATES.'maintenance.html') )
 			{
-				include(ROOT.'templates'.DS.'maintenance.html');
+				include(AE_APP_TEMPLATES.'maintenance.html');
 			} else {
 				include(AE_TEMPLATES.'maintenance.html');
 			}

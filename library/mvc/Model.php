@@ -111,9 +111,14 @@ class Model extends Object {
 
 		foreach ( $arr as $k => $v )
 		{
-			if (is_array($v))
+			if (is_array($v) )
 			{
-				$sel->set ( $k , self::arrayToCollectionModel($v) ) ;
+				if (is_assoc($v) )
+				{
+					$sel->set ( $k , self::arrayToCollectionModel($v) ) ;
+				} else {
+					$sel->set ( $k , self::arrayToIndexedArray($v) ) ;
+				}
 			} else {
 				$sel->set ( $k , $v ) ;
 			}
