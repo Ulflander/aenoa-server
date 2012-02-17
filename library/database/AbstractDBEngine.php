@@ -629,9 +629,12 @@ class AbstractDBEngine extends DBSchema {
 	 * @param object $fields [optional] Fields to return, default will return all fields
 	 * @param object $order_fields Fields to order
 	 * @param object $order [optional] order type, default will ascendant order
+	 * @param object $distinct [optional] distinct parameter default false
+	 * @param object $fn [optional] sql function
+	 * @param object $param [optional] sql function parameter
 	 * @return bool False on failure, entry on success
 	 */
-	function findAndOrder($table, $distinct = false,$cond = array(), $limit = 0, $fields = array(), $order_fields = array(), $order = 'ASC',$distinct = false) {
+	function findAndOrder($table, $cond = array(), $limit = 0, $fields = array(), $order_fields = array(), $order = 'ASC',$distinct = false, $fn= null, $param =null) {
 		return false;
 	}
 

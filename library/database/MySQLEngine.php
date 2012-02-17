@@ -330,16 +330,22 @@ class MySQLEngine extends AbstractDBEngine {
 		return $result;
 	}
 
-	function findAndOrder($table,$cond = array(), $limit = 0, $fields = array(), $order_fields = array(), $order = 'ASC',$distinct =false) {
+	function findAndOrder($table,$cond = array(), $limit = 0, $fields = array(), $order_fields = array(), $order = 'ASC',$distinct =false,$fn = null,$param = null) {
 		$schema = $this->tableExistsOr403($table);
 		$q = 'SELECT ' ;
 		if ($distinct==true) $q .=' DISTINCT ';
+		if (is_null($fn)) {
 		$q .= $this->__selectFields($fields, $table) . ' FROM `' . $this->source['database'] . '`.`' . $table . '` ';
+		}
+		else {
+		$q .= $fn .'('. $this->__selectFields($fields, $table) .','. $param .') FROM `' . $this->source['database'] . '`.`' . $table . '` ';    
+		}
 		$q .= $this->__getCond($cond, $table);
 		$q .= $this->__getLimit($table, $limit);
 		$q .= ' ORDER BY ' . $this->__selectFields($order_fields, $table) . ' ';
 		$q .= $order;
 		$q .= ';';
+		
 		$this->log($q);
 		$res = mysql_query($q, $this->getConnection());
 		if ($res === false) {
@@ -452,7 +458,7 @@ class MySQLEngine extends AbstractDBEngine {
 					} else {
 						$c .= ' ' . $val;
 					}
-				} else if (!empty($val)) {
+				} else if (!empty($val) && is_array($val)) {
 					if ($val[0]=='IS NULL') $c .= '`' . $fieldname .'` ' .$val[0] .' OR ' . $fieldname . ' = ' . $val[1];
 					else 
 					    $c .= '`' . $fieldname . '` IN (\'' . implode('\',\'', $val) . '\')';
