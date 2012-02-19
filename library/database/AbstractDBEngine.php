@@ -602,7 +602,7 @@ class AbstractDBEngine extends DBSchema {
 	 * @param object $order , default will return ascendant order
 	 * @return bool False on failure, entries on success
 	 */
-	function findNextPrevious($table, $id, $fields = array(),$order) {
+	function findNextPrevious($table, $id, $cond ,$fields = array(),$order) {
 		return false;
 	}
 	
