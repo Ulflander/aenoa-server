@@ -547,7 +547,8 @@ class App extends Object
 			}
 			
 		}
-		
+
+
 		if ( is_null ( self::$_i18n ) )
 		{
 			self::$_i18n = new I18n () ;
@@ -675,10 +676,7 @@ class App extends Object
 			self::$session->close () ;
 		}
 		
-		foreach ( self::$_dbs as &$db )
-		{
-			$db['engine']->close () ;
-		}
+		DatabaseManager::closeAll () ;
 		
 		if ( $die )
 		{

@@ -553,7 +553,7 @@ class Template extends View {
 				{
 					$this->_include ( $file ) ;
 				} else {
-					echo 'No layout file: ' . $this->file ;
+					echo 'No layout file: ' . $file ;
 				}
 			}
 			

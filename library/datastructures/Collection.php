@@ -380,7 +380,16 @@ class Collection extends Object {
 	{
 		return $this->count() ;
 	}
-	
+
+	/**
+	 * Check if collection is empty or not
+	 * 
+	 * @return bool True if collection is empty, false otherwise
+	 */
+	function isEmpty ()
+	{
+		return $this->_length === 0 ;
+	}
 }
 
 ?>

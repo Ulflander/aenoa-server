@@ -67,7 +67,9 @@ class UserCoreController extends Controller{
 		$this->user = App::getUser() ;
 		
 		$this->view->useLayout = true ;
-		
+
+		$this->view->layoutName = 'layout' ;
+
 		$this->view->appendToTitle ( _('Users') ) ;
 	}
 	

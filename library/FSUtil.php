@@ -1,7 +1,18 @@
 <?php
 
-/**
- * FSUtil is an utility library to read and edit the file system
+// For Aenoa Server 1.1, codename Alastor
+// namespace aenoa;
+
+/*
+	Class: FSUtil
+
+	FSUtil is an utility library to read and edit the file system
+
+	Note:
+	FSUtil is used by bootstrap to determine which folders may be included in classes auto load paths,
+	so it has to be at root of Aenoa Server LIBS folder.
+
+
  */
 class FSUtil
 {

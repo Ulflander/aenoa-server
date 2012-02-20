@@ -6,7 +6,7 @@
  *
  * ConfDriven is an extensible class with some data parsed from given configuration file.
  * 
- * Conf file will generate an indexed or an associative array of configuration values.
+ * Default conf files will generate an indexed or an associative array of configuration values.
  *
  * Conf is protected, so only extended classes have access to it.
  *
@@ -136,16 +136,28 @@ class ConfDriven extends Object {
 
 		if ( !empty ( $this->file ) )
 		{
-			$f = new File($this->file, true);
-			$conf = explode("\n", $f->read());
-			$f->close();
+			$apc = new APCCache ( urlize($this->file) ) ;
+
+			if ( $apc->has () )
+			{
+				$this->log('Get conf from APC ' . $this->file);
+				$this->conf = $apc->get() ;
+				
+			} else {
+				$f = new File($this->file, true);
+				$conf = explode("\n", $f->read());
+				$f->close();
+
+				$this->parseConf( $conf ) ;
+
+				$apc->set( $this->conf ) ;
+			}
 			
-			$this->parseConf( $conf ) ;
 		}
 	}
 	
 	/**
-	 *
+	 * Default version of conf parsing
 	 *
 	 * @param array $values
 	 */

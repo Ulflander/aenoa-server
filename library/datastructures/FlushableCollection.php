@@ -1,11 +1,15 @@
 <?php
 
 
-/**
- * Class: FlushableCollection
- * 
+/*
+	Class: FlushableCollection
+
+	Collection automatically or manually flushable
+	
+	See Also:
+	<Collection>, <FlushableInterface>
  */
-abstract class FlushableCollection extends Collection {
+abstract class FlushableCollection extends Collection implements FlushableInterface {
 	
 	/**
 	 * Is collection automatically saved at each edition of data.
@@ -15,6 +19,19 @@ abstract class FlushableCollection extends Collection {
 	 * @var boolean 
 	 */
 	public $autoflush = true;
+
+	protected $_inited = false ;
+
+	/**
+	 * Creates a new FlushableCollection instance
+	 * 
+	 * @param array $vars Array of variables ot insert into collection
+	 */
+	function __construct(array $vars = array()) {
+		parent::__construct($vars);
+
+		$this->_inited = true ;
+	}
 	
 
 	/**
@@ -27,6 +44,22 @@ abstract class FlushableCollection extends Collection {
 	 */
 	function set($k, $v) {
 		parent::set($k, $v);
+
+		if ($this->autoflush && $this->_inited ) {
+			$this->flush();
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Unset a value if key exists
+	 *
+	 * @param string $k Key of option
+	 * @return Cookie Current instance for chained command on this element
+	 */
+	function uset($k) {
+		parent::uset($k);
 
 		if ($this->autoflush) {
 			$this->flush();
@@ -43,26 +76,16 @@ abstract class FlushableCollection extends Collection {
 	 * @return Cookie Current instance for chained command on this element
 	 */
 	function setAll(array $array) {
+		
+		$af = $this->autoflush ;
+
+		$this->autoflush = false ;
+
 		parent::setAll($array);
 
+		$this->autoflush = $af ;
 
-		if ($this->autoflush) {
-			$this->flush();
-		}
-
-		return $this;
-	}
-
-	/**
-	 * Unset a value if key exists
-	 * 
-	 * @param string $k Key of option 
-	 * @return Cookie Current instance for chained command on this element
-	 */
-	function uset($k) {
-		parent::uset($k);
-
-		if ($this->autoflush) {
+		if ($af && $this->_inited) {
 			$this->flush();
 		}
 
@@ -83,9 +106,6 @@ abstract class FlushableCollection extends Collection {
 
 		return $this;
 	}
-	
-	
-	abstract function flush () ;
 	
 }
 

@@ -273,6 +273,10 @@ define ('AENOA_SERVER_NAME' , 'Aenoa Server Engine 1.0' ) ;
 define ('AENOA_SERVER_COPY' , 'Copyright 2010-2011 Aenoa Systems' ) ;
 define ('AENOA_SERVER_COPY_LINK' , '<a href="http://www.aenoa-systems.com/" title="Aenoa Systems">Copyright 2010-2011 Aenoa Systems</a>' ) ;
 
+if ( !defined ( 'DEBUG') )
+{
+	define ('DEBUG', true ) ;
+}
 
 /**
  * Require functions library
@@ -387,6 +391,7 @@ if ( debuggin () )
 } else {
 	Config::set(App::DBS_AUTO_EXPAND , false );
 }
+
 
 
 ?>

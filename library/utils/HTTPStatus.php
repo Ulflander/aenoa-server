@@ -91,6 +91,11 @@ class HTTPStatus {
 	 */
 	public function __construct( $code, $message = null  ) {
 
+		if ( !ake ( strval($code) , self::$headers ) )
+		{
+			throw new ErrorException ( 'HTTPStatus code ' . $code . ' is not a valid HTTP response code' ) ;
+		}
+
 		if ( headers_sent() == false )
 		{
 			header( 'Status: ' . self::$headers[strval($code)], false, $code ) ;

@@ -61,6 +61,9 @@ class DatabaseManager extends Object {
 	 * @return AbstractDBEngine DB engine of connection successfull
 	 */
 	static function connect($id, $engine, $config, $structure = false, $connect = true ) {
+
+		App::initialize() ;
+
 		if (is_null(self::$_dbs)) {
 			self::$_dbs = new Collection ();
 		}
@@ -126,6 +129,19 @@ class DatabaseManager extends Object {
 		return is_null(self::$_dbs) ? array() : self::$_dbs->getAll();
 	}
 
+
+	static function closeAll ()
+	{
+		if ( !is_null(self::$_dbs) )
+		{
+			while ( $db = self::$_dbs->next() )
+			{
+				$db->close () ;
+			}
+		}
+	}
+
+
 	/**
 	 * Retrieve database structure
 	 * 
@@ -134,6 +150,13 @@ class DatabaseManager extends Object {
 	 * @return array 
 	 */
 	private function _getStructure($id, $structure = false ) {
+
+		$apc = new APCCache('Database_'.$id, true) ;
+
+		if ( $apc->available() && $apc->has($id) )
+		{
+			return $apc->get($id) ;
+		}
 
 		$structureFile = null ;
 		
@@ -210,7 +233,11 @@ class DatabaseManager extends Object {
 				}
 			}
 		}
-		
+
+		if ( $apc->available() )
+		{
+			$apc->set ( $id, $tables ) ;
+		}
 		
 		return $tables;
 	}

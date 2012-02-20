@@ -50,8 +50,13 @@ class Widget extends Collection {
 		return App::$futil->fileExists($file);
 	}
 
-	function render($echo = true) {
+	function render($echo = true, $caching=false) {
 		$result = '';
+
+		if ( $caching )
+		{
+			return 'Widget generation code' ;
+		}
 
 		if (is_null($this->file)) {
 			App::do500(_('Template file for widget not found'), __FILE__, __LINE__);

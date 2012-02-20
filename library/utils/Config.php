@@ -5,6 +5,8 @@
  *
  * It uses an <Collection> instance to store data.
  *
+ * An internal directive ensures that Config will be properly inited before any call.
+ *
  *
  * @see Collection
  * @see App
