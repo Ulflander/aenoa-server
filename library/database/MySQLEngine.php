@@ -387,11 +387,13 @@ class MySQLEngine extends AbstractDBEngine {
 					$operator = 'REGEXP';
 				}
 				
-				if (substr_count($fieldname, ' ') == 1) {
-					list($fieldname, $operator) = explode(' ', $fieldname);
+				if (substr_count($fieldname, ' ') > 0) {
+					$parts = explode(' ', $fieldname);
+					$fieldname = array_shift($parts);
+					$operator = implode(' ', $parts) ;
 				}
 				
-				if($operator == 'REGEXP')
+				if($operator == 'REGEXP' || $operator == 'NOT REGEXP')
 				{
 					$escapeVal = false;
 				}
