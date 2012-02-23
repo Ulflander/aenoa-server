@@ -16,7 +16,7 @@
  */
 
 	
-function ae_handle_error ( ErrorException $e ) {
+function ae_handle_error ( $e ) {
 
 	if ( debuggin () )
 	{

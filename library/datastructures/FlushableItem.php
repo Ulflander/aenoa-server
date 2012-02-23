@@ -17,6 +17,8 @@ abstract class FlushableItem extends Item implements FlushableInterface {
 
 	protected $_inited = false ;
 
+	protected $_changed = false ;
+	
 	/**
 	 * Creates a new FlushableItem instance
 	 *
@@ -37,15 +39,20 @@ abstract class FlushableItem extends Item implements FlushableInterface {
 	 */
 	public function set ( $value )
 	{
-		$this->_v = $value ;
+		parent::set( $value ) ;
 
 		if ($this->autoflush && $this->_inited ) {
 			$this->flush();
 		}
+		
+		if ( $this->_inited )
+		{
+			$this->_changed = true ;
+		}
 
 		return $this;
 	}
-
+	
 	/**
 	 * Reset value of Item
 	 *
@@ -58,9 +65,26 @@ abstract class FlushableItem extends Item implements FlushableInterface {
 			$this->flush();
 		}
 
+		if ( $this->_inited )
+		{
+			$this->_changed = true ;
+		}
+		
 		return $this;
 	}
 
+	
+	/**
+	 * Did the item changed after instanciation
+	 * 
+	 * @return boolean 
+	 */
+	public function hasChanged ()
+	{
+		return $this->_changed ;
+	}
+	
+	
 	function flush () {} 
 	
 }

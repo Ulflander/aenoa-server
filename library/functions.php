@@ -196,7 +196,7 @@ if ( !function_exists ( 'set_memory_limit' ) )
 		{
 			$limit = $limit . 'M' ;
 		
-			if ( @ini_set ( 'memory_limit' , $limit ) === $mem )
+			if ( ini_set ( 'memory_limit' , $limit ) === $mem )
 			{
 				return true ;
 			}

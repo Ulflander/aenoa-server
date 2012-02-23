@@ -20,12 +20,12 @@ abstract class CacheBase extends FlushableItem {
 	 * Creates a new CacheBase instance
 	 * 
 	 * @param string $identifier [Optional] Identifier is used by concrete cache for storage identification.
-	 * @param boolean $localized [Optional]
-	 * @param float $tl
+	 * @param boolean $localized [Optional] Does cache depends on localization 
+	 * @param float $tl [Optional] Cache time limit in minute
 	 */
 	function __construct ( $identifier = null , $localized = false , $tl = 10 )
 	{
-		$this->setIdentifier($identifier, $localized ) ;
+		$this->setIdentifier( $identifier, $localized ) ;
 
 		$this->autoflush = false ;
 
@@ -36,6 +36,9 @@ abstract class CacheBase extends FlushableItem {
 		parent::__construct();
 	}
 
+	
+	
+	
 	/**
 	 * Set the identifier in concrete storage engine
 	 *
@@ -127,26 +130,40 @@ abstract class CacheBase extends FlushableItem {
 	}
 
 	/**
-	 * Overrides <FlushableItem>
-	 *
+	 * Overrides FlushableItem::set
+	 * 
+	 * If required by $check parameter, or always in debug mode, value to store in cache will be validated by an ItemCacheValidator instance.
+	 * 
+	 * @see Item
+	 * @see FlushableItem::set
+	 * @see ItemCacheValidator
+	 * @param mixed $value Value to store into cache
+	 * @param boolean $check [Optional] Do check value for uneligible types 
+	 * @return CacheBase Current instance for chained command on this element. 
 	 */
-	function set($value, $check = false)
+	function set($value/*, $check = false*/)
 	{
+		
+		/*
 		if (debuggin() || $check === true)
 		{
-			if (is_object($value))
+			$validator = new ItemCacheValidator () ;
+			
+			if ( $validator->validate($value) === false )
 			{
-				
-			} else if (is_array($value) )
-			{
-				foreach ( $value as $val )
-				{
-					
-				}
-			}
+				parent::uset() ;
+			}	
 		}
-
-		parent::set($value) ;
+*/
+		if ( $value === 0 || $value === false || is_null($value) || (is_array($value) && empty($value)) )
+		{
+			
+			$this->uset() ;
+			
+			return $this ;
+		}
+		
+		return parent::set($value) ;
 	}
 
 	/**

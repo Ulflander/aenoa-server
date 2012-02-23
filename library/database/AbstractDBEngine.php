@@ -1101,6 +1101,133 @@ class AbstractDBEngine extends DBSchema {
 
 		return ( $unique ? $dbselection[0] : $dbselection );
 	}
+	
+	
+	private $_cacheTimeLimit = 10 ;
+	
+	private $_activated = false ;
+	
+	
+	/**
+	 * Set cache time limit in minutes
+	 * 
+	 * Built in cache time limit value is 10 minutes
+	 * 
+	 * @see CacheBase
+	 * @param float $tl Cache time limit in minutes
+	 */
+	function setCacheTimeLimit ( $tl )
+	{
+		if(!(is_float($tl) || is_int($tl) ))
+		{
+			throw new InvalidArgumentException ( 'Cache requires a float or int time limit' ) ;
+		}
+		
+		$this->_cacheTimeLimit = $tl ;
+		
+		return $this ;
+	}
+	
+	/**
+	 * Get cache time limit in minutes
+	 * 
+	 * @return float Cache time limit 
+	 */
+	function getCacheTimeLimit ()
+	{
+		return $this->_cacheTimeLimit ;
+	}
+	
+	/**
+	 * Activate cache for this database engine
+	 * 
+	 * Built in default activation is off. You should always call this method to be sure that query caching will be activated.
+	 * 
+	 * @return AbstractDBEngine Current instance for chained command on this element
+	 */
+	function activateCache ()
+	{
+		$this->_activated = true ;
+		
+		return $this ;
+	}
+	
+	/**
+	 * Unactivate cache for this database engine
+	 * 
+	 * @return AbstractDBEngine Current instance for chained command on this element
+	 */
+	function unactivateCache ()
+	{
+		$this->_activated = false ;
+		
+		return $this ;
+	}
+	
+	/**
+	 * Checks if cache is activated for this engine
+	 * 
+	 * @return boolean True if cache is activated, false otherwise 
+	 */
+	function isCacheActivated ()
+	{
+		return $this->_activated ;
+	}
+	
+	/**
+	 * Get cache of a query
+	 * 
+	 * @see DBQueryCache
+	 * @see APCCache
+	 * @see CacheBase
+	 * @param string $q The query as a string
+	 * @return mixed Cache value if found, null otherwise 
+	 */
+	protected function getCache ( $q )
+	{
+		if ( $this->_activated === false )
+		{
+			return null ;
+		}
+		
+		$cache = new DBQueryCache ( $q ) ;
+		
+		if ( $cache->available() === false )
+		{
+			return null ;
+		}
+		
+		return $cache->get () ;
+	}
+	
+	/**
+	 * Set cache for a query.
+	 * 
+	 * Cache will be set only if caching is activated in this engine and if 
+	 * 
+	 * @see DBQueryCache
+	 * @see APCCache
+	 * @see CacheBase
+	 * @param string $q The query as a string
+	 * @param mixed $results Results of query
+	 * @return AbstractDBEngine Current instance for chained command on this element
+	 */
+	protected function setCache ( $q , $results )
+	{
+		if ( $this->_activated === false )
+		{
+			return $this ;
+		}
+		
+		$cache = new DBQueryCache ( $q , false , $this->_cacheTimeLimit ) ;
+		
+		if ( $cache->available() === true )
+		{
+			$cache->set ( $results , true ) ;
+		}
+		
+		return $this ;
+	}
 
 }
 
