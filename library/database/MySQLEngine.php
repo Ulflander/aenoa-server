@@ -300,8 +300,6 @@ class MySQLEngine extends AbstractDBEngine {
 
 	$q .=' ORDER BY ID ' . $order . ' LIMIT 1';
 
-
-
 	$this->log($q);
 	
 	$res = mysql_query($q, $this->getConnection());
