@@ -15,6 +15,18 @@
 class APCCache extends CacheBase {
 
 	/**
+	 * Creates a new APCCache instance
+	 * 
+	 * @param string $identifier [Optional] Identifier is used by concrete cache for storage identification.
+	 * @param boolean $localized [Optional] Does cache depends on localization 
+	 * @param float $tl [Optional] Cache time limit in minute
+	 */
+	function __construct ( $identifier = null , $localized = false , $tl = 10 )
+	{
+		parent::__construct($identifier, $localized, $tl) ;
+	}
+	
+	/**
 	 * Check if APC cache is available.
 	 *
 	 * APCCache requires to be available two things : the function 'apc_fetch' exists, and CacheBase has a valid identifier.
@@ -57,6 +69,11 @@ class APCCache extends CacheBase {
 	 */
 	function flush ()
 	{
+		if ( $this->hasChanged () )
+		{
+			return;
+		}
+		
 		$this->checkIdentifier () ;
 
 		if ( $this->hasNot () )
@@ -65,7 +82,8 @@ class APCCache extends CacheBase {
 
 			return;
 		}
-
+		
+		
 		if ( apc_store($this->_identifier, $this->get() , $this->getSTimeLimit() ) === false )
 		{
 			throw new ErrorException ('APCCache cannot store '. $this->_identifier . ' variables') ;

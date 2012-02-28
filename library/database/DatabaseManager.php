@@ -151,16 +151,9 @@ class DatabaseManager extends Object {
 	 */
 	private function _getStructure($id, $structure = false ) {
 
-		$apc = new APCCache('Database_'.$id, true) ;
-
-		if ( $apc->available() && $apc->has($id) )
-		{
-			return $apc->get($id) ;
-		}
+	
 
 		$structureFile = null ;
-		
-		$futil = new FSUtil(ROOT);
 		
 		// Get the structure file
 		// if structure is a string, it's the structure filename+extension
@@ -189,7 +182,7 @@ class DatabaseManager extends Object {
 			
 			global $FILE_UTIL ;
 			
-			if ($futil->fileExists(AE_APP_STRUCTURES . $structureFile) == false) {
+			if ($FILE_UTIL->fileExists(AE_APP_STRUCTURES . $structureFile) == false) {
 				App::do500('Structure file for database ' . $id . ' not found.');
 			}
 
@@ -234,11 +227,6 @@ class DatabaseManager extends Object {
 			}
 		}
 
-		if ( $apc->available() )
-		{
-			$apc->set ( $id, $tables ) ;
-		}
-		
 		return $tables;
 	}
 

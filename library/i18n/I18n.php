@@ -95,13 +95,18 @@ class I18n extends ConfDriven {
 	}
 
 	private function _getLocale($locale) {
-
+		
 		if (!putenv('LC_MESSAGES=' . $locale) && debuggin()) {
 			trigger_error('Localization initialization failed: env var not set');
 		}
 
 		bindtextdomain($this->_domain, $this->_localePath);
-
+		
+		if ( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
+		{
+			putenv("LC_ALL=".$locale);
+		}
+		
 		return setlocale(LC_MESSAGES, $locale);
 	}
 

@@ -295,12 +295,19 @@ class MySQLEngine extends AbstractDBEngine {
 		$q .= ';';
 		$this->log($q);
 		
-		$res = mysql_query($q, $this->getConnection());
-		if ($res === false) {
-			return $res;
+		$result = $this->getCache($q) ;
+		
+		if ( is_null($result) )
+		{
+			$res = mysql_query($q, $this->getConnection());
+			if ($res === false) {
+				return $res;
+			}
+			$result = $this->__fetchArr($res, $schema->getInitial(), $fields, array(), false);
+			@mysql_free_result($res);
+			
+			$this->setCache($q, $result) ;
 		}
-		$result = $this->__fetchArr($res, $schema->getInitial(), $fields, array(), false);
-		@mysql_free_result($res);
 		return $result;
 	}
 
@@ -313,13 +320,25 @@ class MySQLEngine extends AbstractDBEngine {
 		$q .= $order;
 		$q .= ';';
 		$this->log($q);
-		$res = mysql_query($q, $this->getConnection());
-		if ($res === false) {
-			return $res;
+		
+		
+		$result = $this->getCache($q) ;
+		
+		if ( is_null($result) )
+		{
+			$res = mysql_query($q, $this->getConnection());
+			
+			if ($res === false) {
+				return $res;
+			}
+			
+			$result = $this->__fetchArr($res, $schema->getInitial(), $fields, array(), false);
+			
+			$this->setCache($q, $result) ;
+			
+			@mysql_free_result($res);
 		}
-		$result = $this->__fetchArr($res, $schema->getInitial(), $fields, array(), false);
-
-		@mysql_free_result($res);
+		
 		return $result;
 	}
 
@@ -332,6 +351,7 @@ class MySQLEngine extends AbstractDBEngine {
 	}
 
 	function findRandom($table, $fields = array(), $conds = array(), $num = 1 ) {
+		
 		$schema = $this->tableExistsOr403($table);
 
 		$q = 'SELECT ' . $this->__selectFields($fields, $table) .
@@ -339,12 +359,20 @@ class MySQLEngine extends AbstractDBEngine {
 			$this->__getCond($conds, $table) .
 			' ORDER BY RAND() LIMIT ' . $num . ' ';
 
-
+		
 
 		$this->log($q);
+		
+		$result = $this->getCache($q) ;
+		
+		if ( is_null($result) )
+		{
+			$res = mysql_query($q, $this->getConnection());
 
-		$res = mysql_query($q, $this->getConnection());
-		$result = $this->__fetchArr($res, $schema->getInitial(), $fields);
+			$result = $this->__fetchArr($res, $schema->getInitial(), $fields);
+
+			$this->setCache ( $q, $result ) ;
+		}
 
 		if (!empty($result) && $num == 1) {
 			return $result[0];
@@ -387,11 +415,13 @@ class MySQLEngine extends AbstractDBEngine {
 					$operator = 'REGEXP';
 				}
 				
-				if (substr_count($fieldname, ' ') == 1) {
-					list($fieldname, $operator) = explode(' ', $fieldname);
+				if (substr_count($fieldname, ' ') > 0) {
+					$parts = explode(' ', $fieldname);
+					$fieldname = array_shift($parts);
+					$operator = implode(' ', $parts) ;
 				}
 				
-				if($operator == 'REGEXP')
+				if($operator == 'REGEXP' || $operator == 'NOT REGEXP')
 				{
 					$escapeVal = false;
 				}
@@ -648,20 +678,26 @@ class MySQLEngine extends AbstractDBEngine {
 	}
 
 	function count($table, $cond = array()) {
-		$schema = $this->tableExistsOr403($table);
+		$this->tableExistsOr403($table);
 
 		$q = 'SELECT COUNT(*) FROM `' . $this->source['database'] . '`.`' . $table . '` ' . (!empty($cond) ? $this->__getCond($cond, $table) : '' ) . ' ;';
 		$this->log($q);
 
-		$res = mysql_query($q, $this->getConnection()) ;
-
-		if ( !is_resource($res) )
+		$res = $this->getCache($q) ;
+		
+		if ( is_null($res) )
 		{
-			throw new ErrorException ( 'Query error: ' . $q ) ;
+			$res = mysql_query($q, $this->getConnection()) ;
+
+			if ( !is_resource($res) )
+			{
+				throw new ErrorException ( 'Query error: ' . $q ) ;
+			}
+
+			$res = mysql_fetch_array($res);
+			
+			$this->setCache($q, $res) ;
 		}
-
-		$res = mysql_fetch_array($res);
-
 		return $res[0];
 	}
 
