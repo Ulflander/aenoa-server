@@ -149,6 +149,7 @@ abstract class CacheBase extends FlushableItem {
 		parent::set($value) ;
 	}
 
+
 	/**
 	 * [ABTRACT] Tests if cache concrete engine is available. THIS METHOD MUST BE IMPLEMENTED IN CONCRETE CACHE ENGINE.
 	 *

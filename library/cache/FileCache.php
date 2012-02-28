@@ -27,9 +27,9 @@ class FileCache extends CacheBase {
 	}
 
 	/**
-	 * Restores data from APC Cache
+	 * Restores data from File Cache
 	 *
-	 * @return APCCache Current instance for chained command on this element
+	 * @return FileCache Current instance for chained command on this element
 	 */
 	function restore ()
 	{
@@ -37,8 +37,10 @@ class FileCache extends CacheBase {
 		{
 			return $this ;
 		}
+
+		$f = new File ( AE_APP_CACHE . $this->_identifier . '.cache', false ) ;
 		
-		$this->setAll( $val ) ;
+		$this->set( $val ) ;
 
 		return $this ;
 	}

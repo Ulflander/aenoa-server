@@ -4,9 +4,9 @@
  * Internationalization class for Aenoa Server
  *
  *
- * It inits PHP_gettext module and offers methods to quickly change language.
+ * It inits PHP gettext module and offers methods to quickly change language.
  *
- * It loads transliteration file if this file exists
+ * It loads transliteration file if this file exists in APP folder.
  *
  */
 class I18n extends ConfDriven {
@@ -28,6 +28,10 @@ class I18n extends ConfDriven {
 
 	/**
 	 * Create a new I18n instance
+	 *
+	 * First created instance is designed to be instanciated by App class,
+	 * therefore the first created instance is the one that will be returned by App.
+	 * Keep this in mind in case you have to instance a I18n class before.
 	 *
 	 * @param type $locale
 	 * @param type $domain
