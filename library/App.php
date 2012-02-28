@@ -523,6 +523,7 @@ class App extends Object
 		{
 			new Initializer () ;
 		}
+		new Log () ;
 
 		
 		Maintenance::check () ;
@@ -576,7 +577,6 @@ class App extends Object
 		}
 		
 		
-		new Log () ;
 		
 		// Detect if we try to get page in ajax mode (by sending an http header from JS for example
 		if ( array_key_exists('HTTP_AENOA_AJAX_CONNECTION', $_SERVER ) )
