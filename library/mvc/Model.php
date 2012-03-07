@@ -86,6 +86,7 @@ class Model extends Object {
 		'findAscendants',
 		'findAndRelatives',
 		'findRelatives',
+		'distinct',
 		
 		// New API
 		'get',
@@ -133,7 +134,7 @@ class Model extends Object {
 
 		foreach ( $arr as $k => &$v )
 		{
-			$selection->push ( self::arrayToCollectionModel(camelize_keys($v)) ) ;
+			$selection->push ( is_array($v) ? self::arrayToCollectionModel(camelize_keys($v)) : $v ) ;
 		}
 		
 		return $selection ;

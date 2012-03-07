@@ -398,7 +398,7 @@ class AbstractDBEngine extends DBSchema {
 		return $this->find($table, $id, $fields);
 	}
 
-	function getAll($table, $cond, $limit = 0, $fields = array()) {
+	function getAll($table, $cond = array(), $limit = 0, $fields = array()) {
 		return $this->findAll($table, $cond, $limit, $fields);
 	}
 	
@@ -1100,6 +1100,12 @@ class AbstractDBEngine extends DBSchema {
 		}
 
 		return ( $unique ? $dbselection[0] : $dbselection );
+	}
+	
+	
+	function distinct ( $table, $field , $conds = array (), $fields = array () , $limit = 0 )
+	{
+		return null ;
 	}
 	
 	

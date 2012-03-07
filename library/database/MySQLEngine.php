@@ -448,7 +448,7 @@ class MySQLEngine extends AbstractDBEngine {
 						$c .= ' ' . $val;
 					}
 				} else if (!empty($val)) {
-					$c .= '`' . $fieldname . '` IN (\'' . implode('\',\'', $val) . '\')';
+					$c .= '`' . $fieldname . '`' . ( $operator == 'NOT' ? ' NOT' : '' ) . ' IN (\'' . implode('\',\'', $val) . '\')';
 				}
 			}
 			$c = ' WHERE ' . $c;
@@ -730,11 +730,43 @@ class MySQLEngine extends AbstractDBEngine {
 
 		return $res;
 	}
+	
+	
+	function distinct ( $table, $field , $cond = array (), $fields = array () , $limit = 0 )
+	{
+		$schema = $this->tableExistsOr403($table);
+
+		$q = 'SELECT DISTINCT `' . $field . '` '
+			. (!empty($fields) ? ', ' . $this->__selectFields($fields, $table) : '')
+			. ' FROM `' . $this->source['database'] . '`.`' . $table . '` ' . (!empty($cond) ? $this->__getCond($cond, $table) : '' ) . $this->__getLimit($table, $limit) . ' GROUP BY `'.$field.'` ;';
+		
+		$this->log($q);
+		
+		$res = $this->getCache($q) ;
+		
+		if ( is_null($res) )
+		{
+			$res = mysql_query($q, $this->getConnection()) ;
+
+			if ( !is_resource($res) )
+			{
+				throw new ErrorException ( 'Query error: ' . $q ) ;
+			}
+			
+			array_unshift($fields, $field) ;
+			
+			$res = $this->__fetchArr($res, $schema->getInitial() , $fields);
+			
+			$this->setCache($q, $res) ;
+		}
+		
+		return $res;
+	}
 
 	protected function hasAnyTable() {
 		$tables = $this->__fetchArr(mysql_query('SHOW TABLES FROM `' . $this->source['database'] . '`', $this->__connection));
 
-		return!empty($tables);
+		return !empty($tables);
 	}
 
 	// OK, let's apply Aenoa DB Structure to MySQL Database
@@ -856,7 +888,6 @@ class MySQLEngine extends AbstractDBEngine {
 						$pres[$k][$fieldname] = DBTableSchema::applyOutputBehaviors($fieldDesc, array_shift($line_array));
 					}
 				} else {
-
 					foreach ($tableStruct as $name => &$field) {
 						$pres[$k][$name] = DBTableSchema::applyOutputBehaviors($field, array_shift($line_array));
 					}

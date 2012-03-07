@@ -212,7 +212,6 @@ class Controller extends Object {
 	 * @return Model
 	 */
 	final function __get($name) {
-
 		if ($this->_models[$this->_implicit]->has($name)) {
 			return $this->_models[$this->_implicit]->$name;
 		} else if (ake($name, $this->_models)) {
@@ -264,7 +263,31 @@ class Controller extends Object {
 			$this->_models[$this->_implicit] = new GetableCollection(array());
 		}
 	}
-
+	
+	function addModel ( $model )
+	{
+		if (strpos($model, '/') !== false) {
+			list($database, $table) = explode('/', $model);
+		} else {
+			$database = urlize($this->_implicit, '_');
+			$table = $model;
+		}
+		
+		$databaseCamel = camelize($database, '_') ;
+		
+		if ( ake($databaseCamel , $this->_models) )
+		{
+			$this->_models[$databaseCamel]->set ( camelize($table, '_') , $this->_loadModel($database, $table) ) ;
+		} else {
+			$this->_models[$databaseCamel] = new GetableCollection(array(
+				camelize($model, '_') => $this->_loadModel($database, $table)
+			));
+		}
+		
+	}
+	
+	
+	
 	private function _loadModel($database, $model) {
 
 		$table = $model;

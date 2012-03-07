@@ -177,6 +177,10 @@ function is_public_controller_method ( $class_name, $method_name )
 
 function array_keys_exists ( $keys = array () , $needle = array () )
 {
+	if ( !is_array($needle) )
+	{
+		throw new ErrorException('array_keys_exists() expects parameter 2 to be array') ;
+	}
 	foreach ( $keys as $key )
 	{
 		if ( array_key_exists( $key , $needle ) == false )
@@ -487,7 +491,7 @@ if ( function_exists( 'deaccent' ) == false )
 
 if ( !function_exists ( 'array_clean' ) )
 {
-	function array_clean ( &$array )
+	function array_clean ( &$array , $return = false)
 	{
 		if ( !$array || !count ( $array ) )
 		{
@@ -503,6 +507,11 @@ if ( !function_exists ( 'array_clean' ) )
 			}
 		}
 		$array = $res ;
+		
+		if ( $return === true )
+		{
+			return $array ;
+		}
 	}
 }
 
