@@ -340,13 +340,15 @@ class AeAutoTable {
 		if ($context == 'readFilter' && isset($currentWidget)) {
 		    $this->_result[] = '<li><a id="next" class="bold" href="' . $this->getURL() . 'readAll/' . ($page + 1) . (!is_null($order) ? '/' . $order . '/' . $dir  .'/true/': '' ) . '">' . _('Next page') . '</a></li>';
 		}	
-		    else $this->_result[] = '<li><a id="next" class="bold" href="' . $this->getURL() . 'readAll/' . ($page + 1) . (!is_null($order) ? '/' . $order . '/' . $dir .'/true/': '' ) . '">' . _('Next page') . '</a></li>';
+		    else $this->_result[] = '<li><a id="next" class="bold" href="' . $this->getURL() . 'readAll/' . ($page + 1) . (!is_null($order) ? '/' . $order . '/' . $dir .'/false/': '' ) . '">' . _('Next page') . '</a></li>';
 		}
 	}
 
 	function getPreviousPageLink($page, $length, $count, $order, $dir,$currentWidget,$context) {
 		if ($page > 1) {
-			$this->_result[] = '<li><a id="prev" class="bold" href="' . $this->getURL() . 'readAll/' . ($page - 1) . (!is_null($order) ? '/' . $order . '/' . $dir .'/false/' : '' ) . '">' . _('Previous page') . '</a></li>';
+		    if ($context == 'readFilter' && isset($currentWidget)) {$this->_result[] = '<li><a id="prev" class="bold" href="' . $this->getURL() . 'readAll/' . ($page - 1) . (!is_null($order) ? '/' . $order . '/' . $dir .'/true/' : '' ) . '">' . _('Previous page') . '</a></li>';}
+			else { $this->_result[] = '<li><a id="prev" class="bold" href="' . $this->getURL() . 'readAll/' . ($page - 1) . (!is_null($order) ? '/' . $order . '/' . $dir .'/false/' : '' ) . '">' . _('Previous page') . '</a></li>';
+			}
 		}
 	}
 
