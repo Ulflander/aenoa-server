@@ -389,7 +389,7 @@ class MySQLEngine extends AbstractDBEngine {
 
 	private function __getCond($cond, $table = '') {
 		if (empty($cond)) {
-			return ' WHERE 1';
+			return ' WHERE 1=1';
 		} else {
 			$c = '';
 
@@ -398,7 +398,14 @@ class MySQLEngine extends AbstractDBEngine {
 				$operator = '=';
 
 				if (strlen($c) > 0) {
-					$c.=' AND ';
+					
+					if ( strpos($fieldname, 'OR ') === 0 )
+					{
+						$c .= ' OR ';
+						$fieldname = substr($fieldname, 3) ;
+					} else {					
+						$c.=' AND ';
+					}
 				}
 
 				$fieldname = trim($fieldname);
@@ -442,6 +449,12 @@ class MySQLEngine extends AbstractDBEngine {
 				if (!is_array($val)) {
 					$c .= '`' . $fieldname . '` ' . trim($operator);
 
+					if ( $operator == 'LIKE' && strpos($val,'% OR %') !== false )
+					{
+						$val = '(\''. implode('%\' OR \'%' ,explode('% OR %', $val)).'\')';
+						$escapeVal = false ;
+					}
+					
 					if ($escapeVal) {
 						$c .= ' \'' . $val . '\'';
 					} else {

@@ -158,7 +158,7 @@ class Initializer extends Object {
 		/*
 		 * Adding favicon if no one :)
 		 */
-		if ($futil->fileExists('favicon.ico') == false && $futil->fileExists('favicon.ico') == false) {
+		if ($futil->fileExists('favicon.ico') == false && $futil->fileExists('favicon.png') == false) {
 			$f = new File(AE_ASSETS . 'favicon.png', false);
 			if ($f->exists()) {
 				$f->copy(ROOT . 'favicon.png');
