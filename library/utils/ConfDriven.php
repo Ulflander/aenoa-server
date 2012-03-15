@@ -133,7 +133,7 @@ class ConfDriven extends Object {
 		{
 			$this->file = $file ;
 		}
-
+		
 		if ( !empty ( $this->file ) )
 		{
 			$apc = new APCCache ( urlize($this->file) ) ;
@@ -153,7 +153,7 @@ class ConfDriven extends Object {
 				$apc->set( $this->conf ) ;
 			}
 			
-		}
+		 }
 	}
 	
 	/**
@@ -174,7 +174,7 @@ class ConfDriven extends Object {
 			}
 
 			$v = explode('>', $val);
-			$this->conf[trim($v[0])] = trim($v[1]);
+			$this->conf[trim(strval($v[0]))] = trim($v[1]);
 			
 		}
 	}

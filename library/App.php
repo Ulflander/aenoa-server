@@ -470,6 +470,10 @@ class App extends Object
 	 */
 	private static $_i18n = null ;
 	
+	/**
+	 * Route instance for this application 
+	 */
+	private static $_route = null ;
 	
 	
 	
@@ -563,9 +567,9 @@ class App extends Object
 			$query = '' ;
 		}
 
-		$route = new Route () ;
+		self::$_route = new Route () ;
 		
-		self::$query =  $route->get( $query ) ;
+		self::$query =  self::$_route->get( $query ) ;
 
 		self::$queryStr = new QueryString( self::$query ) ;
 		
@@ -762,7 +766,21 @@ class App extends Object
 	 */
 	static function doRespond ( $code = '200' , $headerResponse = null , $doRender = true , $title = null, $text = null )
 	{
+		
 		$code = strval($code) ;
+		
+		if ( !is_null (self::$_instance ) )
+		{
+			self::$_instance->beforeError ( $code ) ;
+		}
+		
+		if ( Controller::requireController('error', 'index') )
+		{
+			self::redirect(url().'error/index') ;
+			
+			return;
+		}
+		
 		if ( !ake($code, self::$headers ) ) $code = '200' ;
 		
 		new HTTPStatus ( $code ) ;
@@ -872,11 +890,6 @@ class App extends Object
 	 */
 	static function do401 ( $headerResponse = null)
 	{
-		if ( !is_null (self::$_instance ) )
-		{
-			self::$_instance->beforeError ( 401 ) ;
-		}
-		
 		if ( !self::getUser()->isLogged() )
 		{
 			App::getSession()->set('Controller.responses',array ( Controller::RESPONSE_ERROR => array(_('You have to be logged to run this action'))));
@@ -905,11 +918,6 @@ class App extends Object
 	 */
 	static function do403 ( $headerResponse = null )
 	{
-		if ( !is_null (self::$_instance ) )
-		{
-			self::$_instance->beforeError ( 403 ) ;
-		}
-		
 		self::doRespond(403, $headerResponse , true , _('Forbidden action'), _('Server has triggered a forbidden action.') ) ;
 	}
 
@@ -920,10 +928,6 @@ class App extends Object
 	 */
 	static function do500 ( $headerResponse = null , $file = null , $line = null, $info = null )
 	{
-		if ( !is_null (self::$_instance ) )
-		{
-			self::$_instance->beforeError ( 500 ) ;
-		}
 		
 		self::alert ( $headerResponse , $file , $line , $info ) ;
 		
@@ -939,11 +943,6 @@ class App extends Object
 	 */
 	static function do404 ( $headerResponse = null )
 	{
-		if ( !is_null (self::$_instance ) )
-		{
-			self::$_instance->beforeError ( 404 ) ;
-		}
-		
 		self::doRespond(404, $headerResponse , true , _('Page not found'), _('This page has not been found on this server.') ) ;
 	}
 	
