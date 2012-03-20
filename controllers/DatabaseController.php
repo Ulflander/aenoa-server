@@ -196,7 +196,7 @@ class DatabaseController extends Controller {
 		} else {
 			$this->__setPreAddData($id);
 		}
-
+		
 		$this->baseURL .= 'add';
 
 		$this->view->set('baseURL', $this->baseURL);

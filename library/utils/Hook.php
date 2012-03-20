@@ -168,7 +168,7 @@ class Hook {
 		
 		$allPaths = array () ;
 		
-		global $FILE_UTIL;
+		$FILE_UTIL = new FSUtil(ROOT); 
 		
 		$dirs = $FILE_UTIL->getDirsList(AE_APP_PLUGINS) ;
 		
