@@ -820,21 +820,23 @@ class Controller extends Object {
 	 * This method does checks for a corresponding model and require it too, without instanciating it.
 	 * Check the instanciateController method for that.
 	 * 
-	 * @param string $controllerName
-	 * @return bool True if controller file has been found, false otherwise
+	 * @param string $controllerName Name of controller, camelized or not, without "Controller" suffix
+	 * @param string $action Name of action (function of controller)
+	 * @return bool True if controller file has been found, false otherwise, in production mode. In debuggin mode, trigger a detailed exception in case of failure
 	 */
-	static function requireController($controllerName, $action) {
+	static function requireController($controllerName, $action ) {
+
 		$paths = array_merge(array(
 			ROOT . 'app' . DS . 'controllers' . DS,
 			ROOT . 'controllers' . DS,
 			AE_CONTROLLERS
-			), self::$_paths);
+			), self::$_paths
+		);
 
 		if (strpos($action, '.') !== false) {
 			$action = substr($action, 0, strpos($action, '.'));
 		}
-
-		$modelName = camelize($controllerName) . 'Model';
+		
 		$controllerName = camelize($controllerName) . 'Controller';
 		$action = camelize($action);
 
@@ -844,21 +846,21 @@ class Controller extends Object {
 
 				if (!class_exists($controllerName)) {
 					if (debuggin()) {
-						App::do404($controllerName . ' is not defined as class.');
+						throw new Exception ($controllerName . ' is not defined as class.');
 					}
 					return false;
 				}
 
 				if (!method_exists($controllerName, $action)) {
 					if (debuggin()) {
-						App::do404($action . ' is not defined in class ' . $controllerName);
+						throw new Exception ($action . ' is not defined in class ' . $controllerName);
 					}
 					return false;
 				}
 
 				if (!is_public_controller_method($controllerName, $action) || substr($controllerName, 0, 1) == '_') {
 					if (debuggin()) {
-						App::do404($action . ' is not public in class ' . $controllerName);
+						throw new Exception ($action . ' is not public in class ' . $controllerName);
 					}
 					return false;
 				}
@@ -869,6 +871,7 @@ class Controller extends Object {
 				break;
 			}
 		}
+
 		return false;
 	}
 

@@ -834,8 +834,6 @@ if ( function_exists ( 'retrieveBasePath' ) == false )
 	}
 }
 
-
-
 if ( function_exists ( 'get_microtime' ) == false )
 {
 	function get_microtime ()
