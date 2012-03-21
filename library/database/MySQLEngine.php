@@ -395,6 +395,8 @@ class MySQLEngine extends AbstractDBEngine {
 
 
 			foreach ($cond as $fieldname => $val) {
+				
+				
 				$operator = '=';
 
 				if (strlen($c) > 0) {
@@ -406,6 +408,12 @@ class MySQLEngine extends AbstractDBEngine {
 					} else {					
 						$c.=' AND ';
 					}
+				}
+				
+				if ( is_int($fieldname) )
+				{
+					$c .= $val ;
+					continue;
 				}
 
 				$fieldname = trim($fieldname);
