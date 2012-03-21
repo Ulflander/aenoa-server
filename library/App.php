@@ -682,6 +682,8 @@ class App extends Object
 		
 		DatabaseManager::closeAll () ;
 		
+		Controller::shutdown () ;
+			
 		if ( $die )
 		{
 			die () ;
@@ -735,12 +737,6 @@ class App extends Object
 				// If we are in ajax context, transmit it
 				self::$session->set('isAjax', true) ;
 			}
-			
-			Controller::shutdown () ;
-			
-			self::$session->close(true);
-		
-			sleep(1);
 		
 			if ( strpos($to, Config::get(self::APP_URL)) === false )
 			{
@@ -749,7 +745,8 @@ class App extends Object
 			
 			self::end(false);
 			
-		
+			sleep(1);
+			
 			// And redirect
 			header( 'Location: '. $to );
 			
