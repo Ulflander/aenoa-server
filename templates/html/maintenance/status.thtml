@@ -23,38 +23,25 @@
 			
 			
 			
-				<div class="col-5 p b">
+				<div class="col-6 p b">
 					<?php echo _('Application name') ?>: <strong>
 						<?php echo Config::get(App::APP_NAME) ?></strong>
 				</div>
 				
-				<div class="col-6 p b">
+				<div class="col-5 p b">
 					<?php echo _('Server name') ?>: <strong>
 						<?php echo AENOA_SERVER_NAME ?></strong>
 				</div>
 
 				<div class="col-5 col-last p b">
-					<?php echo _('Application email') ?>: <strong>
-						<?php echo Config::get(App::APP_EMAIL) ?></strong>
+					<?php echo _('Aenoa Server version') ?>: <strong>
+						<?php echo $version ?></strong>
 				</div>
 				
-				
+
 				<hr class="hidden" />
-				
-				
-				<div class="col-8 p b">
-					<?php echo _('ROOT path') ?>: <strong>
-						<?php echo ROOT ?></strong>
-				</div>
-				
-				<div class="col-8 col-last p b">
-					<?php echo _('Aenoa Server path') ?>: <strong>
-						<?php echo AE_SERVER ?></strong>
-				</div>
-				
-				<hr class="hidden" />
-				
-				<div class="col-8 p b">
+
+				<div class="col-5 col p b">
 					<?php echo _('Debug mode') ?>: <strong>
 						<?php if ( debuggin() ): ?>
 							<span class="icon16 warning"><?php echo _('Yes') ?></span>
@@ -63,10 +50,28 @@
 						<?php endif; ?></strong><a href="<?php echo url() ?>maintenance/debug" class="minimized">(<?php echo _('Manage debug mode') ?>)</a>
 				</div>
 				
+
+
+				<div class="col-5 col p b">
+					<?php echo _('Application email') ?>: <strong>
+						<?php echo Config::get(App::APP_EMAIL) ?></strong>
+				</div>
 				
 				
-				<div class="col-8 col-last p b"><?php echo _('Locales') ?>: <strong><?php echo implode(', ',App::getI18n()->getLangList ()) ; ?></strong></div>
-				
+				<div class="col-6 col-last p b"><?php echo _('Locales') ?>: <strong><?php echo implode(', ',App::getI18n()->getLangList ()) ; ?></strong></div>
+
+
+				<hr class="hidden" />
+
+				<div class="col-8 p b">
+					<?php echo _('ROOT path') ?>: <strong>
+						<?php echo ROOT ?></strong>
+				</div>
+
+				<div class="col-8 col-last p b">
+					<?php echo _('Aenoa Server path') ?>: <strong>
+						<?php echo AE_SERVER ?></strong>
+				</div>
 				
 				<hr class="hidden" />
 				

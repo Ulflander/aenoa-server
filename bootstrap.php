@@ -269,7 +269,7 @@ define ( 'AE_ASSETS', AE_SERVER . DS . 'assets' . DS ) ;
  *
  * Name of the server
  */
-define ('AENOA_SERVER_NAME' , 'Aenoa Server Engine 1.0' ) ;
+define ('AENOA_SERVER_NAME' , 'Aenoa Server Engine' ) ;
 define ('AENOA_SERVER_COPY' , 'Copyright 2010-2011 Aenoa Systems' ) ;
 define ('AENOA_SERVER_COPY_LINK' , '<a href="http://www.aenoa-systems.com/" title="Aenoa Systems">Copyright 2010-2011 Aenoa Systems</a>' ) ;
 

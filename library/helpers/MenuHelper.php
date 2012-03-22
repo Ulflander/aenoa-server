@@ -59,7 +59,7 @@ class MenuHelper {
 		$str .= '<li><a href="' . url() . 'maintenance/debug" title="' . _('Debug mode') . '" class="icon16 warning">' . _('Debug mode') . '</a></li>' . "\n";
 		$str .= '</ul></li>' . "\n";
 
-		$js .= 'new ajsf.AeBlockSwitch({button:_("#maintenance-menu-btn"),element:_("#maintenance-menu"),openedClass:"icon16 down",closedClass:"icon16 play"}).' .
+		$js .= 'new ajsf.AeBlockSwitch({button:_("#maintenance-menu-btn"),element:_("#maintenance-menu"),openedClass:"icon16 arrs_down",closedClass:"icon16 ars_right"}).' .
 			($query->getAt() == 'maintenance' ? 'open' : 'close')
 			. '();';
 
@@ -73,7 +73,7 @@ class MenuHelper {
 			$str .= '<li><a href="' . url() . 'user-manage/all-users" title="' . _('Manage all users') . '" class="icon16 group">' . _('Manage users') . '</a></li>' . "\n";
 			$str .= '</ul></li>' . "\n";
 
-			$js .= 'new ajsf.AeBlockSwitch({button:_("#users-menu-btn"),element:_("#users-menu"),openedClass:"icon16 down",closedClass:"icon16 play"}).' .
+			$js .= 'new ajsf.AeBlockSwitch({button:_("#users-menu-btn"),element:_("#users-menu"),openedClass:"icon16 arrs_down",closedClass:"icon16 ars_right"}).' .
 				($query->getAt() == 'user-manage' ? 'open' : 'close')
 				. '();';
 
@@ -106,7 +106,7 @@ class MenuHelper {
 		$str .= '<li><a href="' . url() . 'webpages/create" title="' . _('Add a new webpage') . '" class="icon16 add">' . _('Add a new webpage') . '</a></li>' . "\n";
 		$str .= '</ul>' . "\n";
 
-		$js .= 'new ajsf.AeBlockSwitch({button:_("#webpages-menu-btn"),element:_("#webpages-menu"),openedClass:"icon16 down",closedClass:"icon16 play"}).' .
+		$js .= 'new ajsf.AeBlockSwitch({button:_("#webpages-menu-btn"),element:_("#webpages-menu"),openedClass:"icon16 arrs_down",closedClass:"icon16 ars_right"}).' .
 			($query->getAt() == 'webpages' ? 'open' : 'close')
 			. '();';
 
@@ -128,7 +128,7 @@ class MenuHelper {
 			$str .= '<li><a href="' . url() . 'dev/ExploreTasks" title="' . _('List tasks') . '" class="icon16 files">' . _('Explore tasks') . '</a></li>' . "\n";
 			$str .= '</ul></li>' . "\n";
 
-			$js .= 'new ajsf.AeBlockSwitch({button:_("#dev-menu-btn"),element:_("#dev-menu"),openedClass:"icon16 down",closedClass:"icon16 play"}).' .
+			$js .= 'new ajsf.AeBlockSwitch({button:_("#dev-menu-btn"),element:_("#dev-menu"),openedClass:"icon16 arrs_down",closedClass:"icon16 ars_right"}).' .
 				($query->getAt() == QueryString::DEV_TOKEN ? 'open' : 'close')
 				. '();';
 		}
@@ -192,7 +192,7 @@ class MenuHelper {
 			$str .= '</li>';
 
 			$str .= '<script type="text/javascript">ajsf.load("ae-block-switch");ajsf.ready(function(){';
-			$str .= 'new ajsf.AeBlockSwitch({button:_("#menu-db-' . $struct . '-btn"),element:_("#menu-db-' . $struct . '"),openedClass:"icon16 down",closedClass:"icon16 play"}).' .
+			$str .= 'new ajsf.AeBlockSwitch({button:_("#menu-db-' . $struct . '-btn"),element:_("#menu-db-' . $struct . '"),openedClass:"icon16 arrs_down",closedClass:"icon16 ars_right"}).' .
 				(App::getQueryString()->getAt(1) == $struct ? 'open' : 'close')
 				. '();});</script>';
 		}

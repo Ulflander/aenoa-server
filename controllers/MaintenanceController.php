@@ -42,6 +42,15 @@ class MaintenanceController extends FileController {
 
 	function status($key = null) {
 		$this->checkMaintenanceKey($key);
+
+		$version = '1.0' ;
+		$f = new File(AE_SERVER.'VERSION.md', false) ;
+		if ( $f->exists())
+		{
+			$version = $f->read () ;
+			$f->close () ;
+		}
+		$this->view->set('version',$version);
 	}
 
 	private function checkMaintenanceKey($key) {
