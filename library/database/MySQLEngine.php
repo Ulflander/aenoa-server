@@ -342,8 +342,8 @@ class MySQLEngine extends AbstractDBEngine {
 	    $q .= $fn . '(' . $this->__selectFields($fields, $table) . ',' . $param . ') FROM `' . $this->source['database'] . '`.`' . $table . '` ';
 	}
 	$q .= $this->__getCond($cond, $table);
-	$q .= $this->__getLimit($table, $limit);
 	$q .= ' ORDER BY ' . $this->__selectFields($order_fields, $table) . ' ';
+	$q .= $this->__getLimit($table, $limit);
 	$q .= $order;
 	$q .= ';';
 
