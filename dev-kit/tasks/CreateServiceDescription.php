@@ -19,22 +19,25 @@ class CreateServiceDescription extends Task {
 
 
 			if (strpos($service, 'core/') === false && is_file(ROOT . 'app' . DS . 'services' . DS . $service . '.service.php')) {
-				$this->_methods = ServiceIntrospector::introspect(ROOT . 'app' . DS . 'services' . DS . $service . '.service.php', $service);
 
-				$serviceName = $service;
+				$serviceName = array_pop(explode('/',$service));
+				
+				$this->_methods = ServiceIntrospector::introspect(ROOT . 'app' . DS . 'services' . DS . $service . '.service.php', $serviceName);
+
 
 				if (is_file(ROOT . 'app' . DS . 'services' . DS . $service . '.description.php')) {
 					require_once ( ROOT . 'app' . DS . 'services' . DS . $service . '.description.php' );
-					$descClassName = $service . 'ServiceDescription';
+					$descClassName = $serviceName . 'ServiceDescription';
 					$descClass = new $descClassName ();
 					$this->_description = $descClass->methods;
 				}
+
 			} else if (strpos($service, 'core/') === 0) {
 				$serviceName = str_replace('core/', '', $service);
 
 				$this->_isCore = true;
 
-				$this->_methods = ServiceIntrospector::introspect(AE_CORE_SERVICES . $serviceName . '.service.php', $serviceName);
+				$this->_methods = ServiceIntrospector::introspect(AE_CORE_SERVICES . $service . '.service.php', $serviceName);
 
 				if (is_file(AE_CORE_SERVICES . $serviceName . '.description.php')) {
 					require_once ( AE_CORE_SERVICES . $serviceName . '.description.php' );
@@ -169,14 +172,27 @@ class CreateServiceDescription extends Task {
 		}
 
 		if ($this->futil->dirExists(ROOT . 'app')) {
-			$list = $this->futil->getFilesList(ROOT . 'app' . DS . 'services', true);
+			$list = $this->futil->getFilesList(ROOT . 'app' . DS . 'services', false);
 		}
+			pr($list);
 
 
-		foreach ($list as $file) {
-			if ($file['type'] != 'dir' && ($pos = strpos($file['name'], '.service.php')) !== false) {
-				$serviceName = substr($file['name'], 0, $pos);
-				$services[$serviceName] = $serviceName;
+		foreach ($list as $dirOrFile) {
+
+			if ( $dirOrFile['type'] == 'dir' )
+			{
+				$files = $this->futil->getFilesList($dirOrFile['path'], false) ;
+				$prefix = $dirOrFile['name'] . '/' ;
+			} else {
+				$files = array ( $dirOrFile ) ;
+				$prefix = '' ;
+			}
+			foreach ( $files as $file )
+			{
+				if ( ($pos = strpos($file['name'], '.service.php')) !== false) {
+					$serviceName = $prefix . substr($file['name'], 0, $pos);
+					$services[$serviceName] = $serviceName;
+				}
 			}
 		}
 

@@ -64,6 +64,8 @@ class ServiceIntrospector {
 	 */
 	static function introspect ( $serviceFile , $serviceName )
 	{
+		pr($serviceFile);
+		pr($serviceName) ;
 		if ( is_file ( $serviceFile ) )
 		{
 			require_once ( $serviceFile );
