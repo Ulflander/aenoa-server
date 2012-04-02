@@ -17,12 +17,12 @@ class DatabaseController extends Controller {
 	public $recursivity = 1;
 	public $fields = array();
 	public $subFields = array();
+	public $conditions = array();
 	protected $structure;
 	protected $errors = array();
 	protected $toSave = array();
 	protected $previousPage = null;
 	protected $baseURL = null;
-	protected $conditions = array();
 	public $RESTResult = true;
 	protected $added = false;
 	protected $edited = false;

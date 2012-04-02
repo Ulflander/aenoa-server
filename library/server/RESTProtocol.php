@@ -257,6 +257,19 @@ class RESTProtocol extends AbstractProtocol {
 		    $params['fields'] = explode(',', $this->_service['fields']);
 		}
 
+		if (ake('conditions', $this->_service)) {
+			$conds = explode(';', $this->_service['conditions'] ) ;
+			$cds = array() ;
+
+			foreach( $conds as $cond )
+			{
+				$cond = explode(':',$cond);
+				$cds[$cond[0]] = $cond[1] ;
+			}
+			
+		    $params['conditions'] = $cds;
+		}
+
 		$actionParams = array(
 		    ( is_int(intval(@$this->_service['page'])) && intval(@$this->_service['page']) > 0 ? intval($this->_service['page']) : 1 ),
 		    ( is_string(@$this->_service['orderby']) ? $this->_service['orderby'] : null ),
