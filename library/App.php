@@ -527,6 +527,7 @@ class App extends Object
 		{
 			new Initializer () ;
 		}
+		
 		new Log () ;
 
 		

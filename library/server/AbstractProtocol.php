@@ -21,6 +21,8 @@ abstract class AbstractProtocol {
 	
 	protected $_encryptionKey ;
 	
+	protected $_gzip = false ;
+	
 	/**
 	 * getFormattedResponse should be implemented in concrete protocol class
 	 * and should format the response.
@@ -70,6 +72,21 @@ abstract class AbstractProtocol {
 		$this->_data[$key] = $value ;
 	}
 	
+	final function setGZip ( $val )
+	{
+		if ( $val === true )
+		{
+			$this->_gzip = $val ;
+		} else {
+			$this->_gzip = false ;
+		}
+	}
+	
+	final function isGZip ()
+	{
+		return $this->_gzip ;
+	}
+	
 	final function addError ( $message )
 	{
 		if ( $this->_success == true )
@@ -86,7 +103,16 @@ abstract class AbstractProtocol {
 	
 	final function respond ()
 	{
+		if ( $this->_gzip == false )
+		{
+			echo $this->getFormattedResponse() ;
+			return ;
+		}
+		
+		header('Content-Encoding: gzip');
+		ob_start("ob_gzhandler");
 		echo $this->getFormattedResponse() ;
+		ob_end_flush();
 	}
 	
 }
