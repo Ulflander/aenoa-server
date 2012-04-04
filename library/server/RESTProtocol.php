@@ -263,7 +263,7 @@ class RESTProtocol extends AbstractProtocol {
 				}
 
 				$actionParams = array(
-					( is_int(intval(@$this->_service['page'])) && intval(@$this->_service['page']) > 0 ? intval($this->_service['page']) : 1 ),
+					( is_int (intval(@$this->_service['page'])) && intval(@$this->_service['page']) > 0 ? intval($this->_service['page']) : 1 ),
 					( is_string(@$this->_service['orderby']) ? $this->_service['orderby'] : null ),
 					( is_string(@$this->_service['dir']) ? $this->_service['dir'] : null ),
 				);
