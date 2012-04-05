@@ -80,7 +80,7 @@ class DataService extends Service {
 			$res = $db->findAll($table,$conds, $limit);
 			$res = $db->findAscendants($table,$db->findChildren($table,$res)) ;
 			
-			if($keysAsLabel == true )
+			if($keysAsLabel === true )
 			{
 				$res = $db->keysToLabel($table,$res) ;
 			}
