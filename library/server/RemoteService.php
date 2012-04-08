@@ -46,7 +46,7 @@ class RemoteService {
 	}
 	
 	/**
-	 * <p>Connects to remote service and get response</p>
+	 * <p>Connects to remote service and get response for a POST query</p>
 	 * 
 	 * @param bool $returnHeaders
 	 * @return string Response body 
@@ -56,6 +56,21 @@ class RemoteService {
 		$ch = curl_init($this->_gatewayURL);
 		curl_setopt($ch, CURLOPT_POST      ,1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS    , $this->_protocol->getToSendData ( $this->_useSessID ) );
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION  ,1);
+		curl_setopt($ch, CURLOPT_HEADER      , $returnHeaders ? 1 : 0);  // DO NOT RETURN HTTP HEADERS
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER  ,1);  // RETURN THE CONTENTS OF THE CALL
+		curl_setopt($ch , CURLOPT_BINARYTRANSFER , 1 );
+		return curl_exec($ch);
+	}
+	/**
+	 * <p>Connects to remote service and get response for a GET query</p>
+	 *
+	 * @param bool $returnHeaders
+	 * @return string Response body
+	 */
+	public function get ( $returnHeaders = false )
+	{
+		$ch = curl_init($this->_gatewayURL);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION  ,1);
 		curl_setopt($ch, CURLOPT_HEADER      , $returnHeaders ? 1 : 0);  // DO NOT RETURN HTTP HEADERS
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER  ,1);  // RETURN THE CONTENTS OF THE CALL
