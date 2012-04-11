@@ -113,6 +113,12 @@ class AeGeoloc {
 	}
 
 	private function __getValidity() {
+		
+		if ( !ake('HTTP_ACCEPT_LANGUAGE', $_SERVER) )
+		{
+			return false ;
+		}
+		
 		$lang = array_shift(explode(';', $_SERVER['HTTP_ACCEPT_LANGUAGE']));
 
 		if (strpos($lang, ',') !== false) {
