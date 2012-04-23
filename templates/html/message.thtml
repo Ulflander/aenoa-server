@@ -19,10 +19,10 @@
 
 	<?php $this->element ( 'header-end' ) ; ?>
 	
-		<div class="layout block-centered margedtop"> 
+		<div class="layout block-centered margedtop">
+			<div class="marged">
 <?php endif; ?>
 			
-			<div class="marged">
 				<h1><?php echo $title ?></h1>
 				
 				<hr class="hidden" />
@@ -37,10 +37,10 @@
 					<li class="caption"><?php echo _('Where to go') ?></li>
 					<li><a href="<?php echo url () ; ?>" class="icon16 home"><?php echo _('Return to home') ?></a></li>
 				</ul>
-			</div>
 			
 		
 <?php if ( !App::isAjax () && !$this->useLayout  ): ?>
+			</div>
 		</div>
 	<?php $this->element ( 'footer' ) ; ?>
 
