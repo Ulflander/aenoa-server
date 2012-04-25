@@ -786,11 +786,11 @@ class App extends AeObject {
     static function do302($uri) {
         if (headers_sent() == false) {
             header("Status: 302 Moved temporary", false, 302);
- header("Referer: http://www.modakupi.ru");
+            header("Referer: http://www.modakupi.ru");
             self::end(false);
 
             sleep(1);
-           
+
             header("Location: " . $uri);
         } else if (debuggin()) {
             throw new ErrorException('301 redirection to ' . $uri . ' failed cause headers yet sent');
@@ -988,7 +988,7 @@ class App extends AeObject {
         if (empty($tables)) {
             self::do500('No table found for database ' . $id . '.');
         }
-
+        self::$_dbs[$id]['database'] = $source['database'];
         self::$_dbs[$id]['engine'] = $db;
         self::$_dbs[$id]['structure'] = $tables;
 
@@ -1033,6 +1033,13 @@ class App extends AeObject {
     static public function getDatabase($id = 'main') {
         if (array_key_exists($id, self::$_dbs)) {
             return self::$_dbs[$id]['engine'];
+        }
+        return null;
+    }
+
+    static public function getSource($id = 'main') {
+        if (array_key_exists($id, self::$_dbs)) {
+            return self::$_dbs[$id]['database'];
         }
         return null;
     }
