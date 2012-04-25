@@ -138,7 +138,7 @@ class ConfDriven extends Object {
 		{
 			$apc = new APCCache ( urlize($this->file) ) ;
 
-			if ( $apc->has () )
+			if ( $apc->has () && !debuggin() )
 			{
 				$this->log('Get conf from APC ' . $this->file);
 				$this->conf = $apc->get() ;
@@ -175,7 +175,6 @@ class ConfDriven extends Object {
 
 			$v = explode('>', $val);
 			$this->conf[trim(strval($v[0]))] = trim($v[1]);
-			
 		}
 	}
 	

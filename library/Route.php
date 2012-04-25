@@ -46,6 +46,7 @@ class Route extends ConfDriven {
 	 * @return string Routed query
 	 */
 	function get($query) {
+		$query = unsetTrailingSlash($query) ;
 		foreach ($this->conf as $fromRoute => &$toRoute) {
 			preg_match_all('|^' . str_replace('\\*', '[a-z\.0-9\-\'\*\(\)\_]{1,}', preg_quote($fromRoute)) . '$|i', $query, $m);
 			if ($m && !empty($m[0])) {
