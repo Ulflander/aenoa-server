@@ -6,6 +6,17 @@ Aenoa Server is PHP MVC framework to develop quickly and easily your web project
 
 Find documentation at http://www.aenoa-systems.com/docs/aenoa-server/
 
+## Current version
+
+Current version is 1.0.6
+
+## Getting old version (1.0) of Aenoa Server
+
+Clone Aenoa Server repo, then checkout the 1.0 branch
+
+ git clone https://github.com/aenoa/aenoa-server.git
+ git checkout 1.0
+
 ## Roadmap for Aenoa Server 1.1 (Codename: Alastor)
 
 - Remove all deprecated APIs
