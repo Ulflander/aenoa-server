@@ -6,6 +6,16 @@ Aenoa Server is PHP MVC framework to develop quickly and easily your web project
 
 Find documentation at http://www.aenoa-systems.com/docs/aenoa-server/
 
+## Create a new app with Aenoa Server
+
+Open a terminal, and go to your document root, then
+
+ mkdir <your_project_name>
+ cd <your_project_name>
+ curl http://up.aenoa-systems.com/install.sh | sh
+
+And your done! Open your browser at http://localhost/<your_project_name>
+
 ## Current version
 
 Current version is 1.0.6
