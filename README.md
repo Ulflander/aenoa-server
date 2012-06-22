@@ -14,7 +14,9 @@ Open a terminal, and go to your document root, then
 	cd <your_project_name>
 	curl http://up.aenoa-systems.com/install.sh | sh
 
-And your done! Open your browser at http://localhost/your_project_name to see a beautiful welcome page.
+And your done! Open your browser at 
+	http://localhost/your_project_name
+to see a beautiful welcome page.
 
 ## Current version
 
